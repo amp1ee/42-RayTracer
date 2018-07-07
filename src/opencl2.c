@@ -49,7 +49,7 @@ void			start_cl(t_opencl *cl)
 	if ((r = clGetPlatformIDs(1, &(cl->platform_id), &(cl->ret_num_plat))))
 		exit_message("couldn*t load platform");
 	if ((r = clGetDeviceIDs(cl->platform_id,
-		CL_DEVICE_TYPE_CPU, 1, &(cl->device_id), &(cl->ret_num_devices))))
+		CL_DEVICE_TYPE_GPU, 1, &(cl->device_id), &(cl->ret_num_devices))))
 		exit_message("couldn*t get device id");
 	cl->context = clCreateContext(NULL, 1, &(cl->device_id), NULL, NULL, &r);
 	if (r)
@@ -71,7 +71,7 @@ void			start_cl(t_opencl *cl)
 		exit_message("failed to create kernel");
 }
 
-void			mid_cl(t_opencl *cl, t_main mlx, int memlenth)
+void			mid_cl(t_opencl *cl, t_main *mlx, int memlenth)
 {
 	int ret;
 
@@ -81,36 +81,36 @@ void			mid_cl(t_opencl *cl, t_main mlx, int memlenth)
 		exit_message("failed to create buf1");
 	cl->memobj_figures = clCreateBuffer(cl->context,
 		CL_MEM_USE_HOST_PTR,
-		(mlx.scene->o_num) * sizeof(t_figure), mlx.scene->objects, &ret);
+		mlx->scene->o_num * sizeof(t_figure), mlx->scene->objects, &ret);
 	if (ret)
 		exit_message(ft_strjoin("failed to create buf2 ", ft_itoa(ret)));
 	cl->memobj_light = clCreateBuffer(cl->context,
-		CL_MEM_COPY_HOST_PTR,
-		(mlx.scene->l_num) * sizeof(t_figure) + 1, mlx.scene->lights, &ret);
+		CL_MEM_USE_HOST_PTR,
+		(mlx->scene->l_num) * sizeof(t_figure), mlx->scene->lights, &ret);
 	if (ret)
 		exit_message("failed to create buf3");
 }
 
-void			args_cl(t_opencl *cl, t_main mlx)
+void			args_cl(t_opencl *cl, t_main *mlx)
 {
 	int ret;
 
 	if ((ret = clSetKernelArg(cl->kernel, 0,
-		sizeof(cl_mem), (void *)&(cl->memobj_data))))
+		sizeof(cl_mem), &cl->memobj_data)))
 		exit_message("failed to set arg1");
 	if ((ret = clSetKernelArg(cl->kernel, 1,
-		sizeof(cl_mem), (void *)&(cl->memobj_figures))))
+		sizeof(cl_mem), &cl->memobj_figures)))
 		exit_message("failed to set arg2 ");
 	if ((ret = clSetKernelArg(cl->kernel, 2,
-		sizeof(cl_mem), (void *)&(cl->memobj_light))))
+		sizeof(cl_mem), &cl->memobj_light)))
 		exit_message("failed to set arg3");
 	if ((ret = clSetKernelArg(cl->kernel, 3,
-		sizeof(t_figure), (void *)&mlx.scene->cam)))
+		sizeof(t_figure), &mlx->scene->cam)))
 		exit_message("failed to set arg4");
 	if ((ret = clSetKernelArg(cl->kernel, 4,
-		sizeof(int), &mlx.scene->l_num)))
+		sizeof(int), &mlx->scene->l_num)))
 		exit_message("failed to set arg5");
 	if ((ret = clSetKernelArg(cl->kernel, 5,
-		sizeof(int), &mlx.scene->o_num)))
+		sizeof(int), &mlx->scene->o_num)))
 		exit_message("failed to set arg6");
 }

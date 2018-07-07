@@ -28,6 +28,6 @@ int		key(int key_code, t_main *mlx)
 	(key_code == 124 && ++e) ? (mlx->scene->cam.d.y -= 5) : 0;
 	(key_code == 12 && ++e) ? (mlx->scene->cam.p.y -= 0.5) : 0;
 	(key_code == 14 && ++e) ? (mlx->scene->cam.p.y += 0.5) : 0;
-	e ? (rendering(*mlx)) : 0;
+	e ? (rendering(mlx)) : 0;
 	return (0);
 }

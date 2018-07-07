@@ -55,74 +55,62 @@ float3		rotate_ort(float3 point, float3 rot)
 t_closest		closest_fig(float3 O, float3 D,
 			float min, float max, __global t_figure *figures, int o_n, int l_n)
 {
-	t_figure ret, figure;
+	t_figure ret;
 	float closest = INFINITY;
-	int i = -1;
-	while(++i < o_n)
+	for (int i = 0; i < o_n; i++)
 	{
-		figure = figures[i];
-		if (figure.type == CYLINDER)
+		if (figures[i].type == CYLINDER)
 		{
-			float2 tmp = IntersectRayCylinder(O, D, figure);
-			float t1 = tmp.x;
-			float t2 = tmp.y;
-			
-			if (t1 >= min && t1 <= max && t1 < closest)
+			float2 tmp = IntersectRayCylinder(O, D, figures[i]);
+			if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
 			{
-				closest = t1;
-				ret = figure;
+				closest = tmp.x;
+				ret = figures[i];
 			}
-			if (t2 >= min && t2 <= max && t2 < closest)
+			if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
 			{
-				closest = t2;
-				ret = figure;
+				closest = tmp.y;
+				ret = figures[i];
 			}
 			continue ;
 		}
-		else if (figure.type == CONE)
+		else if (figures[i].type == CONE)
 		{
-			float2 tmp = IntersectRayCone(O, D, figure);
-			float t1 = tmp.x;
-			float t2 = tmp.y;
-			
-			if (t1 >= min && t1 <= max && t1 < closest)
+			float2 tmp = IntersectRayCone(O, D, figures[i]);
+			if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
 			{
-				closest = t1;
-				ret = figure;
+				closest = tmp.x;
+				ret = figures[i];
 			}
-			if (t2 >= min && t2 <= max && t2 < closest)
+			if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
 			{
-				closest = t2;
-				ret = figure;
+				closest = tmp.y;
+				ret = figures[i];
 			}
 			continue ;
 		}
-		else if (figure.type == PLANE)
+		else if (figures[i].type == PLANE)
 		{
-			float t = IntersectRayPlane(O, D, figure);
-		
+			float t = IntersectRayPlane(O, D, figures[i]);
 			if (t >= min && t <= max && t < closest)
 			{
 				closest = t;
-				ret = figure;
+				ret = figures[i];
 			}
 			continue ;
 		}
-		else if (figure.type == SPHERE)
+		else if (figures[i].type == SPHERE)
 		{
-			float2 tmp = IntersectRaySphere(O, D, figure);
-			float t1 = tmp.x;
-			float t2 = tmp.y;
-			
-			if (t1 >= min && t1 <= max && t1 < closest)
+			float2 tmp = IntersectRaySphere(O, D, figures[i]);
+			if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
 			{
-				closest = t1;
-				ret = figure;
+				closest = tmp.x;
+				ret = figures[i];
 			}
-			if (t2 >= min && t2 <= max && t2 < closest)
+			if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
 			{
-				closest = t2;
-				ret = figure;
+				closest = tmp.y;
+				ret = figures[i];
 			}
 			continue ;
 		}
@@ -133,7 +121,7 @@ t_closest		closest_fig(float3 O, float3 D,
 float	compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n)
 {
-	float koef = 0.1;
+	float koef = 0;
 	int i = -1;
 	while (++i < l_n)
 	{
@@ -186,28 +174,28 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 {
 	float3 P;
 	float3 N;
-	float3 local_c[5] = {0};
-	float r[5] = {0};
+	float3 local_c[NUM_REFL] = {0};
+	float r[NUM_REFL] = {0};
 	int i;
 	float3 ret_col = 0;
 	float closest;
 	t_figure figure;
 
-	//for (i = 0; i < 5; i++)
-	//{
+	for (i = 0; i < NUM_REFL; i++)
+	{
 		float c_l = 0;
 		t_closest clos = closest_fig(O, D, min, max, figures, o_n, l_n);
 		closest = clos.closest;
 		if (closest == INFINITY)
-			//break;
-			return (float3){0,0,0};
+			break;
+			//return (float3){0,0,0};
 		figure = clos.figure;
 
 		P = O + D * closest;
 		if (figure.type == PLANE)
 		{
 			float3 d = {figure.d.x, figure.d.y, figure.d.z};
-			if (dot(D, d) < 0)
+			if (dot(D, d) < 0.0f)
 				N = (d / fast_length(d));
 			else 
 				N = (-d / fast_length(d));
@@ -248,7 +236,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		local_c[i] = (float3){ figure.color.x * c_l,
 								figure.color.y * c_l,
 								figure.color.z * c_l };
-		/*r[i] = figure.reflect;
+		r[i] = figure.reflect;
 		if (r[i] <= 0)
 		{
 			r[i++] = r[i - 1];
@@ -270,9 +258,9 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	}
 	ret_col.r = sum_color(local_c[0].r * (1.0f - r[0]), ret_col.r);
 	ret_col.g = sum_color(local_c[0].g * (1.0f - r[0]), ret_col.g);
-	ret_col.b = sum_color(local_c[0].b * (1.0f - r[0]), ret_col.b);*/
+	ret_col.b = sum_color(local_c[0].b * (1.0f - r[0]), ret_col.b);
 
-	return local_c[0];
+	return ret_col;
 }
 
 __kernel void rendering(__global int * data, __global t_figure *figures,
@@ -281,7 +269,7 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
-	//printf("%d\n", sizeof(figures));
+
 
 	float d = 1; // vv from cam
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
@@ -292,5 +280,7 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	D = rotate_ort(D, cam.d);
 
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n);
+
+	//float3 c = TraceRay1(O, D, 1.0F, INFINITY, 5, figures, light, o_n, l_n);
 	data[j * 1200 + i] = return_int_color(c);
 }

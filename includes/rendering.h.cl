@@ -30,6 +30,8 @@
 # define CONE 4
 # define SPHERE 3
 
+# define NUM_REFL 5
+
 typedef struct	s_figure
 {
 	int			type;
@@ -81,6 +83,8 @@ t_closest		closest_fig(float3 O, float3 D,
 float3			rotate_ort(float3 point, float3 rot);
 
 float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
+					__global t_figure *light, int o_n, int l_n);
+float3	 		TraceRay1(float3 O, float3 D, float min, float max, int depth, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
 
 __kernel void 	rendering(__global int * data, __global t_figure *figures,

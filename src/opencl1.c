@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "rt.h"
+#define MEM_LENGTH 1440000
 
 void			exit_message(const char *str)
 {
@@ -18,39 +19,32 @@ void			exit_message(const char *str)
 	exit(1);
 }
 
-static void		free_cl_mem(t_opencl cl)
+void			init_cl(t_main *mlx)
 {
-	clReleaseMemObject(cl.memobj_data);
-	clReleaseMemObject(cl.memobj_figures);
-	clReleaseMemObject(cl.memobj_light);
-	clReleaseProgram(cl.program);
-	clReleaseKernel(cl.kernel);
-	clReleaseCommandQueue(cl.command_queue);
-	clReleaseContext(cl.context);
+	t_opencl *cl;
+
+	cl = malloc(sizeof(t_opencl));
+	start_cl(cl);
+	mid_cl(cl, mlx, MEM_LENGTH);
+	mlx->cl = cl;
 }
 
-void			rendering(t_main mlx)
+void			rendering(t_main *mlx)
 {
-	t_opencl	cl;
-	int			memlenth;
 	size_t		global_work_size[3];
 	int			ret;
 
-	memlenth = 1440000;
 	global_work_size[0] = 1200;
 	global_work_size[1] = 1200;
 	global_work_size[2] = 0;
-	mlx_clear_window(mlx.mlx_ptr, mlx.win_ptr);
-	start_cl(&cl);
-	mid_cl(&cl, mlx, memlenth);
-	args_cl(&cl, mlx);
-	if ((ret = clEnqueueNDRangeKernel(cl.command_queue,
-				cl.kernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL)))
+	args_cl(mlx->cl, mlx);
+	if ((ret = clEnqueueNDRangeKernel(mlx->cl->command_queue,
+				mlx->cl->kernel, 2, NULL,
+				global_work_size, NULL, 0, NULL, NULL)))
 		exit_message("failed to execute kernel");
-	if ((ret = clEnqueueReadBuffer(cl.command_queue,
-				cl.memobj_data, CL_TRUE, 0, memlenth * sizeof(int),
-				mlx.image.ptr, 0, NULL, NULL)))
+	if ((ret = clEnqueueReadBuffer(mlx->cl->command_queue,
+				mlx->cl->memobj_data, CL_TRUE, 0, MEM_LENGTH * sizeof(int),
+				mlx->image.ptr, 0, NULL, NULL)))
 		exit_message("failed to get buf data");
-	mlx_put_image_to_window(mlx.mlx_ptr, mlx.win_ptr, mlx.image.data, 0, 0);
-	free_cl_mem(cl);
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->image.data, 0, 0);
 }

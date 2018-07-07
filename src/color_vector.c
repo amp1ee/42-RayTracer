@@ -12,13 +12,13 @@
 
 #include "rt.h"
 
-cl_float3		*norming(cl_float3 *p)
+cl_float3	*norming(cl_float3 *p)
 {
 	*p = num_dil(*p, v_length(*p));
 	return (p);
 }
 
-cl_float3		num_dil(cl_float3 p, float n)
+cl_float3	num_dil(cl_float3 p, float n)
 {
 	return (cl_float3){ .x = p.x / n, .y = p.y / n, .z = p.z / n };
 }
