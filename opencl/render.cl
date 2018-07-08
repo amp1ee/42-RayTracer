@@ -129,8 +129,7 @@ float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
                     __global t_figure *light, int o_n, int l_n)
 {
     float koef = 0;
-    int i = -1;
-    while (++i < l_n)
+    for (int i = 0; i < l_n; i++)
     {
         t_figure l = light[i];
         float3 Lp = {l.p.x, l.p.y, l.p.z};
@@ -215,7 +214,6 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		closest = clos.closest;
 		if (closest == INFINITY)
 			break;
-			//return (float3){0,0,0};
 		figure = clos.figure;
 
 		P = O + D * closest;
@@ -278,7 +276,8 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		D = ReflRay;
 		min  = 0.001;
 	}
-	while (--i > 0)
+	--i;
+	for (; i > 0; i--)
 	{
 		ret_col.r = sum_color(local_c[i].x, ret_col.x) * rfl[i - 1];
 		ret_col.g = sum_color(local_c[i].y, ret_col.y) * rfl[i - 1];	
@@ -309,6 +308,5 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n);
 
-	//float3 c = TraceRay1(O, D, 1.0F, INFINITY, 5, figures, light, o_n, l_n);
 	data[j * 1200 + i] = return_int_color(c);
 }
