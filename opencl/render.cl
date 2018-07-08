@@ -14,6 +14,13 @@
 #include "./opencl/intersections.cl"
 #include "./opencl/effects.cl"
 
+void	swap(float f, float s)
+{
+	float tmp = f;
+	f = s;
+	s = tmp;
+}
+
 int		return_int_color(float3 c)
 {
 	return ((int)c.x * 0x10000 + (int)c.y * 0x100 + (int)c.z);
@@ -118,39 +125,36 @@ t_closest		closest_fig(float3 O, float3 D,
 	return (t_closest){closest, ret};
 }
 
-float	compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n)
+float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
+                    __global t_figure *light, int o_n, int l_n)
 {
-	float koef = 0;
-	int i = -1;
-	while (++i < l_n)
-	{
-		t_figure l = light[i];
-		float3 Lp = {l.p.x, l.p.y, l.p.z};
-		float3 L = Lp - P;
-
-		//shadow
-		t_closest clos = closest_fig(P, L, 0.001, 0.99, figures, o_n, l_n);
-		float closest = INFINITY;
-		closest = clos.closest;
-		if (closest != INFINITY)
-			continue;
-
-		//difuse
-		float n_dot_l = N.x * L.x + N.y * L.y + N.z * L.z;
-		if (n_dot_l > 0)
-			koef += l.angle * n_dot_l / (fast_length(N) * fast_length(L));
-
-		//zerk
-		if (s != -1)
-		{
-			float3 R = N * 2 * n_dot_l - L;
-			float r_dot_v = R.x * V.x + R.y * V.y + R.z * V.z;
-			if (r_dot_v > 0)
-				koef += l.angle*pow(r_dot_v / (fast_length(R) * fast_length(V)), s);
-		}
-	}
-	return (koef > 1.0) ? 1.0 : koef;
+    float koef = 0;
+    int i = -1;
+    while (++i < l_n)
+    {
+        t_figure l = light[i];
+        float3 Lp = {l.p.x, l.p.y, l.p.z};
+        float3 L = Lp - P;
+        //shadow
+        t_closest clos = closest_fig(P, L, 0.001, 0.99, figures, o_n, l_n);
+        float closest = INFINITY;
+        closest = clos.closest;
+        if (closest != INFINITY)
+            continue;
+        //difuse
+        float n_dot_l = dot(N,L);
+        if (n_dot_l > 0)
+            koef += l.angle * n_dot_l / (fast_length(N) * fast_length(L));
+        //zerk
+        if (s != -1)
+        {
+            float3 R = N * 2 * n_dot_l - L;
+            float r_dot_v = dot(R,V);
+            if (r_dot_v > 0)
+                koef += l.angle*pow(r_dot_v / (fast_length(R) * fast_length(V)), s);
+        }
+    }
+    return (koef > 1.0) ? 1.0 : koef;
 }
 
 float3	ReflectRay(float3 R, float3 N)
@@ -169,13 +173,36 @@ float3	RefractRay(float3 R, float3 N, float n1, float n2)
 	return n * R + (n * cosI - cosT) * N;
 }
 
+void 	fresnel(float3 R, float3 N, float n1, float n2, float kr) 
+{ 
+	float ior = n1 / n2;
+    float cosi = clamp((float)dot(R, N), -1.f, 1.f); 
+    float etai = 1, etat = ior; 
+    if (cosi > 0) 
+    	swap(etai, etat);
+
+    float sint = etai / etat * sqrt(max(0.f, 1 - cosi * cosi));
+
+    if (sint >= 1)
+        kr = 1;
+    else
+    { 
+        float cost = sqrtf(max(0.f, 1 - sint * sint)); 
+        cosi = fabsf(cosi); 
+        float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost)); 
+        float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost)); 
+        kr = (Rs * Rs + Rp * Rp) / 2; 
+    }
+} 
+
 float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n)
 {
 	float3 P;
 	float3 N;
 	float3 local_c[NUM_REFL] = {0};
-	float r[NUM_REFL] = {0};
+	float rfl[NUM_REFL] = {0};
+	float rfr[NUM_REFL] = {0};
 	int i;
 	float3 ret_col = 0;
 	float closest;
@@ -195,10 +222,10 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		if (figure.type == PLANE)
 		{
 			float3 d = {figure.d.x, figure.d.y, figure.d.z};
-			if (dot(D, d) < 0.0f)
-				N = (d / fast_length(d));
+			if (dot(d,D) < 0)
+				N = fast_normalize(d);
 			else 
-				N = (-d / fast_length(d));
+			 	N = fast_normalize(-d);
 			c_l = compute_light(P, N, -D, 20, figures, light, o_n, l_n);
 		}
 		else if (figure.type == CONE)
@@ -236,15 +263,16 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		local_c[i] = (float3){ figure.color.x * c_l,
 								figure.color.y * c_l,
 								figure.color.z * c_l };
-		r[i] = figure.reflect;
-		if (r[i] <= 0)
+		rfl[i] = figure.reflect;
+		if (rfl[i] <= 0)
 		{
-			r[i++] = r[i - 1];
+			rfl[i++] = rfl[i - 1];
 			break;
 		}
-		local_c[i] = (float3){ local_c[i].r * (1.0f - r[i]),
-								local_c[i].g * (1.0f - r[i]),
-								local_c[i].b  * (1.0f - r[i]) };
+		local_c[i] = (float3){ local_c[i].x * (1.0f - rfl[i]),
+								local_c[i].y * (1.0f - rfl[i]),
+								local_c[i].z  * (1.0f - rfl[i]) };
+		float3 refr_r = RefractRay(P, N, 1.0f, 5.0f);
 		float3 ReflRay = ReflectRay(-D, N);
 		O = P;
 		D = ReflRay;
@@ -252,13 +280,13 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	}
 	while (--i > 0)
 	{
-		ret_col.r = sum_color(local_c[i].r, ret_col.r) * r[i - 1];
-		ret_col.g = sum_color(local_c[i].g, ret_col.g) * r[i - 1];	
-		ret_col.b = sum_color(local_c[i].b, ret_col.b) * r[i - 1];
+		ret_col.r = sum_color(local_c[i].x, ret_col.x) * rfl[i - 1];
+		ret_col.g = sum_color(local_c[i].y, ret_col.y) * rfl[i - 1];	
+		ret_col.b = sum_color(local_c[i].z, ret_col.z) * rfl[i - 1];
 	}
-	ret_col.r = sum_color(local_c[0].r * (1.0f - r[0]), ret_col.r);
-	ret_col.g = sum_color(local_c[0].g * (1.0f - r[0]), ret_col.g);
-	ret_col.b = sum_color(local_c[0].b * (1.0f - r[0]), ret_col.b);
+	ret_col.r = sum_color(local_c[0].x * (1.0f - rfl[0]), ret_col.x);
+	ret_col.g = sum_color(local_c[0].y * (1.0f - rfl[0]), ret_col.y);
+	ret_col.b = sum_color(local_c[0].z * (1.0f - rfl[0]), ret_col.z);
 
 	return ret_col;
 }

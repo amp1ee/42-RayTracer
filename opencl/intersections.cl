@@ -51,9 +51,9 @@ float2 IntersectRaySphere(float3 O, float3 D, t_figure sphere)
 	float3 C = {sphere.p.x, sphere.p.y, sphere.p.z};
 	float3 oc = (float3){O.x - C.x, O.y - C.y, O.z - C.z};
 
-	float k1 = D.x * D.x + D.y * D.y + D.z * D.z;
-	float k2 = 2 * (oc.x * D.x + oc.y * D.y + oc.z * D.z);
-	float k3 = oc.x * oc.x + oc.y * oc.y + oc.z * oc.z - R * R;
+	float k1 = dot(D,D);
+	float k2 = 2 * dot(oc,D);
+	float k3 = dot(oc,oc) - R * R;
 
 	float desk = k2 * k2 - 4 * k1 * k3;
 	if (desk < 0)
@@ -93,13 +93,18 @@ float2 IntersectRayCylinder(float3 O, float3 D, t_figure cyl)
 float IntersectRayPlane(float3 O, float3 D, t_figure plane)
 {
 	float	t;
-	float3	l_temp;
 	float3 d = {plane.d.x, plane.d.y, plane.d.z};
 	float3 p = {plane.p.x, plane.p.y, plane.p.z};
 
-	l_temp = p - O;
-	t = dot(l_temp, d);
-	t = t / dot(D, d);
-	return t;
+	d = fast_normalize(d);
+	float3 oc = O - p;
+	float k1 = dot(d, D);
+	float k2 = dot(oc, d);
+	if (k1 != 0)
+	{
+		t = -k2 / k1;
+		return t;
+	}
+	return INFINITY;
 }
 

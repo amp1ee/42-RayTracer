@@ -56,8 +56,3 @@ void		e_black_white(float3 *c)
 		c->z = 0;
 	}
 }
-
-void		gauss_blur(__global int * data, int i, int j)
-{
-	
-}

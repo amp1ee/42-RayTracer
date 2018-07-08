@@ -50,7 +50,6 @@ typedef struct	s_closest
 	t_figure	figure;
 }				t_closest;
 
-float	sum_color(float f, float s);
 /*
 **	EFFECTS
 */
@@ -65,28 +64,30 @@ void			gauss_blur(__global int * data, int i, int j);
 **
 */
 
+void 			fresnel(float3 R, float3 N, float n1, float n2, float kr);
 float3			RefractRay(float3 R, float3 N, float n1, float n2);
 float3			ReflectRay(float3 R, float3 N);
+
+
+float3			rotate_ort(float3 point, float3 rot);
 float3			return_f_color(int c);
 int				return_int_color(float3 c);
+float			sum_color(float f, float s);
+void			swap(float f, float s);
+
+
 float2 			IntersectRaySphere(float3 O, float3 D, t_figure sphere);
 float2 			IntersectRayCylinder(float3 O, float3 D, t_figure cyl);
 float2 			IntersectRayCone(float3 O, float3 D, t_figure cone);
 float 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
 
+
 float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
-
 t_closest		closest_fig(float3 O, float3 D,
 					float min, float max, __global t_figure *figures, int o_n, int l_n);
-
-float3			rotate_ort(float3 point, float3 rot);
-
 float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
-float3	 		TraceRay1(float3 O, float3 D, float min, float max, int depth, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n);
-
 __kernel void 	rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
 					int l_n, int o_n);
