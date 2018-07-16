@@ -37,9 +37,21 @@
 ** 5 - cylinder
 ** 6 - plane
 */
+# define PLANE 6
+# define CYLINDER 5
+# define CONE 4
+# define SPHERE 3
+
+typedef struct	s_point
+{
+	int x;
+	int y;
+	int z;
+}				t_point;
 
 typedef struct	s_figure
 {
+	int			index;
 	int			type;
 	float		radius;
 	float		angle;
@@ -100,6 +112,21 @@ typedef struct	s_main
 	t_opencl	*cl;
 }				t_main;
 
+/*
+** ADD Figure
+*/
+
+t_figure		new_sphere(t_figure cam);
+t_figure		new_cylinder(t_figure cam);
+t_figure		new_cone(t_figure cam);
+t_figure		new_plane(t_figure cam);
+void			add_figure(t_figure **figures, t_figure cam, int *o_num);
+cl_float3		rotate_ort(cl_float3 point, cl_float3 rot);
+
+/*
+**	CL parsing
+*/
+
 void			start_cl(t_opencl *cl);
 void			mid_cl(t_opencl *cl, t_main *mlx, int memlenth);
 void			args_cl(t_opencl *cl, t_main *mlx);
@@ -114,7 +141,10 @@ cl_float3		num_dil(cl_float3 p, float n);
 float			v_length(cl_float3 p);
 int				return_color(cl_float3 c);
 t_scene			*scene_create(char **argv);
+
 int				key(int key_code, t_main *mlx);
+int				mouse(int key_code, int x, int y, t_main *mlx);
+
 void			ft_list_push_back(t_slist **begin_list, void *data);
 
 t_slist			*list_objects(char **argv);

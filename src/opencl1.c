@@ -25,7 +25,6 @@ void			init_cl(t_main *mlx)
 
 	cl = malloc(sizeof(t_opencl));
 	start_cl(cl);
-	mid_cl(cl, mlx, MEM_LENGTH);
 	mlx->cl = cl;
 }
 
@@ -37,6 +36,7 @@ void			rendering(t_main *mlx)
 	global_work_size[0] = 1200;
 	global_work_size[1] = 1200;
 	global_work_size[2] = 0;
+	mid_cl(mlx->cl, mlx, MEM_LENGTH);
 	args_cl(mlx->cl, mlx);
 	if ((ret = clEnqueueNDRangeKernel(mlx->cl->command_queue,
 				mlx->cl->kernel, 2, NULL,

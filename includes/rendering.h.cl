@@ -34,6 +34,7 @@
 
 typedef struct	s_figure
 {
+	int			index;
 	int			type;
 	float		radius;
 	float		angle;
@@ -48,6 +49,7 @@ typedef struct	s_closest
 {
 	float		closest;
 	t_figure	figure;
+	int			index;
 }				t_closest;
 
 /*
@@ -60,11 +62,13 @@ void			e_negative(float3 *c);
 void			e_black_white(float3 *c);
 void			gauss_blur(__global int * data, int i, int j);
 
+float3			return_point_color(int c);
+
 /*
 **
 */
 
-void 			fresnel(float3 R, float3 N, float n1, float n2, float kr);
+void 			fresnel(float3 R, float3 N, float n1, float n2, float *kr);
 float3			RefractRay(float3 R, float3 N, float n1, float n2);
 float3			ReflectRay(float3 R, float3 N);
 
@@ -85,7 +89,7 @@ float 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
 float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
 t_closest		closest_fig(float3 O, float3 D,
-					float min, float max, __global t_figure *figures, int o_n, int l_n);
+					float min, float max, __global t_figure *figures, int o_n);
 float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
 __kernel void 	rendering(__global int * data, __global t_figure *figures,

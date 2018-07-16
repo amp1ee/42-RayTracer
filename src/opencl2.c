@@ -83,10 +83,10 @@ void			mid_cl(t_opencl *cl, t_main *mlx, int memlenth)
 		CL_MEM_USE_HOST_PTR,
 		mlx->scene->o_num * sizeof(t_figure), mlx->scene->objects, &ret);
 	if (ret)
-		exit_message(ft_strjoin("failed to create buf2 ", ft_itoa(ret)));
+		exit_message("failed to create buf2");
 	cl->memobj_light = clCreateBuffer(cl->context,
 		CL_MEM_USE_HOST_PTR,
-		(mlx->scene->l_num) * sizeof(t_figure), mlx->scene->lights, &ret);
+		mlx->scene->l_num * sizeof(t_figure), mlx->scene->lights, &ret);
 	if (ret)
 		exit_message("failed to create buf3");
 }

@@ -26,6 +26,15 @@ int		return_int_color(float3 c)
 	return ((int)c.x * 0x10000 + (int)c.y * 0x100 + (int)c.z);
 }
 
+float3		return_point_color(int c)
+{
+	float3 p;
+	p.x = (c >> 16) & 255; // 255
+	p.y = (c >> 8) & 255; // 122
+	p.z = c & 255; // 15
+	return p;
+}
+
 float	sum_color(float f, float s)
 {
 	float r;
@@ -60,7 +69,7 @@ float3		rotate_ort(float3 point, float3 rot)
 }
 
 t_closest		closest_fig(float3 O, float3 D,
-			float min, float max, __global t_figure *figures, int o_n, int l_n)
+			float min, float max, __global t_figure *figures, int o_n)
 {
 	t_figure ret;
 	float closest = INFINITY;
@@ -135,7 +144,7 @@ float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
         float3 Lp = {l.p.x, l.p.y, l.p.z};
         float3 L = Lp - P;
         //shadow
-        t_closest clos = closest_fig(P, L, 0.001, 0.99, figures, o_n, l_n);
+        t_closest clos = closest_fig(P, L, 0.001, 0.99, figures, o_n);
         float closest = INFINITY;
         closest = clos.closest;
         if (closest != INFINITY)
@@ -172,7 +181,7 @@ float3	RefractRay(float3 R, float3 N, float n1, float n2)
 	return n * R + (n * cosI - cosT) * N;
 }
 
-void 	fresnel(float3 R, float3 N, float n1, float n2, float kr) 
+void 	fresnel(float3 R, float3 N, float n1, float n2, float *kr) 
 { 
 	float ior = n1 / n2;
     float cosi = clamp((float)dot(R, N), -1.f, 1.f); 
@@ -183,14 +192,14 @@ void 	fresnel(float3 R, float3 N, float n1, float n2, float kr)
     float sint = etai / etat * sqrt(max(0.f, 1 - cosi * cosi));
 
     if (sint >= 1)
-        kr = 1;
+        *kr = 1;
     else
     { 
         float cost = sqrtf(max(0.f, 1 - sint * sint)); 
         cosi = fabsf(cosi); 
         float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost)); 
         float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost)); 
-        kr = (Rs * Rs + Rp * Rp) / 2; 
+        *kr = (Rs * Rs + Rp * Rp) / 2; 
     }
 } 
 
@@ -201,7 +210,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	float3 N;
 	float3 local_c[NUM_REFL] = {0};
 	float rfl[NUM_REFL] = {0};
-	float rfr[NUM_REFL] = {0};
+	//float rfr[NUM_REFL] = {0};
 	int i;
 	float3 ret_col = 0;
 	float closest;
@@ -210,7 +219,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	for (i = 0; i < NUM_REFL; i++)
 	{
 		float c_l = 0;
-		t_closest clos = closest_fig(O, D, min, max, figures, o_n, l_n);
+		t_closest clos = closest_fig(O, D, min, max, figures, o_n);
 		closest = clos.closest;
 		if (closest == INFINITY)
 			break;
@@ -270,8 +279,13 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		local_c[i] = (float3){ local_c[i].x * (1.0f - rfl[i]),
 								local_c[i].y * (1.0f - rfl[i]),
 								local_c[i].z  * (1.0f - rfl[i]) };
-		float3 refr_r = RefractRay(P, N, 1.0f, 5.0f);
+		//float3 refr_r = RefractRay(P, N, 1.0f, 5.0f);
 		float3 ReflRay = ReflectRay(-D, N);
+
+		float kr; // how much light is reflected, computed by Fresnel equation 
+        fresnel(D, N, 1, 5, &kr); 
+        //hitColor = reflectionColor * kr + refractionColor * (1 - kr);
+
 		O = P;
 		D = ReflRay;
 		min  = 0.001;
@@ -297,7 +311,6 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	int j = get_global_id(0);
 	int i = get_global_id(1);
 
-
 	float d = 1; // vv from cam
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
 	float3 D;
@@ -309,4 +322,21 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n);
 
 	data[j * 1200 + i] = return_int_color(c);
+}
+
+
+__kernel void find_figure(__global int *returnable,
+							__global t_figure *figures,
+							t_figure cam, int i, int j, int o_n)
+{
+	float d = 1;
+	float3 O = { cam.p.x, cam.p.y, cam.p.z };
+	float3 D;
+	D.x = ((float)i - (float)WIDTH / 2) * 0.5 / (float)WIDTH;
+	D.y = (-(float)j + (float)WIDTH / 2) * 0.5 / (float)HEIGHT;
+	D.z = d;
+	D = rotate_ort(D, cam.d);
+
+	t_closest clos = closest_fig(O, D, 1.0F, INFINITY, figures, o_n);
+	*returnable = clos.figure.index;
 }

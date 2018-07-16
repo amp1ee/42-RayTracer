@@ -43,7 +43,8 @@ SOURCES = main.c \
 			read_help.c \
 			get_obj.c \
 			opencl1.c \
-			opencl2.c
+			opencl2.c \
+			add_figures.c
 
 OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 

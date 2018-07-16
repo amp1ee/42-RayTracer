@@ -105,6 +105,7 @@ static t_figure	*array_cast_ps(t_slist *lst, t_scene *sc, int num)
 	{
 		tmp = lst;
 		ret[i] = *((t_figure *)tmp->data);
+		ret[i].index = i;
 		lst = lst->next;
 		free(tmp->data);
 		free(tmp);
