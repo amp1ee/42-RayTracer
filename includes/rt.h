@@ -127,11 +127,14 @@ cl_float3		rotate_ort(cl_float3 point, cl_float3 rot);
 **	CL parsing
 */
 
-void			start_cl(t_opencl *cl);
-void			mid_cl(t_opencl *cl, t_main *mlx, int memlenth);
-void			args_cl(t_opencl *cl, t_main *mlx);
-void			init_cl(t_main *mlx);
+void			cl_start(t_opencl *cl);
+void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth);
+void			cl_kernel_buffer_2(t_opencl *cl, t_main *mlx);
+void			cl_args_1(t_opencl *cl, t_main *mlx);
+void			cl_args_2(t_opencl *cl, t_main *mlx, int i, int j);
+void			cl_init(t_main *mlx);
 void			rendering(t_main *mlx);
+int				find_figure(t_main *mlx, int i, int j);
 
 void			exit_message(const char *str);
 t_slist			*readf(char **argv);

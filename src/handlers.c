@@ -96,19 +96,20 @@ cl_float3		rotate_ort(cl_float3 point, cl_float3 rot)
 **   void	delete_figure()
 */
 
-void	find_figure(int x, int y, t_main *mlx)
+void			figure_actions(t_main *mlx, int x, int y)
 {
-	(void)x;
-	(void)y;
-	(void)mlx;
+	int index;
+
+	index = find_figure(mlx, x, y);
+	printf("%d\n", index);
 }
 
-int		mouse(int key_code, int x, int y, t_main *mlx)
+int				mouse(int key_code, int x, int y, t_main *mlx)
 {
 	int e;
 
 	e = 0;
-	(key_code == 1 && ++e) ? (find_figure(x, y, mlx)) : (0);
+	(key_code == 1 && ++e) ? (figure_actions(mlx, x, y)) : (0);
 	e ? (rendering(mlx)) : 0;
 	return (0);
 }
