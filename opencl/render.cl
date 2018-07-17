@@ -274,7 +274,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		if (rfl[i] <= 0)
 		{
 			rfl[i++] = rfl[i - 1];
-			break;
+			break ;
 		}
 		local_c[i] = (float3){ local_c[i].x * (1.0f - rfl[i]),
 								local_c[i].y * (1.0f - rfl[i]),
@@ -283,7 +283,9 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		float3 ReflRay = ReflectRay(-D, N);
 
 		float kr; // how much light is reflected, computed by Fresnel equation 
-        fresnel(D, N, 1, 5, &kr); 
+        fresnel(D, N, 1.0f, 1.5f, &kr);
+        if (kr > 0.5)
+        	D = ReflRay;
         //hitColor = reflectionColor * kr + refractionColor * (1 - kr);
 
 		O = P;

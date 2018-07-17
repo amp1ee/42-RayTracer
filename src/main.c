@@ -18,7 +18,7 @@ int		main(int argc, char **argv)
 
 	if (argc != 2)
 		return (0);
-	mlx.scene = scene_create(argv);
+	mlx.scene = scene_create(argv[1]);
 	cl_init(&mlx);
 	mlx.mlx_ptr = mlx_init();
 	mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, WIDTH, HEIGHT, "RT");

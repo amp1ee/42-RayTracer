@@ -18,6 +18,7 @@
 # define MAX_SOURCE_SIZE 0x100000
 
 # include "../libft/libft.h"
+# include "../libTFD/tinyfiledialogs.h"
 # include "../frameworks/minilibx_macos/mlx.h"
 # include <math.h>
 # include "SDL.h"
@@ -137,13 +138,13 @@ void			rendering(t_main *mlx);
 int				find_figure(t_main *mlx, int i, int j);
 
 void			exit_message(const char *str);
-t_slist			*readf(char **argv);
+t_slist			*readf(char *argv);
 
 float			v_length(cl_float3 p);
 cl_float3		num_dil(cl_float3 p, float n);
 float			v_length(cl_float3 p);
 int				return_color(cl_float3 c);
-t_scene			*scene_create(char **argv);
+t_scene			*scene_create(char *argv);
 
 int				key(int key_code, t_main *mlx);
 int				mouse(int key_code, int x, int y, t_main *mlx);

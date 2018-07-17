@@ -11,8 +11,9 @@
 # **************************************************************************** #
 
 NAME = rt
-LIBA = libft/libft.a
+LIBFTA = libft/libft.a
 MLXA = minilibx_macos/libmlx.a
+TFDA = libTFD/libtfd.a
 
 CC = gcc
 
@@ -21,13 +22,16 @@ CFLAGS = -Wall -Wextra -Werror
 
 INCLUDES = -I./includes/
 
-LIB_DIR = ./libft/
-LIB_FLAGS = -L$(LIB_DIR) -lft
+LIBFT_DIR = ./libft/
+LIB_FLAGS = -L$(LIBFT_DIR) -lft
 
 MLX_DIR = ./frameworks/minilibx_macos/
 LIB_FLAGS += -L$(MLX_DIR) -lmlx
 
-INCLUDES	+=	-I./frameworks/SDL2.framework/Headers -F./frameworks
+LIBTFD_DIR = ./libTFD/
+LIB_FLAGS += -L$(LIBTFD_DIR) -ltfd
+
+INCLUDES	+=	-I./frameworks/SDL2.framework/Headers -F./frameworks 
 
 FRAMEWORKS	=	-framework OpenGL -framework AppKit -framework OpenCL \
 					-framework SDL2 -rpath ./frameworks
@@ -50,7 +54,7 @@ OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 
 all: $(NAME)
 
-$(NAME): $(LIBA) $(OBJ)
+$(NAME): $(LIBFTA) $(MLXA) $(TFDA) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
@@ -59,20 +63,33 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 $(OBJ): | $(OBJ_DIR)
 
 $(OBJ_DIR):
-	mkdir $(OBJ_DIR)
+	@mkdir $(OBJ_DIR)
 
-$(LIBA): lib
+$(LIBFTA): lib
 
 lib:
-	@make all -C $(LIB_DIR)
+	@make all -C $(LIBFT_DIR)
+
+$(MLXA): mlx
+
+mlx: 
+	@make all -C $(MLX_DIR)
+
+$(TFDA): tfd
+
+tfd: 
+	@make all -C $(LIBTFD_DIR)
 
 clean:
-	@make clean -C $(LIB_DIR)
+	@make clean -C $(LIBFT_DIR)
+	@make clean -C $(MLX_DIR)
+	@make clean -C $(LIBTFD_DIR)
 	@/bin/rm -rf $(OBJ)
 	@/bin/rm -rf $(OBJ_DIR)
 
 fclean: clean
-	@make fclean -C $(LIB_DIR)
+	@make fclean -C $(LIBFT_DIR)
+	@make fclean -C $(LIBTFD_DIR)
 	@/bin/rm -f $(NAME)
 
 re: fclean all

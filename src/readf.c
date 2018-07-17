@@ -38,7 +38,7 @@ int				return_color_t(char **splitted, char *value, cl_float3 *p)
 	return (0);
 }
 
-t_slist			*readf(char **argv)
+t_slist			*readf(char *argv)
 {
 	int		fd;
 	t_slist	*new;
@@ -46,7 +46,7 @@ t_slist			*readf(char **argv)
 	int		res;
 
 	res = 1;
-	fd = open(argv[1], O_RDONLY);
+	fd = open(argv, O_RDONLY);
 	new = NULL;
 	if (fd == -1)
 		return (NULL);
@@ -113,7 +113,7 @@ static t_figure	*array_cast_ps(t_slist *lst, t_scene *sc, int num)
 	return (ret);
 }
 
-t_scene			*scene_create(char **argv)
+t_scene			*scene_create(char *argv)
 {
 	t_scene		*new;
 	t_slist		*strs;

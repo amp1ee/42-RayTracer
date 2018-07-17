@@ -104,12 +104,27 @@ void			figure_actions(t_main *mlx, int x, int y)
 	printf("%d\n", index);
 }
 
+void			call_dialog(t_main *mlx)
+{
+	const char    *open;
+    const char    *format[1] = { "*.sc" };
+
+    open = tinyfd_openFileDialog("", "./scenes/", 1, format, NULL, 0);
+    if (open == NULL)
+        return ;
+    free(mlx->scene->objects);
+    free(mlx->scene->lights);
+    free(mlx->scene);
+    mlx->scene = scene_create((char *)open);
+}
+
 int				mouse(int key_code, int x, int y, t_main *mlx)
 {
 	int e;
 
 	e = 0;
 	(key_code == 1 && ++e) ? (figure_actions(mlx, x, y)) : (0);
+	(key_code == 2 && ++e) ? (call_dialog(mlx)) : (0);
 	e ? (rendering(mlx)) : 0;
 	return (0);
 }
