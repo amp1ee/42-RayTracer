@@ -104,6 +104,15 @@ typedef struct	s_opencl
 	cl_mem				memobj_light;
 }				t_opencl;
 
+typedef struct  s_sdl
+{
+	SDL_Window		*wind;
+	SDL_Renderer	*rend;
+	SDL_Surface		*sur;
+	SDL_Texture		*text;
+	t_scene			*scene;
+}				t_sdl;
+
 typedef struct	s_main
 {
 	void		*mlx_ptr;
@@ -111,6 +120,7 @@ typedef struct	s_main
 	t_image		image;
 	t_scene		*scene;
 	t_opencl	*cl;
+	t_sdl		*sdl;
 }				t_main;
 
 /*
