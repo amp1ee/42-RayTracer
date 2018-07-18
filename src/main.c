@@ -12,8 +12,8 @@
 
 #include "rt.h"
 
-#define KEY_KODE event.key.keysym.scancode
-#define E_TYPE event.type
+#define KEY_KODE key.keysym.scancode
+#define E_TYPE type
 
 void	init_sdl(t_sdl *sdl)
 {
@@ -29,11 +29,16 @@ void	init_sdl(t_sdl *sdl)
 	ft_putendl("Error in init_sdl()");
 	exit(0);
 }
-
-void	sdl_event(t_main *mlx)
+/*
+void	sdl_events(t_main *mlx)
 {
-	(void)mlx;
-}
+	while (SDL_PollEvent(&event))
+		if ((SDL_QUIT == event.E_TYPE)
+			|| (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_ESCAPE))
+			exit(0);
+		else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_UP)
+			mlx->scene->cam.d.x += 5;
+}*/
 
 int		main(int argc, char **argv)
 {
@@ -44,7 +49,8 @@ int		main(int argc, char **argv)
 	mlx.scene = scene_create(argv[1]);
 	cl_init(&mlx);
 	
-	/*mlx.mlx_ptr = mlx_init();
+	/*
+	mlx.mlx_ptr = mlx_init();
 	mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, WIDTH, HEIGHT, "RT");
 	mlx.image.data = mlx_new_image(mlx.mlx_ptr, HEIGHT, WIDTH);
 	mlx.image.ptr = (int *)mlx_get_data_addr(mlx.image.data,
@@ -54,21 +60,40 @@ int		main(int argc, char **argv)
 	mlx_mouse_hook(mlx.win_ptr, &mouse, &mlx);
 	mlx_hook(mlx.win_ptr, 2, 0, &key, &(mlx));
 	mlx_hook(mlx.win_ptr, 17, 0, (int (*)())exit, NULL);
-	mlx_loop(mlx.mlx_ptr);*/
-
+	mlx_loop(mlx.mlx_ptr);
+	*/
 	SDL_Event	event;
-
 	init_sdl(mlx.sdl);
-	while (1) {
-        while (SDL_PollEvent(&event)) {
-            if ((SDL_QUIT == E_TYPE)
-            	|| (SDL_KEYDOWN == E_TYPE && KEY_KODE == SDL_SCANCODE_ESCAPE))
-                exit(0);
-            else if (SDL_KEYDOWN == E_TYPE && KEY_KODE == SDL_SCANCODE_UP)
-                mlx.scene->cam.d.x += 5;
-        }
-        rendering(&mlx);
-    }
-	
+	const Uint8* keystates = SDL_GetKeyboardState(NULL);
+
+	while (1)
+	{
+		while (SDL_PollEvent(&event))
+		{
+			if ((SDL_QUIT == event.E_TYPE)
+				|| (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_ESCAPE))
+				exit(0);
+			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_UP)
+				mlx.scene->cam.d.x += 5;
+			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_DOWN)
+				mlx.scene->cam.d.x -= 5;
+			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_LEFT)
+				mlx.scene->cam.d.y += 5;
+			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_RIGHT)
+				mlx.scene->cam.d.y -= 5;
+
+		}
+		/*
+		if(keystates[SDL_SCANCODE_LEFT])
+    		mlx.scene->cam.d.y += 5;
+		if(keystates[SDL_SCANCODE_RIGHT])
+    		mlx.scene->cam.d.y -= 5;
+		if(keystates[SDL_SCANCODE_DOWN])
+    		mlx.scene->cam.d.x -= 5;
+		if(keystates[SDL_SCANCODE_UP])
+    		mlx.scene->cam.d.x += 5;
+		rendering(&mlx);
+		*/
+	}
 	return (0);
 }

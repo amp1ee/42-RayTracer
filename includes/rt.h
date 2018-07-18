@@ -110,7 +110,7 @@ typedef struct  s_sdl
 	SDL_Renderer	*rend;
 	SDL_Surface		*sur;
 	SDL_Texture		*text;
-	t_scene			*scene;
+	SDL_Event		event;
 }				t_sdl;
 
 typedef struct	s_main
