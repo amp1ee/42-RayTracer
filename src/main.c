@@ -12,88 +12,89 @@
 
 #include "rt.h"
 
-#define KEY_KODE key.keysym.scancode
+#define K_K key.keysym.scancode
 #define E_TYPE type
 
 void	init_sdl(t_sdl *sdl)
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) >= 0)
-		if ((sdl->wind = SDL_CreateWindow("RT", SDL_WINDOWPOS_UNDEFINED,
-						SDL_WINDOWPOS_UNDEFINED, WIDTH,
-						HEIGHT, SDL_WINDOW_SHOWN)))
-			if ((sdl->rend = SDL_CreateRenderer(sdl->wind, -1,
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+		exit_message("Error in init sdl");
+	if (!(sdl->wind = SDL_CreateWindow("RT",
+						SDL_WINDOWPOS_UNDEFINED,
+						SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
+						SDL_WINDOW_SHOWN)))
+		exit_message("Error creating window");
+	if (!(sdl->rend = SDL_CreateRenderer(sdl->wind, -1,
 							SDL_RENDERER_ACCELERATED)))
-				if (!(sdl->sur = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32 , 0, 0, 0, 0)))
-					exit(1);
-				return ;
-	ft_putendl("Error in init_sdl()");
-	exit(0);
+		exit_message("Error in creating renderer");
+	if (!(sdl->sur = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0)))
+		exit_message("Error in creating surface");
 }
-/*
-void	sdl_events(t_main *mlx)
+
+void	key_events(t_main *mlx, SDL_Event *event)
 {
-	while (SDL_PollEvent(&event))
-		if ((SDL_QUIT == event.E_TYPE)
-			|| (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_ESCAPE))
-			exit(0);
-		else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_UP)
-			mlx->scene->cam.d.x += 5;
-}*/
+	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit(0) : 0;
+	(event->K_K == SDL_SCANCODE_UP) ? (mlx->scene->cam.d.x += 5) : 0;
+	(event->K_K == SDL_SCANCODE_DOWN) ? (mlx->scene->cam.d.x -= 5) : 0;
+	(event->K_K == SDL_SCANCODE_LEFT) ? (mlx->scene->cam.d.y += 5) : 0;
+	(event->K_K == SDL_SCANCODE_RIGHT) ? (mlx->scene->cam.d.y -= 5) : 0;
+	(event->K_K == SDL_SCANCODE_A) ? (mlx->scene->cam.p.x -= 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_D) ? (mlx->scene->cam.p.x += 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_W) ? (mlx->scene->cam.p.z += 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_S) ? (mlx->scene->cam.p.z -= 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_E) ? (mlx->scene->cam.p.y += 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_Q) ? (mlx->scene->cam.p.y -= 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_KP_PLUS) ?
+(add_figure(&mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num)) : 0;
+	(event->K_K == SDL_SCANCODE_KP_MINUS) ? (call_dialog(mlx)) : 0;
+	(event->K_K == SDL_SCANCODE_KP_0) ? screen_shoot(*mlx) : 0;
+}
+
+void	mouse_events(t_main *mlx)
+{
+	int		x;
+	int		y;
+
+	SDL_GetMouseState(&x, &y);
+	figure_actions(mlx, x, y);
+}
+
+void	sdl_events(t_main *mlx, SDL_Event *event)
+{
+	while (SDL_PollEvent(event))
+		if (event->E_TYPE == SDL_KEYDOWN)
+			key_events(mlx, event);
+		else if (event->E_TYPE == SDL_MOUSEBUTTONDOWN)
+			mouse_events(mlx);
+		else if (event->E_TYPE == SDL_QUIT)
+			exit(1);
+	/*
+	if(keystates[SDL_SCANCODE_LEFT])
+    	mlx->scene->cam.d.y += 5;
+	if(keystates[SDL_SCANCODE_RIGHT])
+    	mlx->scene->cam.d.y -= 5;
+	if(keystates[SDL_SCANCODE_DOWN])
+    	mlx->scene->cam.d.x -= 5;
+	if(keystates[SDL_SCANCODE_UP])
+    	mlx->scene->cam.d.x += 5;
+	*/
+}
 
 int		main(int argc, char **argv)
 {
 	t_main		mlx;
+	SDL_Event	event;
 
 	if (argc != 2)
 		return (0);
 	mlx.scene = scene_create(argv[1]);
 	cl_init(&mlx);
-	
-	/*
-	mlx.mlx_ptr = mlx_init();
-	mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, WIDTH, HEIGHT, "RT");
-	mlx.image.data = mlx_new_image(mlx.mlx_ptr, HEIGHT, WIDTH);
-	mlx.image.ptr = (int *)mlx_get_data_addr(mlx.image.data,
-			&mlx.image.bits, &mlx.image.sz_l, &mlx.image.endi);
-	mlx_clear_window(mlx.mlx_ptr, mlx.win_ptr);
-	rendering(&mlx);
-	mlx_mouse_hook(mlx.win_ptr, &mouse, &mlx);
-	mlx_hook(mlx.win_ptr, 2, 0, &key, &(mlx));
-	mlx_hook(mlx.win_ptr, 17, 0, (int (*)())exit, NULL);
-	mlx_loop(mlx.mlx_ptr);
-	*/
-	SDL_Event	event;
 	init_sdl(mlx.sdl);
-	const Uint8* keystates = SDL_GetKeyboardState(NULL);
-
+	//const Uint8* keystates = SDL_GetKeyboardState(NULL);
 	while (1)
 	{
-		while (SDL_PollEvent(&event))
-		{
-			if ((SDL_QUIT == event.E_TYPE)
-				|| (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_ESCAPE))
-				exit(0);
-			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_UP)
-				mlx.scene->cam.d.x += 5;
-			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_DOWN)
-				mlx.scene->cam.d.x -= 5;
-			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_LEFT)
-				mlx.scene->cam.d.y += 5;
-			else if (SDL_KEYDOWN == event.E_TYPE && event.KEY_KODE == SDL_SCANCODE_RIGHT)
-				mlx.scene->cam.d.y -= 5;
-
-		}
-		/*
-		if(keystates[SDL_SCANCODE_LEFT])
-    		mlx.scene->cam.d.y += 5;
-		if(keystates[SDL_SCANCODE_RIGHT])
-    		mlx.scene->cam.d.y -= 5;
-		if(keystates[SDL_SCANCODE_DOWN])
-    		mlx.scene->cam.d.x -= 5;
-		if(keystates[SDL_SCANCODE_UP])
-    		mlx.scene->cam.d.x += 5;
+		sdl_events(&mlx, &event);
 		rendering(&mlx);
-		*/
 	}
 	return (0);
 }

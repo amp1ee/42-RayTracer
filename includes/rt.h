@@ -78,15 +78,6 @@ typedef struct	s_scene
 	t_figure	cam;
 }				t_scene;
 
-typedef struct	s_image
-{
-	void		*data;
-	int			*ptr;
-	int			bits;
-	int			sz_l;
-	int			endi;
-}				t_image;
-
 typedef struct	s_opencl
 {
 	cl_platform_id		platform_id;
@@ -104,7 +95,7 @@ typedef struct	s_opencl
 	cl_mem				memobj_light;
 }				t_opencl;
 
-typedef struct  s_sdl
+typedef struct	s_sdl
 {
 	SDL_Window		*wind;
 	SDL_Renderer	*rend;
@@ -115,9 +106,6 @@ typedef struct  s_sdl
 
 typedef struct	s_main
 {
-	void		*mlx_ptr;
-	void		*win_ptr;
-	t_image		image;
 	t_scene		*scene;
 	t_opencl	*cl;
 	t_sdl		*sdl;
@@ -156,8 +144,15 @@ float			v_length(cl_float3 p);
 int				return_color(cl_float3 c);
 t_scene			*scene_create(char *argv);
 
+/*
+** HANDLERS
+*/
+
 int				key(int key_code, t_main *mlx);
 int				mouse(int key_code, int x, int y, t_main *mlx);
+void			figure_actions(t_main *mlx, int x, int y);
+void			screen_shoot(t_main mlx);
+void			call_dialog(t_main *mlx);
 
 void			ft_list_push_back(t_slist **begin_list, void *data);
 

@@ -12,7 +12,6 @@
 
 NAME = rt
 LIBFTA = libft/libft.a
-MLXA = minilibx_macos/libmlx.a
 TFDA = libTFD/libtfd.a
 
 CC = gcc
@@ -24,9 +23,6 @@ INCLUDES = -I./includes/
 
 LIBFT_DIR = ./libft/
 LIB_FLAGS = -L$(LIBFT_DIR) -lft
-
-MLX_DIR = ./frameworks/minilibx_macos/
-LIB_FLAGS += -L$(MLX_DIR) -lmlx
 
 LIBTFD_DIR = ./libTFD/
 LIB_FLAGS += -L$(LIBTFD_DIR) -ltfd
@@ -54,7 +50,7 @@ OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 
 all: $(NAME)
 
-$(NAME): $(LIBFTA) $(MLXA) $(TFDA) $(OBJ)
+$(NAME): $(LIBFTA) $(TFDA) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
@@ -70,11 +66,6 @@ $(LIBFTA): lib
 lib:
 	@make all -C $(LIBFT_DIR)
 
-$(MLXA): mlx
-
-mlx: 
-	@make all -C $(MLX_DIR)
-
 $(TFDA): tfd
 
 tfd: 
@@ -82,7 +73,6 @@ tfd:
 
 clean:
 	@make clean -C $(LIBFT_DIR)
-	@make clean -C $(MLX_DIR)
 	@make clean -C $(LIBTFD_DIR)
 	@/bin/rm -rf $(OBJ)
 	@/bin/rm -rf $(OBJ_DIR)

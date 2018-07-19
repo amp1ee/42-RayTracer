@@ -53,16 +53,12 @@ void			rendering(t_main *mlx)
 				mlx->cl->kernel, 2, NULL,
 				global_work_size, NULL, 0, NULL, NULL)))
 		exit_message("failed to execute kernel");
-	/*if ((ret = clEnqueueReadBuffer(mlx->cl->command_queue,
-				mlx->cl->memobj_data, CL_TRUE, 0, MEM_LENGTH * sizeof(int),
-				mlx->image.ptr, 0, NULL, NULL)))
-		exit_message("failed to get buf data");
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->image.data, 0, 0);*/
 	if ((ret = clEnqueueReadBuffer(mlx->cl->command_queue,
 				mlx->cl->memobj_data, CL_TRUE, 0, MEM_LENGTH * sizeof(int),
 				mlx->sdl->sur->pixels, 0, NULL, NULL)))
 		exit_message("failed to get buf data");
-	mlx->sdl->text = SDL_CreateTextureFromSurface(mlx->sdl->rend, mlx->sdl->sur);
+	mlx->sdl->text =
+	SDL_CreateTextureFromSurface(mlx->sdl->rend, mlx->sdl->sur);
 	SDL_RenderCopy(mlx->sdl->rend, mlx->sdl->text, NULL, NULL);
 	SDL_RenderPresent(mlx->sdl->rend);
 	SDL_DestroyTexture(mlx->sdl->text);

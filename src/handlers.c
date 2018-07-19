@@ -46,11 +46,12 @@ char			*screen_shoot_name(void)
 void			screen_shoot(t_main mlx)
 {
 	FILE			*fp;
-	int				i;
 	int				j;
 	unsigned char	*arr;
 	char			*name;
+	int				*pixels;
 
+	pixels = mlx.sdl->sur->pixels;
 	name = screen_shoot_name();
 	!(fp = fopen(name, "wb")) ? ft_putendl("cant do picture") : 0;
 	free(name);
@@ -58,15 +59,11 @@ void			screen_shoot(t_main mlx)
 		return ;
 	fprintf(fp, "P6\n%d %d\n255\n", HEIGHT, WIDTH);
 	j = -1;
-	while (++j < HEIGHT)
+	while (++j < HEIGHT * WIDTH)
 	{
-		i = -1;
-		while (++i < WIDTH)
-		{
-			arr = return_ppm_color(mlx.image.ptr[1200 * j + i]);
-			fwrite(arr, 1, 3, fp);
-			free(arr);
-		}
+		arr = return_ppm_color(pixels[j]);
+		fwrite(arr, 1, 3, fp);
+		free(arr);
 	}
 }
 
@@ -106,48 +103,14 @@ void			figure_actions(t_main *mlx, int x, int y)
 
 void			call_dialog(t_main *mlx)
 {
-	const char    *open;
-    const char    *format[1] = { "*.sc" };
+	const char	*open;
+	const char	*format[1] = { "*.sc" };
 
-    open = tinyfd_openFileDialog("", "./scenes/", 1, format, NULL, 0);
-    if (open == NULL)
-        return ;
-    free(mlx->scene->objects);
-    free(mlx->scene->lights);
-    free(mlx->scene);
-    mlx->scene = scene_create((char *)open);
-}
-
-int				mouse(int key_code, int x, int y, t_main *mlx)
-{
-	int e;
-
-	e = 0;
-	(key_code == 1 && ++e) ? (figure_actions(mlx, x, y)) : (0);
-	(key_code == 2 && ++e) ? (call_dialog(mlx)) : (0);
-	e ? (rendering(mlx)) : 0;
-	return (0);
-}
-
-int				key(int key_code, t_main *mlx)
-{
-	char		e;
-
-	e = 0;
-	(key_code == 53) ? exit(1) : 0;
-	(key_code == 13 && ++e) ? (mlx->scene->cam.p.z += 0.5) : 0;
-	(key_code == 1 && ++e) ? (mlx->scene->cam.p.z -= 0.5) : 0;
-	(key_code == 2 && ++e) ? (mlx->scene->cam.p.x += 0.5) : 0;
-	(key_code == 0 && ++e) ? (mlx->scene->cam.p.x -= 0.5) : 0;
-	(key_code == 126 && ++e) ? (mlx->scene->cam.d.x += 5) : 0;
-	(key_code == 125 && ++e) ? (mlx->scene->cam.d.x -= 5) : 0;
-	(key_code == 123 && ++e) ? (mlx->scene->cam.d.y += 5) : 0;
-	(key_code == 124 && ++e) ? (mlx->scene->cam.d.y -= 5) : 0;
-	(key_code == 12 && ++e) ? (mlx->scene->cam.p.y -= 0.5) : 0;
-	(key_code == 14 && ++e) ? (mlx->scene->cam.p.y += 0.5) : 0;
-	(key_code == 69 && ++e) ? (add_figure(&mlx->scene->objects,
-		mlx->scene->cam, &mlx->scene->o_num)) : 0;
-	(key_code == 82 && ++e) ? (screen_shoot(*mlx)) : 0;
-	e ? (rendering(mlx)) : 0;
-	return (0);
+	open = tinyfd_openFileDialog("", "./scenes/", 1, format, NULL, 0);
+	if (open == NULL)
+		return ;
+	free(mlx->scene->objects);
+	free(mlx->scene->lights);
+	free(mlx->scene);
+	mlx->scene = scene_create((char *)open);
 }
