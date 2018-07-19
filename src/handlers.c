@@ -27,16 +27,29 @@ unsigned char	*return_ppm_color(int c)
 	return (arr);
 }
 
+static char		*get_user_dir(void)
+{
+	struct passwd	*pw;
+	const char		*homedir;
+
+	pw = getpwuid(getuid());
+	homedir = pw->pw_dir;
+	return (char *)(homedir);
+}
+
 char			*screen_shoot_name(void)
 {
 	static int	num = 0;
 	char		*s;
 	char		*f;
+	char		*t;
 	char		*ret;
 
 	num++;
+	t = ft_strjoin(get_user_dir(), "/Desktop/screen_shoot_");
 	s = ft_itoa(num);
-	f = ft_strjoin("/Users/mstorcha/Desktop/screen_shoot_", s);
+	f = ft_strjoin(t, s);
+	free(t);
 	free(s);
 	ret = ft_strjoin(f, ".ppm");
 	free(f);

@@ -27,10 +27,12 @@ LIB_FLAGS = -L$(LIBFT_DIR) -lft
 LIBTFD_DIR = ./libTFD/
 LIB_FLAGS += -L$(LIBTFD_DIR) -ltfd
 
-INCLUDES	+=	-I./frameworks/SDL2.framework/Headers -F./frameworks 
+INCLUDES	+=	-I./frameworks/SDL2.framework/Headers
+INCLUDES	+=  -I./frameworks/SDL2_image.framework/Headers
+INCLUDES	+=  -F./frameworks 
 
 FRAMEWORKS	=	-framework OpenGL -framework AppKit -framework OpenCL \
-					-framework SDL2 -rpath ./frameworks
+					-framework SDL2 -framework SDL2_image -rpath ./frameworks 
 
 SRC_DIR = ./src/
 OBJ_DIR = ./obj/

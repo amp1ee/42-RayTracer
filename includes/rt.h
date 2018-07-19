@@ -20,7 +20,15 @@
 # include "../libft/libft.h"
 # include "../libTFD/tinyfiledialogs.h"
 # include <math.h>
-# include "SDL.h"
+# include <pwd.h>
+
+# ifdef linux
+#  include <SDL2/SDL.h>
+#  include <SDL2/SDL_image.h>
+# else
+#  include "SDL.h"
+#  include "SDL_image.h"
+# endif
 
 # ifdef __APPLE__
 #  include <OpenCL/opencl.h>
@@ -92,6 +100,8 @@ typedef struct	s_opencl
 	cl_mem				memobj_data;
 	cl_mem				memobj_figures;
 	cl_mem				memobj_light;
+	cl_mem				memobj_textures;
+	cl_int2				memobj_textures_sz;
 }				t_opencl;
 
 typedef struct	s_sdl
@@ -109,6 +119,13 @@ typedef struct	s_main
 	t_opencl	*cl;
 	t_sdl		*sdl;
 }				t_main;
+
+typedef struct	s_texture
+{
+	int		*pix;
+	int		h;
+	int		w;
+}				t_texture;
 
 /*
 ** ADD Figure

@@ -94,6 +94,6 @@ float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *
 					__global t_figure *light, int o_n, int l_n);
 __kernel void 	rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n);
+					int l_n, int o_n, __global int *textures, int2 textures_sz);
 
 #endif

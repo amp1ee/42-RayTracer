@@ -308,17 +308,18 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 
 __kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n)
+					int l_n, int o_n, __global int *textures, int2 textures_sz)
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
+	int h = textures_sz.x;
+	int w = textures_sz.y;
 
-	float d = 1; // vv from cam
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
 	float3 D;
 	D.x = ((float)i - (float)WIDTH / 2) * 0.5 / (float)WIDTH;
 	D.y = (-(float)j + (float)WIDTH / 2) * 0.5 / (float)HEIGHT;
-	D.z = d;
+	D.z = 1; // vv from cam
 	D = rotate_ort(D, cam.d);
 
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n);
