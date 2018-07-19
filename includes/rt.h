@@ -19,7 +19,6 @@
 
 # include "../libft/libft.h"
 # include "../libTFD/tinyfiledialogs.h"
-# include "../frameworks/minilibx_macos/mlx.h"
 # include <math.h>
 # include "SDL.h"
 
