@@ -63,8 +63,8 @@ typedef struct	s_figure
 	int			type;
 	float		radius;
 	float		angle;
-	float		reflect;
-	float		refract;
+	float		rfl;
+	float		rfr;
 	cl_float3	color;
 	cl_float3	p;
 	cl_float3	d;

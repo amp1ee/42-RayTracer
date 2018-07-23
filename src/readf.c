@@ -121,7 +121,8 @@ t_scene			*scene_create(char *argv)
 
 	if (!(new = malloc(sizeof(t_scene))))
 		exit_message("memory allocation err");
-	lst = readf(argv);
+	if (!(lst = readf(argv)))
+		exit_message("invalid map");
 	strs = no_empty(lst);
 	if (!(get_camera(strs, &(new->cam))))
 		exit_message("invalid cart");

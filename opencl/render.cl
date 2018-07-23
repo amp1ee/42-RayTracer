@@ -53,9 +53,9 @@ float3		rotate_ort(float3 point, float3 rot)
 	float3 tr;
 	float3 rot_rad;
 
-	rot_rad.x = rot.x * M_PI / 180.0;
-	rot_rad.y = rot.y * M_PI / 180.0;
-	rot_rad.z = rot.z * M_PI / 180.0;
+	rot_rad.x = rot.x * M_PI / 180.0f;
+	rot_rad.y = rot.y * M_PI / 180.0f;
+	rot_rad.z = rot.z * M_PI / 180.0f;
 	od.x = point.x;
 	od.y = point.y * cos(rot_rad.x) + point.z * sin(rot_rad.x);
 	od.z = point.z * cos(rot_rad.x) - point.y * sin(rot_rad.x);
@@ -73,62 +73,27 @@ t_closest		closest_fig(float3 O, float3 D,
 {
 	t_figure ret;
 	float closest = INFINITY;
+	float2 tmp;
 	for (int i = 0; i < o_n; i++)
 	{
 		if (figures[i].type == CYLINDER)
-		{
-			float2 tmp = IntersectRayCylinder(O, D, figures[i]);
-			if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
-			{
-				closest = tmp.x;
-				ret = figures[i];
-			}
-			if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
-			{
-				closest = tmp.y;
-				ret = figures[i];
-			}
-			continue ;
-		}
+			tmp = IntersectRayCylinder(O, D, figures[i]);
 		else if (figures[i].type == CONE)
-		{
-			float2 tmp = IntersectRayCone(O, D, figures[i]);
-			if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
-			{
-				closest = tmp.x;
-				ret = figures[i];
-			}
-			if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
-			{
-				closest = tmp.y;
-				ret = figures[i];
-			}
-			continue ;
-		}
+			tmp = IntersectRayCone(O, D, figures[i]);
 		else if (figures[i].type == PLANE)
-		{
-			float t = IntersectRayPlane(O, D, figures[i]);
-			if (t >= min && t <= max && t < closest)
-			{
-				closest = t;
-				ret = figures[i];
-			}
-			continue ;
-		}
+			tmp = IntersectRayPlane(O, D, figures[i]);
 		else if (figures[i].type == SPHERE)
+			tmp = IntersectRaySphere(O, D, figures[i]);
+
+		if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
 		{
-			float2 tmp = IntersectRaySphere(O, D, figures[i]);
-			if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
-			{
-				closest = tmp.x;
-				ret = figures[i];
-			}
-			if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
-			{
-				closest = tmp.y;
-				ret = figures[i];
-			}
-			continue ;
+			closest = tmp.x;
+			ret = figures[i];
+		}
+		if (tmp.y >= min && tmp.y <= max && tmp.y < closest)
+		{
+			closest = tmp.y;
+			ret = figures[i];
 		}
 	}
 	return (t_closest){closest, ret};
@@ -151,18 +116,18 @@ float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
             continue;
         //difuse
         float n_dot_l = dot(N,L);
-        if (n_dot_l > 0)
+        if (n_dot_l > 0.0f)
             koef += l.angle * n_dot_l / (fast_length(N) * fast_length(L));
         //zerk
-        if (s != -1)
+        if (s != -1.0f)
         {
             float3 R = N * 2 * n_dot_l - L;
             float r_dot_v = dot(R,V);
-            if (r_dot_v > 0)
+            if (r_dot_v > 0.0f)
                 koef += l.angle*pow(r_dot_v / (fast_length(R) * fast_length(V)), s);
         }
     }
-    return (koef > 1.0) ? 1.0 : koef;
+    return (koef > 1.0f) ? 1.0f : koef;
 }
 
 float3	ReflectRay(float3 R, float3 N)
@@ -185,125 +150,134 @@ void 	fresnel(float3 R, float3 N, float n1, float n2, float *kr)
 { 
 	float ior = n1 / n2;
     float cosi = clamp((float)dot(R, N), -1.f, 1.f); 
-    float etai = 1, etat = ior; 
-    if (cosi > 0) 
+    float etai = 1.f, etat = ior; 
+    if (cosi > 0.f) 
     	swap(etai, etat);
 
-    float sint = etai / etat * sqrt(max(0.f, 1 - cosi * cosi));
+    float sint = etai / etat * sqrt(max(0.f, 1.f - cosi * cosi));
 
-    if (sint >= 1)
+    if (sint >= 1.f)
         *kr = 1;
     else
     { 
-        float cost = sqrtf(max(0.f, 1 - sint * sint)); 
+        float cost = sqrtf(max(0.f, 1.f - sint * sint)); 
         cosi = fabsf(cosi); 
         float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost)); 
         float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost)); 
         *kr = (Rs * Rs + Rp * Rp) / 2; 
     }
-} 
+}
+
+float3   compute_normal(t_figure figure, float3 D, float3 P)
+{
+	float3 N;
+	
+	if (figure.type == PLANE)
+	{
+		float3 d = {figure.d.x, figure.d.y, figure.d.z};
+		if (dot(d,D) < 0.0f)
+			N = fast_normalize(d);
+		else 
+		 	N = fast_normalize(-d);
+	}
+	else if (figure.type == CONE)
+	{
+		float3 d = {figure.d.x, figure.d.y, figure.d.z};
+		float3 p = {figure.p.x, figure.p.y, figure.p.z};
+		float3 T = d-p;
+		T = T / fast_length(T);
+		N = P - p;
+		T = T * dot(N, T);
+		N = N - T;
+		N = fast_normalize(N);
+	}
+	else if (figure.type == SPHERE)
+	{
+		float3 p = {figure.p.x, figure.p.y, figure.p.z};
+		N = P - p;
+		N = N / fast_length(N);
+	}
+	else if (figure.type == CYLINDER)
+	{
+		float3 p = {figure.p.x, figure.p.y, figure.p.z};
+		float3 d = {figure.d.x, figure.d.y, figure.d.z};
+		N = P - p;
+		float3 T = d - p;
+		T = T / fast_length(T);
+		T = T * dot(N, T);
+		N = (N - T) / fast_length(N - T);
+	}
+	return N;
+}
 
 float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n)
+					__global t_figure *light, int o_n, int l_n, __global int *textures, int2 textures_sz)
 {
+	float3 hit_color;
 	float3 P;
 	float3 N;
-	float3 local_c[NUM_REFL] = {0};
-	float rfl[NUM_REFL] = {0};
-	//float rfr[NUM_REFL] = {0};
-	int i;
-	float3 ret_col = 0;
+	float3 local_c;
 	float closest;
 	t_figure figure;
+	int out;
+	float3 bias;
+	float rfl_mask = 1.f;
+	float rfr_mask = 1.f;
 
-	for (i = 0; i < NUM_REFL; i++)
+	hit_color = (float3){0.f, 0.f, 0.f};
+	for (int i = 0; i < NUM_REFL; )
 	{
-		float c_l = 0;
+		float c_l;
 		t_closest clos = closest_fig(O, D, min, max, figures, o_n);
 		closest = clos.closest;
 		if (closest == INFINITY)
-			break;
+			//break ;
+			return (float3){0,0,0};
 		figure = clos.figure;
-
 		P = O + D * closest;
-		if (figure.type == PLANE)
-		{
-			float3 d = {figure.d.x, figure.d.y, figure.d.z};
-			if (dot(d,D) < 0)
-				N = fast_normalize(d);
-			else 
-			 	N = fast_normalize(-d);
-			c_l = compute_light(P, N, -D, 20, figures, light, o_n, l_n);
-		}
-		else if (figure.type == CONE)
-		{
-			float3 d = {figure.d.x, figure.d.y, figure.d.z};
-			float3 p = {figure.p.x, figure.p.y, figure.p.z};
-
-			float3 T = d-p;
-			T = T / fast_length(T);
-			N = P - p;
-			T = T * dot(N, T);
-			N = N - T;
-			N = fast_normalize(N);
-
-			c_l = compute_light(P, N, -D, 20, figures, light, o_n, l_n);
-		}
-		else if (figure.type == SPHERE)
-		{
-			float3 p = {figure.p.x, figure.p.y, figure.p.z};
-			N = P - p;
-			N = N / fast_length(N);
-			c_l = compute_light(P, N, -D, 20, figures, light, o_n, l_n);
-		}
-		else if (figure.type == CYLINDER)
-		{
-			float3 p = {figure.p.x, figure.p.y, figure.p.z};
-			float3 d = {figure.d.x, figure.d.y, figure.d.z};
-			N = P - p;
-			float3 T = d - p;
-			T = T / fast_length(T);
-			T = T * dot(N, T);
-			N = (N - T) / fast_length(N - T);
-			c_l = compute_light(P, N, -D, 20, figures, light, o_n, l_n);
-		}
-		local_c[i] = (float3){ figure.color.x * c_l,
+		N = compute_normal(figure, D, P);
+		c_l = compute_light(P, N, -D, 20, figures, light, o_n, l_n);
+		local_c = (float3){ figure.color.x * c_l,
 								figure.color.y * c_l,
 								figure.color.z * c_l };
-		rfl[i] = figure.reflect;
-		if (rfl[i] <= 0)
+		out = dot(N, D) < 0.f ? 1 : 0;
+		bias = N * 0.2f;
+		if (!figure.rfl && !figure.rfr)
 		{
-			rfl[i++] = rfl[i - 1];
+			hit_color += local_c * rfl_mask * rfr_mask;
 			break ;
 		}
-		local_c[i] = (float3){ local_c[i].x * (1.0f - rfl[i]),
-								local_c[i].y * (1.0f - rfl[i]),
-								local_c[i].z  * (1.0f - rfl[i]) };
-		//float3 refr_r = RefractRay(P, N, 1.0f, 5.0f);
-		float3 ReflRay = ReflectRay(-D, N);
+		else if (figure.rfl && !figure.rfr)
+		{
+			D = ReflectRay(-D, N);
+			O = out ? P + bias : P - bias;
+			hit_color += 0.8f * local_c * (1.f - figure.rfl) * rfl_mask * rfr_mask;
+			rfl_mask *= figure.rfl;
+			i++;
+		}/*
+		else if (figure.rfr)
+		{	
+			float kr;
 
-		float kr; // how much light is reflected, computed by Fresnel equation 
-        fresnel(D, N, 1.0f, 1.5f, &kr);
-        if (kr > 0.5)
-        	D = ReflRay;
-        //hitColor = reflectionColor * kr + refractionColor * (1 - kr);
-
-		O = P;
-		D = ReflRay;
-		min  = 0.001;
+			fresnel(D, N, 1.f, 2.f, &kr);
+			if (kr < 1.f)
+			{
+				D = RefractRay(P, N, 1.f, 2.f);
+				O = out ? P + bias : P - bias;
+				hit_color += local_c * (1.0f - figure.rfr) * rfr_mask * (1.f - kr);
+				rfr_mask *= figure.rfr;
+				i++;
+				continue ;
+			}
+			D = ReflectRay(-D, N);
+			O = out ? P + bias : P - bias;
+			hit_color += local_c * ((1.0f - figure.rfl) * rfl_mask * (1.f - kr));
+			rfl_mask *= figure.rfl;
+			i++;
+			continue ;
+		}*/
 	}
-	--i;
-	for (; i > 0; i--)
-	{
-		ret_col.r = sum_color(local_c[i].x, ret_col.x) * rfl[i - 1];
-		ret_col.g = sum_color(local_c[i].y, ret_col.y) * rfl[i - 1];	
-		ret_col.b = sum_color(local_c[i].z, ret_col.z) * rfl[i - 1];
-	}
-	ret_col.r = sum_color(local_c[0].x * (1.0f - rfl[0]), ret_col.x);
-	ret_col.g = sum_color(local_c[0].y * (1.0f - rfl[0]), ret_col.y);
-	ret_col.b = sum_color(local_c[0].z * (1.0f - rfl[0]), ret_col.z);
-
-	return ret_col;
+	return hit_color;
 }
 
 __kernel void rendering(__global int * data, __global t_figure *figures,
@@ -312,17 +286,17 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
-	int h = textures_sz.x;
-	int w = textures_sz.y;
+	//int h = textures_sz.x;
+	//int w = textures_sz.y;
 
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
 	float3 D;
-	D.x = ((float)i - (float)WIDTH / 2) * 0.5 / (float)WIDTH;
-	D.y = (-(float)j + (float)WIDTH / 2) * 0.5 / (float)HEIGHT;
-	D.z = 1; // vv from cam
+	D.x = ((float)i - (float)WIDTH / 2) * 0.5f / (float)WIDTH;
+	D.y = (-(float)j + (float)WIDTH / 2) * 0.5f / (float)HEIGHT;
+	D.z = 1.f; // vv from cam
 	D = rotate_ort(D, cam.d);
 
-	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n);
+	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
 
 	data[j * 1200 + i] = return_int_color(c);
 }
@@ -335,8 +309,8 @@ __kernel void find_figure(__global int *returnable,
 	float d = 1;
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
 	float3 D;
-	D.x = ((float)i - (float)WIDTH / 2) * 0.5 / (float)WIDTH;
-	D.y = (-(float)j + (float)WIDTH / 2) * 0.5 / (float)HEIGHT;
+	D.x = ((float)i - (float)WIDTH / 2) * 0.5f / (float)WIDTH;
+	D.y = (-(float)j + (float)WIDTH / 2) * 0.5f / (float)HEIGHT;
 	D.z = d;
 	D = rotate_ort(D, cam.d);
 

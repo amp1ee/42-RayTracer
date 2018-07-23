@@ -34,8 +34,8 @@ static void		fill_fig(int name, char **splitted, t_figure **fig)
 {
 	return_color_t(splitted, "clr:", (&(*fig)->color));
 	return_point(splitted, "pnt:", &((*fig)->p));
-	return_value(splitted, "rfl:", &((*fig)->reflect));
-	return_value(splitted, "rfr:", &((*fig)->refract));
+	return_value(splitted, "rfl:", &((*fig)->rfl));
+	return_value(splitted, "rfr:", &((*fig)->rfr));
 	if (name == 3)
 	{
 		return_value(splitted, "rds:", &((*fig)->radius));

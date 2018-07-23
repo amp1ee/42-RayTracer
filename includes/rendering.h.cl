@@ -38,8 +38,8 @@ typedef struct	s_figure
 	int			type;
 	float		radius;
 	float		angle;
-	float		reflect;
-	float		refract;
+	float		rfl;
+	float		rfr;
 	float3		color;
 	float3		p;
 	float3		d;
@@ -83,15 +83,15 @@ void			swap(float f, float s);
 float2 			IntersectRaySphere(float3 O, float3 D, t_figure sphere);
 float2 			IntersectRayCylinder(float3 O, float3 D, t_figure cyl);
 float2 			IntersectRayCone(float3 O, float3 D, t_figure cone);
-float 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
+float2 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
 
-
+float3   		compute_normal(t_figure figure, float3 D, float3 P);
 float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
 t_closest		closest_fig(float3 O, float3 D,
 					float min, float max, __global t_figure *figures, int o_n);
 float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n);
+					__global t_figure *light, int o_n, int l_n, __global int *textures, int2 textures_sz);
 __kernel void 	rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
 					int l_n, int o_n, __global int *textures, int2 textures_sz);

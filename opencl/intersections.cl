@@ -90,7 +90,7 @@ float2 IntersectRayCylinder(float3 O, float3 D, t_figure cyl)
 	return (float2){t1, t2};
 }
 
-float IntersectRayPlane(float3 O, float3 D, t_figure plane)
+float2 IntersectRayPlane(float3 O, float3 D, t_figure plane)
 {
 	float	t;
 	float3 d = {plane.d.x, plane.d.y, plane.d.z};
@@ -103,8 +103,8 @@ float IntersectRayPlane(float3 O, float3 D, t_figure plane)
 	if (k1 != 0)
 	{
 		t = -k2 / k1;
-		return t;
+		return (float2) {t, INFINITY};
 	}
-	return INFINITY;
+	return (float2) {INFINITY, INFINITY};
 }
 

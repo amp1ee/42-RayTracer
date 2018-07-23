@@ -153,10 +153,10 @@ void			cl_args_1(t_opencl *cl, t_main *mlx)
 	*/
 	if ((ret = clSetKernelArg(cl->kernel, 6,
 		sizeof(cl_mem), &cl->memobj_textures)))
-		exit_message("failed to set arg6");
+		exit_message("failed to set arg7");
 	if ((ret = clSetKernelArg(cl->kernel, 7,
 		sizeof(cl_int2), &cl->memobj_textures_sz)))
-		exit_message("failed to set arg6");
+		exit_message("failed to set arg8");
 }
 
 void			cl_kernel_buffer_2(t_opencl *cl, t_main *mlx)
