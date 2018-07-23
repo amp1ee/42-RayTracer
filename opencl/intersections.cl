@@ -31,17 +31,17 @@ float2 IntersectRayCone(float3 O, float3 D, t_figure cone)
 
 	float A1 = cos(A) * cos(A) * dot(tmp1, tmp1)
 					- sin(A) * sin(A)* sc1 * sc1;
-	float B1 = 2.0 * cos(A) * cos(A) * dot(tmp1, tmp2)
-					- 2.0 * sin(A) * sin(A) * sc1 * sc2;
+	float B1 = 2.0f * cos(A) * cos(A) * dot(tmp1, tmp2)
+					- 2.0f * sin(A) * sin(A) * sc1 * sc2;
 	float C1 = cos(A) * cos(A) * dot(tmp2, tmp2)
 					- sin(A) * sin(A)* sc2 * sc2;
 
-	float desk = B1 * B1 - 4.0 * A1 * C1;
-	if (desk < 0)
+	float desk = B1 * B1 - 4.0f * A1 * C1;
+	if (desk < 0.0f)
 		return (float2){INFINITY, INFINITY};
 	
-	float t1 = (-B1 + sqrt(desk)) / (2.0 * A1);
-	float t2 = (-B1 - sqrt(desk)) / (2.0 * A1);
+	float t1 = (-B1 + sqrt(desk)) / (2.0f * A1);
+	float t2 = (-B1 - sqrt(desk)) / (2.0f * A1);
 	return (float2){t1, t2};
 }
 
@@ -52,15 +52,15 @@ float2 IntersectRaySphere(float3 O, float3 D, t_figure sphere)
 	float3 oc = (float3){O.x - C.x, O.y - C.y, O.z - C.z};
 
 	float k1 = dot(D,D);
-	float k2 = 2 * dot(oc,D);
+	float k2 = 2.0f * dot(oc,D);
 	float k3 = dot(oc,oc) - R * R;
 
-	float desk = k2 * k2 - 4 * k1 * k3;
-	if (desk < 0)
+	float desk = k2 * k2 - 4.0f * k1 * k3;
+	if (desk < 0.0f)
 		return (float2){INFINITY, INFINITY};
 	
-	float t1 = (-k2 + sqrt(desk)) / (2 * k1);
-	float t2 = (-k2 - sqrt(desk)) / (2 * k1);
+	float t1 = (-k2 + sqrt(desk)) / (2.0f * k1);
+	float t2 = (-k2 - sqrt(desk)) / (2.0f * k1);
 	return (float2){t1, t2};
 }
 
@@ -78,15 +78,15 @@ float2 IntersectRayCylinder(float3 O, float3 D, t_figure cyl)
 	float3 tmp1 = V - (Va * dot(V, Va));
 	float3 tmp2 = dP - (Va * dot(Va, dP));
 	float A = dot(tmp1, tmp1);
-	float B = 2 * dot(tmp1, tmp2);
+	float B = 2.0f * dot(tmp1, tmp2);
 	float C = dot(tmp2, tmp2) - R * R;
 
-	float desk = B * B - 4 * A * C;
-	if (desk < 0)
+	float desk = B * B - 4.0f * A * C;
+	if (desk < 0.0f)
 		return (float2){INFINITY, INFINITY};
 	
-	float t1 = (-B + sqrt(desk)) / (2 * A);
-	float t2 = (-B - sqrt(desk)) / (2 * A);
+	float t1 = (-B + sqrt(desk)) / (2.0f * A);
+	float t2 = (-B - sqrt(desk)) / (2.0f * A);
 	return (float2){t1, t2};
 }
 
@@ -100,7 +100,7 @@ float2 IntersectRayPlane(float3 O, float3 D, t_figure plane)
 	float3 oc = O - p;
 	float k1 = dot(d, D);
 	float k2 = dot(oc, d);
-	if (k1 != 0)
+	if (k1 != 0.0f)
 	{
 		t = -k2 / k1;
 		return (float2) {t, INFINITY};

@@ -1,3 +1,62 @@
+/*
+		else if (figure.rfr)
+		{	
+			float kr;
+
+			fresnel(D, N, 1.f, 2.f, &kr);
+			if (kr < 1.f)
+			{
+				D = RefractRay(P, N, 1.f, 2.f);
+				O = P;
+				hit_color += local_c * (1.0f - figure.rfr) * rfr_mask * (1.f - kr);
+				rfr_mask *= figure.rfr;
+				//min = 0.001f;
+				i++;
+				continue ;
+			}
+			D = ReflectRay(-D, N);
+			O = P;
+			hit_color += local_c * ((1.0f - figure.rfl) * rfl_mask * (1.f - kr));
+			rfl_mask *= figure.rfl;
+			//min = 0.001f;
+			i++;
+			continue ;
+		}*/
+
+
+	 	/*if (mat == 0)
+	 	{
+			hit_color = hit_color + local_c * (rfl_mask);
+			break ;
+	 	}
+		else
+		{
+			D = ReflectRay(-D, N);
+			O = P;
+			hit_color = hit_color + local_c * ((1.f - figure.rfl) * rfl_mask);
+			rfl_mask = rfl_mask * figure.rfl;
+			min = 0.001f;
+		}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 t_uint			trace_ray(float3 O, float3 D, float min, float max,
 						__constant t_obj *objs, __constant t_light *light)

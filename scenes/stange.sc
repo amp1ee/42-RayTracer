@@ -1,7 +1,7 @@
 
 plane { pnt: 5,-1,0; dir: 0,1,0; clr: 255,155,0; }
 plane { pnt: 5,1,0; dir: 0,1,0; clr: 255,155,0; }
-plane { pnt: 0,0,8; dir: 1,0,0; clr: 255,155,0; }
+plane { pnt: 0,0,8; dir: 1,0,0; clr: 255,155,0; rfl: 0.5 }
 
 sphere { pnt: -1,-1,1; rds: 0.3; clr: 255,0,0 }
 sphere { pnt: 1,-1,1; rds: 0.3; clr: 255,0,0 }

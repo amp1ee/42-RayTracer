@@ -18,7 +18,7 @@ sphere { pnt: -1,1,6; rds: 0.3; clr: 192,192,192 }
 sphere { pnt: 0,-0.7,3; rds: 0.2; clr: 255,0,0 }
 
 
-cylinder { pnt: -1,-1,1; dir: -1,-2,1; rds: 0.15; clr: 192,192,192; rfl: 0.2 }
+cylinder { pnt: -1,-1,1; dir: -1,-2,1; rds: 0.15; clr: 192,192,192; }
 cylinder { pnt: -1,-1,6; dir: -1,-2,6; rds: 0.15; clr: 192,192,192;  }
 cylinder { pnt: 1,1,1; dir: 1,2,1; rds: 0.15; clr: 192,192,192;  }
 cylinder { pnt: 1,-1,6; dir: 1,-2,6; rds: 0.15; clr: 192,192,192;  }

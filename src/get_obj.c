@@ -35,7 +35,11 @@ static void		fill_fig(int name, char **splitted, t_figure **fig)
 	return_color_t(splitted, "clr:", (&(*fig)->color));
 	return_point(splitted, "pnt:", &((*fig)->p));
 	return_value(splitted, "rfl:", &((*fig)->rfl));
+	if ((*fig)->rfl > 0)
+		(*fig)->matirial = 1;
 	return_value(splitted, "rfr:", &((*fig)->rfr));
+	if ((*fig)->rfr > 0)
+		(*fig)->matirial = 2;
 	if (name == 3)
 	{
 		return_value(splitted, "rds:", &((*fig)->radius));
@@ -122,6 +126,7 @@ t_figure		*get_figure(t_slist *strs)
 			!(fig = malloc(sizeof(t_figure))))
 		return (ft_del_str(splitted));
 	fig->type = name;
+	fig->matirial = 0;
 	if ((name == 3) || (name == 4)
 		|| (name == 5) || (name == 6))
 		fill_fig(name, splitted, &fig);

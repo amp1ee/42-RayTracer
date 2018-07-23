@@ -30,10 +30,11 @@
 # define CONE 4
 # define SPHERE 3
 
-# define NUM_REFL 5
+# define NUM_REFL 4
 
 typedef struct	s_figure
 {
+	int			matirial;
 	int			index;
 	int			type;
 	float		radius;

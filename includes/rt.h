@@ -59,6 +59,7 @@ typedef struct	s_point
 
 typedef struct	s_figure
 {
+	int			matirial;
 	int			index;
 	int			type;
 	float		radius;
