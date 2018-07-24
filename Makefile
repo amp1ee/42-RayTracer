@@ -46,7 +46,8 @@ SOURCES = main.c \
 			get_obj.c \
 			opencl1.c \
 			opencl2.c \
-			add_figures.c
+			add_figures.c \
+			json_parser.c
 
 OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 

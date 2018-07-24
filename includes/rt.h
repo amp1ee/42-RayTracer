@@ -162,6 +162,7 @@ cl_float3		num_dil(cl_float3 p, float n);
 float			v_length(cl_float3 p);
 int				return_color(cl_float3 c);
 t_scene			*scene_create(char *argv);
+t_scene			*parse_json(char *file);
 
 /*
 ** HANDLERS

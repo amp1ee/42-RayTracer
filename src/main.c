@@ -87,7 +87,7 @@ int		main(int argc, char **argv)
 
 	if (argc != 2)
 		return (0);
-	mlx.scene = scene_create(argv[1]);
+	mlx.scene = parse_json(argv[1]);
 	cl_init(&mlx);
 	init_sdl(mlx.sdl);
 	//const Uint8* keystates = SDL_GetKeyboardState(NULL);
