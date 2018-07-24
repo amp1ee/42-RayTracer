@@ -11,7 +11,8 @@
       "type" : "sphere",
       "origin" : [0, 0, 20],
       "radius" : 1,
-      "color" : [255, 0, 0]
+      "color" : [255, 0, 0],
+      "reflective" : 1
     },
     {
       "type" : "sphere",
