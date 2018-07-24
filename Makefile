@@ -6,7 +6,7 @@
 #    By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/26 15:48:11 by mstorcha          #+#    #+#              #
-#    Updated: 2018/03/02 20:59:40 by mstorcha         ###   ########.fr        #
+#    Updated: 2018/07/24 19:24:01 by mstorcha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ INCLUDES	+=  -I./frameworks/SDL2_image.framework/Headers
 INCLUDES	+=  -F./frameworks 
 
 FRAMEWORKS	=	-framework OpenGL -framework AppKit -framework OpenCL \
-					-framework SDL2 -framework SDL2_image -rpath ./frameworks 
+					-framework SDL2 -framework SDL2_image -rpath ./frameworks \
+				   -framework SDL2_ttf -rpath ./frameworks	
 
 SRC_DIR = ./src/
 OBJ_DIR = ./obj/
@@ -46,14 +47,16 @@ SOURCES = main.c \
 			get_obj.c \
 			opencl1.c \
 			opencl2.c \
-			add_figures.c
+			add_figures.c \
+			json_parser.c \
+			user_interface.c
 
 OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 
 all: $(NAME)
 
 $(NAME): $(LIBFTA) $(TFDA) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
+	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS) -g
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
