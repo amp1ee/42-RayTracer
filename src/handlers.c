@@ -117,7 +117,7 @@ void			figure_actions(t_main *mlx, int x, int y)
 void			call_dialog(t_main *mlx)
 {
 	const char	*open;
-	const char	*format[1] = { "*.sc" };
+	const char	*format[1] = { "*.j" };
 
 	open = tinyfd_openFileDialog("", "./scenes/", 1, format, NULL, 0);
 	if (open == NULL)
@@ -125,5 +125,5 @@ void			call_dialog(t_main *mlx)
 	free(mlx->scene->objects);
 	free(mlx->scene->lights);
 	free(mlx->scene);
-	mlx->scene = scene_create((char *)open);
+	mlx->scene = parse_json((char *)open);
 }
