@@ -96,9 +96,9 @@ float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
 t_closest		closest_fig(float3 O, float3 D,
 					float min, float max, __global t_figure *figures, int o_n);
 float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n, __global int *textures, int2 textures_sz);
+					__global t_figure *light, int o_n, int l_n, __global int *textures, __global int2 *textures_sz);
 __kernel void 	rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n, __global int *textures, int2 textures_sz);
+					int l_n, int o_n, __global int *textures, __global int2 *textures_sz);
 
 #endif

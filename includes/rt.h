@@ -79,11 +79,13 @@ typedef struct	s_slist
 
 typedef struct	s_scene
 {
-	t_figure	*lights;
-	t_figure	*objects;
 	int			l_num;
 	int			o_num;
 	t_figure	cam;
+	int			*textures;
+	cl_int3		*textures_info;
+	t_figure	*objects;
+	t_figure	*lights;
 }				t_scene;
 
 typedef struct	s_opencl
@@ -102,7 +104,7 @@ typedef struct	s_opencl
 	cl_mem				memobj_figures;
 	cl_mem				memobj_light;
 	cl_mem				memobj_textures;
-	cl_int2				memobj_textures_sz;
+	cl_mem				memobj_textures_sz;
 }				t_opencl;
 
 typedef struct	s_sdl
@@ -123,9 +125,9 @@ typedef struct	s_main
 
 typedef struct	s_texture
 {
-	int		*pix;
-	int		h;
-	int		w;
+	int			*pix;
+	int			h;
+	int			w;
 }				t_texture;
 
 /*

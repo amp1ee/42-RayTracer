@@ -261,18 +261,18 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 	//if (obj.scale <= EPSILON)
 	scale = 1.0F;
 
-	tex_pos.x = (int)(UV.x * scale * (float)textures_info.x) % textures_info.x;
+	tex_pos.x = (int)((UV.x) * scale * (float)textures_info.x) % textures_info.x;
 	if (tex_pos.x < 0)
 		tex_pos.x = textures_info.x + tex_pos.x;
-	tex_pos.y = (int)(UV.y * scale * (float)textures_info.y) % textures_info.y;
+	tex_pos.y = (int)((UV.y) * scale * (float)textures_info.y) % textures_info.y;
 	if (tex_pos.y < 0)
 		tex_pos.y = textures_info.y + tex_pos.y;
 	tex_pos.y = textures_info.y - tex_pos.y - 1;
-	return (return_point_color(textures[tex_pos.y * textures_info.x + tex_pos.x]));
+	return (return_point_color(textures[(tex_pos.y) * (textures_info.x) + (tex_pos.x)]));
 }
 
 float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n, __global int *textures, int2 textures_sz)
+					__global t_figure *light, int o_n, int l_n, __global int *textures, __global int2 *textures_sz)
 {
 	float3 hit_color;
 	float3 P;
@@ -292,8 +292,8 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		t_closest clos = closest_fig(O, D, min, max, figures, o_n);
 		closest = clos.closest;
 		if (closest == INFINITY)
-			return (float3) {0, 0, 0};
-			//break ;
+			//return (float3) {0, 0, 0};
+			break ;
 		figure = clos.figure;
 		P = O + D * closest;
 		N = compute_normal(figure, D, P);
@@ -301,24 +301,24 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		//local_c = figure.color * c_l;
 		NL = dot(N, D) > 0.0F ? N * (-1.0F) : N;
 		if (figure.type == SPHERE)
-			local_c = get_obj_color(NL, P, figure, textures_sz, textures) * c_l;
+			local_c = get_obj_color(NL, P, figure, textures_sz[0], textures) * c_l;
 		else
 			local_c = figure.color * c_l;
 		mat = figure.matirial;
-		//if (mat == 0)
-	 	//{
+		if (mat == 0)
+	 	{
 			hit_color = hit_color + local_c * (rfl_mask * rfr_mask);
 			break ;
-	 // 	}
-		// else if (mat == 1)
-		// {
-		// 	D = ReflectRay(-D, N);
-		// 	O = P;
-		// 	hit_color = hit_color + local_c * ((1.0f - figure.rfl) * rfl_mask * rfr_mask);
-		// 	rfl_mask = rfl_mask * figure.rfl;
-		// 	min = 0.001f;
-		// 	i++;
-		// }
+	 	}
+		else if (mat == 1)
+		{
+			D = ReflectRay(-D, N);
+			O = P;
+			hit_color = hit_color + local_c * ((1.0f - figure.rfl) * rfl_mask * rfr_mask);
+			rfl_mask = rfl_mask * figure.rfl;
+			min = 0.001f;
+			i++;
+		}
 		/*
 		else if (mat == 2)
 		{	
@@ -348,7 +348,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 
 __kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n, __global int *textures, int2 textures_sz)
+					int l_n, int o_n, __global int *textures, __global int2 *textures_sz)
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
@@ -371,6 +371,12 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
 
 	data[j * 1200 + i] = return_int_color(c);
+
+/*
+	if (j < textures_sz[0].x && i < textures_sz[0].y)
+		data[j * 1200 + i] = textures[j * textures_sz[0].y + i];
+	else
+		data[j * 1200 + i] = return_int_color(c);*/
 }
 
 

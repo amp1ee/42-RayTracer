@@ -49,7 +49,7 @@ void			cl_start(t_opencl *cl)
 	if ((r = clGetPlatformIDs(1, &(cl->platform_id), &(cl->ret_num_plat))))
 		exit_message("couldn*t load platform");
 	if ((r = clGetDeviceIDs(cl->platform_id,
-		CL_DEVICE_TYPE_GPU, 1, &(cl->device_id), &(cl->ret_num_devices))))
+		CL_DEVICE_TYPE_CPU, 1, &(cl->device_id), &(cl->ret_num_devices))))
 		exit_message("couldn*t get device id");
 	cl->context = clCreateContext(NULL, 1, &(cl->device_id), NULL, NULL, &r);
 	if (r)
@@ -68,13 +68,13 @@ void			cl_start(t_opencl *cl)
 	debugger(r, cl->program, cl->device_id);
 }
 
-static t_texture	read_texture(void)
+static t_texture	read_texture(const char *file)
 {
 	t_texture	img;
 	SDL_Surface	*surface;
 	int *pxl;
 
-	surface = IMG_Load("./textures/earth.png");
+	surface = IMG_Load(file);
 	pxl = surface->pixels;
 	img.pix = pxl;
 	img.h = surface->h;
@@ -86,7 +86,10 @@ static t_texture	read_texture(void)
 void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth)
 {
 	int			ret;
-	t_texture	t;
+	int num = 3;
+	t_texture t;
+	//cl_int2		sz[3];
+	cl_int2		*sz = malloc(num * sizeof(cl_int2));
 
 	cl->kernel = clCreateKernel(cl->program, "rendering", &ret);
 	if (ret)
@@ -109,21 +112,26 @@ void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth)
 	**
 	*/
 
-	t = read_texture();
-	cl_int2 sz = (cl_int2){.x=t.h, .y=t.w};
-	cl->memobj_textures_sz = sz;
+	t = read_texture("./textures/wall.jpg");
+	sz[0] = (cl_int2){.x=t.h, .y=t.w};
+/*
+	t[1] = read_texture("./textures/pustynia.jpg");
+	sz[1] = (cl_int2){.x=t[1].h, .y=t[1].w};
+
+	t[2] = read_texture("./textures/wall.jpg");
+	sz[2] = (cl_int2){.x=t[2].h, .y=t[2].w};*/
 
 	cl->memobj_textures = clCreateBuffer(cl->context,
 		CL_MEM_USE_HOST_PTR,
-		sz.x * sz.y * sizeof(int), t.pix, &ret);
+		sz[0].x * sz[0].y * sizeof(int), t.pix, &ret);
 	if (ret)
 		exit_message("failed to create buf4");
 	/////
-	/*cl->memobj_textures_sz = clCreateBuffer(cl->context,
+	cl->memobj_textures_sz = clCreateBuffer(cl->context,
 		CL_MEM_USE_HOST_PTR,
-		sizeof(cl_int2), &sz, &ret);
+		num * sizeof(cl_int2), sz, &ret);
 	if (ret)
-		exit_message("failed to create buf5");*/
+		exit_message("failed to create buf5");
 }
 
 void			cl_args_1(t_opencl *cl, t_main *mlx)
@@ -148,14 +156,11 @@ void			cl_args_1(t_opencl *cl, t_main *mlx)
 	if ((ret = clSetKernelArg(cl->kernel, 5,
 		sizeof(int), &mlx->scene->o_num)))
 		exit_message("failed to set arg6");
-	/*
-	**
-	*/
 	if ((ret = clSetKernelArg(cl->kernel, 6,
 		sizeof(cl_mem), &cl->memobj_textures)))
 		exit_message("failed to set arg7");
 	if ((ret = clSetKernelArg(cl->kernel, 7,
-		sizeof(cl_int2), &cl->memobj_textures_sz)))
+		sizeof(cl_mem), &cl->memobj_textures_sz)))
 		exit_message("failed to set arg8");
 }
 
