@@ -209,6 +209,67 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	}
 	return N;
 }
+float2			calc_uv(float3 N, float3 P, t_figure obj)
+{
+	float3	U;
+	float3	V;
+	float2	ret = 0.0F;
+
+	N = -N;
+	ret.x = 0.5F + atan2pi(N.z, N.x) / 2.0f;
+	if (obj.type == SPHERE)
+		ret.y = 0.5F - asin(N.y) / M_PI;
+	else if (obj.type == CYLINDER)
+	{
+		float H = fast_length(obj.d - obj.p);
+		float h = fast_length(P - obj.p);
+		ret.y = sqrt(h * h - obj.radius * obj.radius) / H / 2.0f * obj.radius;
+	}
+	else if (obj.type == CONE)
+	{
+		float H = fast_length(obj.d - obj.p);
+		float h = fast_length(P - obj.d);
+		ret.y = -h / H;
+	}
+	else if (obj.type == PLANE)
+	{
+		if (N.y >= 0 && N.y <= 0.0003f)
+			N.y = N.z;
+		else if (N.x >= 0 && N.x <= 0.0003f)
+			N.x = N.z;
+
+		U = fast_normalize((float3){N.y, N.x, 0.0F});
+		V = cross(N, U);
+
+		ret.x = 1.0F - dot(U, P);
+		ret.y = dot(V, P);
+	}
+	return (ret);
+}
+
+float3			get_obj_color(float3 NL, float3 P, t_figure obj,
+							int2 textures_info, __global int *textures)
+{
+	float2			UV;
+	int2			tex_pos;
+	__global uint	*tex;
+	float 			scale;
+
+	UV = calc_uv(NL, P, obj);
+	textures_info = (int2) {textures_info.y, textures_info.x};
+
+	//if (obj.scale <= EPSILON)
+	scale = 1.0F;
+
+	tex_pos.x = (int)(UV.x * scale * (float)textures_info.x) % textures_info.x;
+	if (tex_pos.x < 0)
+		tex_pos.x = textures_info.x + tex_pos.x;
+	tex_pos.y = (int)(UV.y * scale * (float)textures_info.y) % textures_info.y;
+	if (tex_pos.y < 0)
+		tex_pos.y = textures_info.y + tex_pos.y;
+	tex_pos.y = textures_info.y - tex_pos.y - 1;
+	return (return_point_color(textures[tex_pos.y * textures_info.x + tex_pos.x]));
+}
 
 float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n, __global int *textures, int2 textures_sz)
@@ -220,8 +281,9 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	float closest = 0.0f;
 	t_figure figure;
 	float rfl_mask = 1.0f;
-	float rfr_mask = 1.f;
+	float rfr_mask = 1.0f;
 	int mat = 0;
+	float3 NL;
 
 	hit_color = (float3){0.0f, 0.0f, 0.0f};
 	for (int i = 0;i < NUM_REFL;)
@@ -230,27 +292,34 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		t_closest clos = closest_fig(O, D, min, max, figures, o_n);
 		closest = clos.closest;
 		if (closest == INFINITY)
-			break ;
+			return (float3) {0, 0, 0};
+			//break ;
 		figure = clos.figure;
 		P = O + D * closest;
 		N = compute_normal(figure, D, P);
 		c_l = compute_light(P, N, -D, 20.0f, figures, light, o_n, l_n);
-		local_c = figure.color * c_l;
+		//local_c = figure.color * c_l;
+		NL = dot(N, D) > 0.0F ? N * (-1.0F) : N;
+		if (figure.type == SPHERE)
+			local_c = get_obj_color(NL, P, figure, textures_sz, textures) * c_l;
+		else
+			local_c = figure.color * c_l;
 		mat = figure.matirial;
-		if (mat == 0)
-	 	{
+		//if (mat == 0)
+	 	//{
 			hit_color = hit_color + local_c * (rfl_mask * rfr_mask);
 			break ;
-	 	}
-		else if (mat == 1)
-		{
-			D = ReflectRay(-D, N);
-			O = P;
-			hit_color = hit_color + local_c * ((1.f - figure.rfl) * rfl_mask * rfr_mask);
-			rfl_mask = rfl_mask * figure.rfl;
-			min = 0.001f;
-			i++;
-		}
+	 // 	}
+		// else if (mat == 1)
+		// {
+		// 	D = ReflectRay(-D, N);
+		// 	O = P;
+		// 	hit_color = hit_color + local_c * ((1.0f - figure.rfl) * rfl_mask * rfr_mask);
+		// 	rfl_mask = rfl_mask * figure.rfl;
+		// 	min = 0.001f;
+		// 	i++;
+		// }
+		/*
 		else if (mat == 2)
 		{	
 			float kr;
@@ -271,9 +340,8 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 			hit_color += local_c * ((1.0f - figure.rfl) * rfl_mask * (kr));
 			rfl_mask *= figure.rfl;
 			//min = 0.001f;
-			i++;
-			continue ;
 		}
+		i++;*/
 	}
 	return hit_color;
 }

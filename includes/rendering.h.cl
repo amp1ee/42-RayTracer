@@ -81,6 +81,10 @@ float			sum_color(float f, float s);
 void			swap(float f, float s);
 
 
+float3			get_obj_color(float3 NL, float3 P, t_figure obj,
+							int2 textures_info, __global int *textures);
+float2			calc_uv(float3 N, float3 P, t_figure obj);
+
 float2 			IntersectRaySphere(float3 O, float3 D, t_figure sphere);
 float2 			IntersectRayCylinder(float3 O, float3 D, t_figure cyl);
 float2 			IntersectRayCone(float3 O, float3 D, t_figure cone);

@@ -49,7 +49,7 @@ void			cl_start(t_opencl *cl)
 	if ((r = clGetPlatformIDs(1, &(cl->platform_id), &(cl->ret_num_plat))))
 		exit_message("couldn*t load platform");
 	if ((r = clGetDeviceIDs(cl->platform_id,
-		CL_DEVICE_TYPE_CPU, 1, &(cl->device_id), &(cl->ret_num_devices))))
+		CL_DEVICE_TYPE_GPU, 1, &(cl->device_id), &(cl->ret_num_devices))))
 		exit_message("couldn*t get device id");
 	cl->context = clCreateContext(NULL, 1, &(cl->device_id), NULL, NULL, &r);
 	if (r)

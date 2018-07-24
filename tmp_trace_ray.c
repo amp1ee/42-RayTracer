@@ -1,4 +1,66 @@
 /*
+
+
+int2		m_mult_v33(float3 m[3], int2 v)
+{
+	float		a;
+	float		b;
+	int2		res;
+
+	a = v.x * m[0].x + v.y * m[1].x;
+	b = v.x * m[0].y + v.y * m[1].y;
+	res.x = a;
+	res.y = b;
+	return (res);
+}
+
+
+
+float3     get_custom(t_figure o, __global int *textures, int2 textures_sz)
+{
+    float scale;
+    float scaleX;
+    float scaleY;
+    int     texX;
+    int     texY;
+
+    float a = 3.0f;
+
+    float3 matrix[3] = 
+    {
+    	(float3){cos(a), -sin(a), 0.0f},
+		(float3){sin(a), cos(a), 0.0f},
+		(float3){0.0f, 0.0f, 1.0f}
+    };
+    int2 new_t = m_mult_v33(matrix, textures_sz);
+
+
+
+
+    scale = 2.f;
+    if (!scale)
+        scale = 1.0f;
+    /*if (o.type == PLANE )
+    {
+        scaleX = 0.5 / scale;
+        scaleY = 0.5 / scale;
+    }
+        scaleX = 5 / scale;
+        scaleY = 5 / scale;
+    /*else if (o.type == O_CYL || o.type == O_PARABOLOID || o.type == CONE)
+    {
+        scaleX = 5 / scale;
+        scaleY = 1 / scale;
+    }
+    texX = (int)(new_t.x * 256 * scaleX);
+    texY = (int)(new_t.y * 256 * scaleY);
+    texX = texX < 0 ? -texX : texX;
+    texY = texY < 0 ? -texY : texY;
+    return (return_point_color(textures[texX % 256 + texY % 256 * 256]));
+}
+
+
+
 		else if (figure.rfr)
 		{	
 			float kr;
