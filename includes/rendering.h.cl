@@ -105,7 +105,7 @@ float2 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
 float2			IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid);
 float2			IntersectRayParaboloid(float3 O, float3 D, t_figure h_boloid);
 
-float3   		compute_normal(t_figure figure, float3 D, float3 P);
+float3   		compute_normal(t_figure figure, float3 D, float3 P, float k);
 float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
 t_closest		closest_fig(float3 O, float3 D,

@@ -38,12 +38,12 @@
 #  include "SDL_image.h"
 # endif
 
-# ifdef __APPLE__
+/*# ifdef __APPLE__
 #  include <OpenCL/opencl.h>
 # else
 #  define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #  include <CL/cl.h>
-# endif
+# endif*/
 
 /*
 ** 1 - cam
@@ -53,6 +53,11 @@
 ** 5 - cylinder
 ** 6 - plane
 */
+
+
+# define HYPERBOLOID 7
+# define PARABOLOID 8
+
 # define PLANE 6
 # define CYLINDER 5
 # define CONE 4
