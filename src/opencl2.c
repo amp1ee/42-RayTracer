@@ -68,28 +68,23 @@ void			cl_start(t_opencl *cl)
 	debugger(r, cl->program, cl->device_id);
 }
 
-static t_texture	read_texture(const char *file)
+int				count_arr(t_scene sc)
 {
-	t_texture	img;
-	SDL_Surface	*surface;
-	int *pxl;
+	int i;
+	int sum;
 
-	surface = IMG_Load(file);
-	pxl = surface->pixels;
-	img.pix = pxl;
-	img.h = surface->h;
-	img.w = surface->w;
-	SDL_FreeSurface(surface);
-	return (img);
+	i = -1;
+	sum = 0;
+	while (++i < sc.textures_num)
+	{
+		sum += sc.textures_info[i].x * sc.textures_info[i].y;
+	}
+	return (sum);
 }
 
 void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth)
 {
 	int			ret;
-	int num = 3;
-	t_texture t;
-	//cl_int2		sz[3];
-	cl_int2		*sz = malloc(num * sizeof(cl_int2));
 
 	cl->kernel = clCreateKernel(cl->program, "rendering", &ret);
 	if (ret)
@@ -112,24 +107,18 @@ void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth)
 	**
 	*/
 
-	t = read_texture("./textures/wall.jpg");
-	sz[0] = (cl_int2){.x=t.h, .y=t.w};
-/*
-	t[1] = read_texture("./textures/pustynia.jpg");
-	sz[1] = (cl_int2){.x=t[1].h, .y=t[1].w};
-
-	t[2] = read_texture("./textures/wall.jpg");
-	sz[2] = (cl_int2){.x=t[2].h, .y=t[2].w};*/
+	//for (int i = 0; i < 2; i++)
+	//	printf("%d %d %d\n", mlx->scene->textures_info[i].x, mlx->scene->textures_info[i].y, mlx->scene->textures_info[i].z);
 
 	cl->memobj_textures = clCreateBuffer(cl->context,
 		CL_MEM_USE_HOST_PTR,
-		sz[0].x * sz[0].y * sizeof(int), t.pix, &ret);
+		count_arr(*mlx->scene) * sizeof(int), mlx->scene->textures, &ret);
 	if (ret)
 		exit_message("failed to create buf4");
 	/////
 	cl->memobj_textures_sz = clCreateBuffer(cl->context,
 		CL_MEM_USE_HOST_PTR,
-		num * sizeof(cl_int2), sz, &ret);
+		mlx->scene->textures_num * sizeof(cl_int3), mlx->scene->textures_info, &ret);
 	if (ret)
 		exit_message("failed to create buf5");
 }

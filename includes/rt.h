@@ -59,6 +59,7 @@ typedef struct	s_point
 
 typedef struct	s_figure
 {
+	int			text;
 	int			matirial;
 	int			index;
 	int			type;
@@ -71,6 +72,20 @@ typedef struct	s_figure
 	cl_float3	d;
 }				t_figure;
 
+typedef struct	s_texture
+{
+	int			*pix;
+	int			h;
+	int			w;
+	int			index;
+}				t_texture;
+
+typedef struct	s_fig_text
+{
+	t_figure	*fig;
+	t_texture	*text;
+}				t_fig_text;
+
 typedef struct	s_slist
 {
 	void				*data;
@@ -82,6 +97,7 @@ typedef struct	s_scene
 	int			l_num;
 	int			o_num;
 	t_figure	cam;
+	int			textures_num;
 	int			*textures;
 	cl_int3		*textures_info;
 	t_figure	*objects;
@@ -122,13 +138,6 @@ typedef struct	s_main
 	t_opencl	*cl;
 	t_sdl		*sdl;
 }				t_main;
-
-typedef struct	s_texture
-{
-	int			*pix;
-	int			h;
-	int			w;
-}				t_texture;
 
 /*
 ** ADD Figure

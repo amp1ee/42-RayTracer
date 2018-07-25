@@ -116,6 +116,7 @@ void		add_figure(t_figure **figures, t_figure cam, int *o_num)
 	new[i] = new_sphere(cam);
 	new[i].index = index + 1;
 	new[i].matirial = 0;
+	new[i].text = 0;
 	free(*figures);
 	*figures = new;
 	*o_num = i + 1;

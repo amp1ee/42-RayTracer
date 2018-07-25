@@ -248,15 +248,29 @@ float2			calc_uv(float3 N, float3 P, t_figure obj)
 }
 
 float3			get_obj_color(float3 NL, float3 P, t_figure obj,
-							int2 textures_info, __global int *textures)
+							__global int3 *t_i, __global int *textures)
 {
+	int2			textures_info;
 	float2			UV;
 	int2			tex_pos;
-	__global uint	*tex;
+	__global int	*tex;
 	float 			scale;
+	int	tmp = 0;
+	int i = -1;
 
+	//for (int i = 0; i < 2; i++)
+	//	printf("%d %d %d\n", t_i[i].x, t_i[i].y, t_i[i].z);
+
+	while (t_i[++i].z != obj.index)
+	{
+		//printf("%d %d %d\n", t_i[i].x, t_i[i].y, t_i[i].z);
+		tmp += t_i[i].x * t_i[i].y;
+	}
+	//printf("our\n");
+	tex = textures + tmp;
+	
 	UV = calc_uv(NL, P, obj);
-	textures_info = (int2) {textures_info.y, textures_info.x};
+	textures_info = (int2) {t_i[i].y, t_i[i].x};
 
 	//if (obj.scale <= EPSILON)
 	scale = 1.0F;
@@ -268,11 +282,11 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 	if (tex_pos.y < 0)
 		tex_pos.y = textures_info.y + tex_pos.y;
 	tex_pos.y = textures_info.y - tex_pos.y - 1;
-	return (return_point_color(textures[(tex_pos.y) * (textures_info.x) + (tex_pos.x)]));
+	return (return_point_color(tex[(tex_pos.y) * (textures_info.x) + (tex_pos.x)]));
 }
 
 float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n, __global int *textures, __global int2 *textures_sz)
+					__global t_figure *light, int o_n, int l_n, __global int *textures, __global int3 *textures_sz)
 {
 	float3 hit_color;
 	float3 P;
@@ -298,12 +312,21 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		P = O + D * closest;
 		N = compute_normal(figure, D, P);
 		c_l = compute_light(P, N, -D, 20.0f, figures, light, o_n, l_n);
-		//local_c = figure.color * c_l;
-		NL = dot(N, D) > 0.0F ? N * (-1.0F) : N;
-		if (figure.type == SPHERE)
-			local_c = get_obj_color(NL, P, figure, textures_sz[0], textures) * c_l;
+
+
+
+		if (figure.text)
+		{
+			//printf("%d\n", figure.index);
+			NL = dot(N, D) > 0.0F ? N * (-1.0F) : N;
+			
+			local_c = get_obj_color(NL, P, figure, textures_sz, textures) * c_l;
+		}
 		else
 			local_c = figure.color * c_l;
+
+
+
 		mat = figure.matirial;
 		if (mat == 0)
 	 	{
@@ -348,16 +371,16 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 
 __kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n, __global int *textures, __global int2 *textures_sz)
+					int l_n, int o_n, __global int *textures, __global int3 *textures_sz)
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
-	/*if (i ==0 && j ==0)
-	{
-		for (int i = 0; i < o_n; i++)
-			printf("%f ", figures[i].rfl);
-		printf("\n\n");
-	}*/
+	// if (i ==0 && j ==0)
+	// {
+	// 	for (int i = 0; i < 3; i++)
+	// 		printf("%d %d %d\n", textures_sz[i].x, textures_sz[i].y, textures_sz[i].z);
+	// 	printf("\n\n");
+	// }
 	//int h = textures_sz.x;
 	//int w = textures_sz.y;
 

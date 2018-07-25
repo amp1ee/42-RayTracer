@@ -17,7 +17,7 @@ TFDA = libTFD/libtfd.a
 CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
-#CFLAGS = -g
+#CFLAGS += -g
 
 INCLUDES = -I./includes/
 
@@ -55,7 +55,7 @@ OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 all: $(NAME)
 
 $(NAME): $(LIBFTA) $(TFDA) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS) -g
+	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)

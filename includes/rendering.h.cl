@@ -34,6 +34,7 @@
 
 typedef struct	s_figure
 {
+	int			text;
 	int			matirial;
 	int			index;
 	int			type;
@@ -80,9 +81,8 @@ int				return_int_color(float3 c);
 float			sum_color(float f, float s);
 void			swap(float f, float s);
 
-
 float3			get_obj_color(float3 NL, float3 P, t_figure obj,
-							int2 textures_info, __global int *textures);
+							__global int3 *t_i, __global int *textures);
 float2			calc_uv(float3 N, float3 P, t_figure obj);
 
 float2 			IntersectRaySphere(float3 O, float3 D, t_figure sphere);
@@ -95,10 +95,10 @@ float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
 					__global t_figure *light, int o_n, int l_n);
 t_closest		closest_fig(float3 O, float3 D,
 					float min, float max, __global t_figure *figures, int o_n);
-float3 			TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
-					__global t_figure *light, int o_n, int l_n, __global int *textures, __global int2 *textures_sz);
-__kernel void 	rendering(__global int * data, __global t_figure *figures,
+float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *figures,
+					__global t_figure *light, int o_n, int l_n, __global int *textures, __global int3 *textures_sz);
+__kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n, __global int *textures, __global int2 *textures_sz);
+					int l_n, int o_n, __global int *textures, __global int3 *textures_sz);
 
 #endif
