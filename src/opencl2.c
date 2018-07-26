@@ -79,7 +79,10 @@ int				count_arr(t_scene sc)
 	{
 		sum += sc.textures_info[i].x * sc.textures_info[i].y;
 	}
-	return (sum);
+	if (!sum)
+		return (1);
+	else
+		return (sum);
 }
 
 void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth)

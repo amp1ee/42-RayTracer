@@ -104,10 +104,12 @@ char 		*json_get_array(char *str, char *pattern, char *stack, int top)
 	char 	*start;
 	char 	*ret;
 	char 	*s_ptr;
+	char	*copy;
 
-	if (!(start = ft_strstr(str, pattern)))
+	copy = str;
+	if (!(start = ft_strstr(copy, pattern)))
 	{
-		exit_message(ft_strjoin("Unable to find %s\n", pattern));
+		exit_message(ft_strjoin("Unable to find \n", pattern));
 	}
 	s_ptr = start;
 	stack = ft_strnew(ft_strlen(start));
@@ -122,8 +124,10 @@ char 		*json_get_array(char *str, char *pattern, char *stack, int top)
 		}
 		s_ptr++;
 	}
+	free(stack);
 	ret = ft_get_substr(start, start, s_ptr);
 	ft_memmove(start, s_ptr + 1, ft_strlen(s_ptr));
+	//free(start);
 	return (ret);
 }
 
@@ -166,8 +170,11 @@ cl_float3	get_unit_vector(cl_float3 vec)
 void		parse_camera(char **str, t_figure *camera)
 {
 	char 	*substr;
+	char	*copy;
 
-	substr = json_get_array(*str, "\"camera\"", NULL, 0);
+	copy = ft_strdup(*str);
+	substr = json_get_array(copy, "\"camera\"", NULL, 0);
+	free(copy);
 	camera->p = json_arr_to_vector(substr, "\"origin\"", NULL, NULL);
 	camera->d = json_arr_to_vector(substr, "\"direction\"", NULL, NULL);
 	free(substr);
@@ -211,21 +218,21 @@ cl_float3		json_arr_to_color(char *str, char *pattern, char *start, char *end)
 	start = ft_strstr(str, pattern);
 	if (start == NULL)
 	{
-		printf("Unable to create vector by pattern \"%s\"\n", pattern);
 		return (json_arr_to_color("[0,0,0]", "[", NULL, NULL));
 	}
 	start = ft_strstr(start, "[");
 	end = ft_strstr(start, "]");
 	start = ft_get_substr(start, start + 1, end);
 	tab = ft_strsplit(start, ',');
+	free(start);
 	i = 0;
-	while (*tab != NULL)
+	while (tab[i] != NULL)
 	{
-		arr[i] = ft_atoi(*tab);
+		arr[i] = ft_atoi(tab[i]);
 		i++;
-		tab++;
 	}
 	color = (cl_float3){.x = arr[0], .y = arr[1], .z = arr[2]};
+	ft_del_str(tab);
 	return (color);
 }
 
@@ -255,6 +262,7 @@ t_figure		*get_object(char *str)
 	if (object->rfr > 0)
 		object->matirial = 2;
 	object->text = 1;
+
 	return (object);
 }
 
@@ -273,7 +281,6 @@ t_figure		*get_light(char *str)
 	light->p = json_arr_to_vector(str, "\"position\"", NULL, NULL);
 	light->d = json_arr_to_vector(str, "\"direction\"", NULL, NULL);
 	light->angle = json_get_float(str, "\"intensity\"");
-
 	return (light);
 }
 
@@ -306,7 +313,7 @@ char			*json_get_name(char *str, char *pattern)
 	splitted = ft_strsplit(substr, '\"');
 	ret = ft_strdup(splitted[2]);
 	ft_del_str(splitted);
-	printf("%s\n", ret);
+	//printf("%s\n", ret);
 	return (ret);
 }
 
@@ -321,6 +328,20 @@ t_texture		*get_texture(char *str)
 	free(name);
 	return (text);
 }
+/*
+**
+**
+
+
+
+
+
+
+
+
+**
+**
+*/
 
 t_slist			*parse_objects(char **str, char *type)
 {
@@ -329,12 +350,13 @@ t_slist			*parse_objects(char **str, char *type)
 	t_slist		*list;
 	t_fig_text	*obj;
 
-	if (!(obj = malloc(sizeof(t_fig_text))))
-		return (NULL);
 	list = NULL;
+	//printf("LOLOLOLO\n");
 	substr = json_get_array(*str, type, NULL, 0);
+	char *copy = substr;
 	while (*substr)
 	{
+		//printf("%s\n\nEND\n\n", substr);
 		obj_str = json_get_object(substr, "{");
 		if (obj_str)
 		{
@@ -348,11 +370,22 @@ t_slist			*parse_objects(char **str, char *type)
 					obj->fig->text = 0;
 			}
 			else if (!ft_strcmp(type, "\"light\""))
+			{
 				obj->fig = get_light(obj_str);
+			}
 			ft_list_push_back(&list, obj);
 		}
+		free(obj_str);
 		substr++;
+	//system("leaks rt");
+	//sleep(1);
 	}
+	free(copy);
+	printf("substr - %p\n", substr);
+	printf("obj_str - %p\n", obj_str);
+	printf("str - %p\n", str);
+	printf("obj - %p\n", obj);
+	//printf("LOLOLOLO\n");
 	return (list);
 }
 
@@ -382,8 +415,9 @@ static t_figure	*array_cast(t_slist *lst, t_scene *sc, int num, t_slist **text)
 			ft_list_push_back(text, ((t_fig_text *)(tmp->data))->text);
 		}
 		lst = lst->next;
-		//free(tmp->data);
-		//free(tmp);
+		free(((t_fig_text *)tmp->data)->fig);
+		free(tmp->data);
+		free(tmp);
 	}
 	return (ret);
 }
@@ -466,24 +500,41 @@ t_scene		*parse_json(char *file)
 	t_scene	*scene;
 	char 	*json_str;
 	t_slist *text_list;
+	char	*copy;
+	t_slist *tmp;
 
 	text_list = NULL;
 	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
 		exit_message("Memallocation error");
 	json_str = ft_fgets(file);
+	copy = json_str;
 	if (ft_brackets(json_str, ft_strlen(json_str)) != NULL)
 		exit_message("No valid");
 	parse_camera(&json_str, &scene->cam);
-	scene->lights = array_cast(parse_objects(&json_str, "\"light\""), scene, 1, &text_list);
-	scene->objects = array_cast(parse_objects(&json_str, "\"objects\""), scene, 0, &text_list);
-	scene->textures_num = ft_list_count(text_list);
-	scene->textures = get_texture_array(text_list);
-	scene->textures_info = get_texture_info(text_list);
 
-	for (int i = 0; i < scene->textures_num ; i++)
-		printf("%d %d %d\n", scene->textures_info[i].x, scene->textures_info[i].y, scene->textures_info[i].z);
-
-	free(json_str);
 	//system("leaks rt");
+	tmp = parse_objects(&json_str, "\"light\"");
+	scene->lights = array_cast(tmp, scene, 1, &text_list);
+	//free_lst(tmp);
+	tmp = parse_objects(&json_str, "\"objects\"");
+	scene->objects = array_cast(tmp, scene, 0, &text_list);
+	//free_lst(tmp);
+
+	if (!text_list)
+	{
+		scene->textures_num = 1;
+		scene->textures = malloc(sizeof(int));
+		scene->textures[0] = 0;
+		scene->textures_info = malloc(sizeof(cl_int3));
+		scene->textures_info[0] = (cl_int3){.x=0, .y=0, .z=0};
+	}
+	else
+	{
+		scene->textures = get_texture_array(text_list);
+		scene->textures_num = ft_list_count(text_list);
+		scene->textures_info = get_texture_info(text_list);
+		free_lst(text_list);
+	}
+	free(copy);
 	return (scene);
 }

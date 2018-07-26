@@ -12,47 +12,57 @@
 
 #include "rendering.h.cl"
 
-void		e_grades_gray(float3 *c)
+float3		e_grades_gray(float3 a)
 {
-	float tmp = (c->x + c->y + c->z) / 3;
+	float3 c;
+	float tmp = (a.x + a.y + a.z) / 3;
 
-	c->x = tmp;
-	c->y = tmp;
-	c->z = tmp;
+	c.x = tmp;
+	c.y = tmp;
+	c.z = tmp;
+	return c;
 }
 
-void		e_sepia(float3 *c)
+float3		e_sepia(float3 a)
 {
-	e_grades_gray(c);
+	float3 c;
+	float3 tmp = e_grades_gray(a);
 
-	c->x = c->x + 40 * 2;
-	c->y = c->y + 40;
-	c->z = c->z;
-	c->x = clamp((float)c->x, 0.0f, 255.f);
-	c->y = clamp((float)c->y, 0.0f, 255.f);
-	c->z = clamp((float)c->z, 0.0f, 255.f);
+	tmp.x = tmp.x + 40 * 2;
+	tmp.y = tmp.y + 40;
+	tmp.z = tmp.z;
+	c.x = clamp((float)tmp.x, 0.0f, 255.f);
+	c.y = clamp((float)tmp.y, 0.0f, 255.f);
+	c.z = clamp((float)tmp.z, 0.0f, 255.f);
+	return c;
 }
 
-void		e_negative(float3 *c)
+float3		e_negative(float3 a)
 {
-	c->x = 255 - c->x;
-	c->y = 255 - c->y;
-	c->z = 255 - c->z;
+	float3 c;
+
+	c.x = 255 - a.x;
+	c.y = 255 - a.y;
+	c.z = 255 - a.z;
+	return c;
 }
 
-void		e_black_white(float3 *c)
+float3		e_black_white(float3 a)
 {
-	float tmp = (c->x + c->y + c->z);
+	float3 c;
+
+	float tmp = (a.x + a.y + a.z);
 	if (tmp > ((255 - 150)/2)*3)
 	{
-		c->x = 255;
-		c->y = 255;
-		c->z = 255;
+		c.x = 255;
+		c.y = 255;
+		c.z = 255;
 	}
 	else
 	{
-		c->x = 0;
-		c->y = 0;
-		c->z = 0;
+		c.x = 0;
+		c.y = 0;
+		c.z = 0;
 	}
+	return c;
 }

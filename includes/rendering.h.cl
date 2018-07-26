@@ -58,11 +58,11 @@ typedef struct	s_closest
 **	EFFECTS
 */
 
-void			e_sepia(float3 *c);
-void			e_grades_gray(float3 *c);
-void			e_negative(float3 *c);
-void			e_black_white(float3 *c);
-void			gauss_blur(__global int * data, int i, int j);
+
+float3		e_grades_gray(float3 a);
+float3		e_sepia(float3 a);
+float3		e_negative(float3 a);
+float3		e_black_white(float3 a);
 
 float3			return_point_color(int c);
 

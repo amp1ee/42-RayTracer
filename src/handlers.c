@@ -122,8 +122,16 @@ void			call_dialog(t_main *mlx)
 	open = tinyfd_openFileDialog("", "./scenes/", 1, format, NULL, 0);
 	if (open == NULL)
 		return ;
+	free(mlx->scene->textures);
+	free(mlx->scene->textures_info);
 	free(mlx->scene->objects);
 	free(mlx->scene->lights);
 	free(mlx->scene);
 	mlx->scene = parse_json((char *)open);
+}
+
+void	apply_effects(t_main *mlx, int effect)
+{
+	(void)mlx;
+	(void)effect;
 }

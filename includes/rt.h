@@ -162,6 +162,7 @@ void			cl_args_2(t_opencl *cl, t_main *mlx, int i, int j);
 void			cl_init(t_main *mlx);
 void			rendering(t_main *mlx);
 int				find_figure(t_main *mlx, int i, int j);
+void			apply_effects(t_main *mlx, int effect);
 
 void			exit_message(const char *str);
 t_slist			*readf(char *argv);

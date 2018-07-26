@@ -369,20 +369,37 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	return hit_color;
 }
 
+void apply_effects(__global int *data, __global int *out, int type)
+{
+	int j = get_global_id(0);
+	int i = get_global_id(1);
+	float3 c;
+	float3 a = return_point_color(data[j * 1200 + i]);
+	if (type == 1)
+	{
+		c = e_grades_gray(a);
+	}
+	else if (type == 2)
+	{
+		c = e_sepia(a);
+	}
+	else if (type == 3)
+	{
+		c = e_negative(a);
+	}
+	else if (type == 4)
+	{
+		c = e_black_white(a);
+	}
+	out[j * 1200 + i] = return_int_color(c);
+}
+
 __kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
 					int l_n, int o_n, __global int *textures, __global int3 *textures_sz)
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
-	// if (i ==0 && j ==0)
-	// {
-	// 	for (int i = 0; i < 3; i++)
-	// 		printf("%d %d %d\n", textures_sz[i].x, textures_sz[i].y, textures_sz[i].z);
-	// 	printf("\n\n");
-	// }
-	//int h = textures_sz.x;
-	//int w = textures_sz.y;
 
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
 	float3 D;
@@ -392,14 +409,8 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	D = rotate_ort(D, cam.d);
 
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
-
+	//e_black_white(&c);
 	data[j * 1200 + i] = return_int_color(c);
-
-/*
-	if (j < textures_sz[0].x && i < textures_sz[0].y)
-		data[j * 1200 + i] = textures[j * textures_sz[0].y + i];
-	else
-		data[j * 1200 + i] = return_int_color(c);*/
 }
 
 
@@ -416,5 +427,8 @@ __kernel void find_figure(__global int *returnable,
 	D = rotate_ort(D, cam.d);
 
 	t_closest clos = closest_fig(O, D, 1.0F, INFINITY, figures, o_n);
-	*returnable = clos.figure.index;
+	if (clos.closest == INFINITY)
+		*returnable = -1;
+	else
+		*returnable = clos.figure.index;
 }

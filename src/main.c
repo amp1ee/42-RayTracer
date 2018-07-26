@@ -48,6 +48,7 @@ void	key_events(t_main *mlx, SDL_Event *event)
 (add_figure(&mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num)) : 0;
 	(event->K_K == SDL_SCANCODE_KP_MINUS) ? (call_dialog(mlx)) : 0;
 	(event->K_K == SDL_SCANCODE_KP_0) ? screen_shoot(*mlx) : 0;
+	(event->K_K == SDL_SCANCODE_KP_1) ? apply_effects(mlx, 1) : 0;
 }
 
 void	mouse_events(t_main *mlx)
@@ -88,6 +89,7 @@ int		main(int argc, char **argv)
 	if (argc != 2)
 		return (0);
 	mlx.scene = parse_json(argv[1]);
+	system("leaks rt");
 	cl_init(&mlx);
 	init_sdl(mlx.sdl);
 	//const Uint8* keystates = SDL_GetKeyboardState(NULL);
