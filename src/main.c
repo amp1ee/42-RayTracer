@@ -89,7 +89,7 @@ int		main(int argc, char **argv)
 	if (argc != 2)
 		return (0);
 	mlx.scene = parse_json(argv[1]);
-	system("leaks rt");
+	//system("leaks rt");
 	cl_init(&mlx);
 	init_sdl(mlx.sdl);
 	//const Uint8* keystates = SDL_GetKeyboardState(NULL);

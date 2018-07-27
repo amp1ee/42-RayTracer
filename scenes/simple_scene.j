@@ -13,14 +13,14 @@
       "radius" : 1,
       "color" : [255, 0, 0],
       "reflective" : 0,
-      "texture" : "./textures/earth.png"
+      "texture" : "perlin"
     },
     {
       "type" : "sphere",
       "origin" : [-2, 0, 20],
       "radius" : 1,
       "color" : [255, 0, 0],
-      "reflective" : 0,
+      "refractive" : 1,
       "texture" : "./textures/earth.png"
     },
     {
@@ -28,15 +28,29 @@
       "origin" : [2, 0, 20],
       "radius" : 1,
       "color" : [255, 0, 0],
+      "reflective" : 1
+    },
+    {
+      "type" : "plane",
+      "origin" : [2, -2, 20],
+      "direction" : [0, 1, -0.1],
+      "color" : [255, 0, 0],
       "reflective" : 0
     },
+    {
+      "type" : "plane",
+      "origin" : [2, -2, 20],
+      "direction" : [0, -1, 0.1],
+      "color" : [255, 0, 0],
+      "reflective" : 0
+    }
   ],
 
   "light" : [
     {
       "type" : "point",
       "intensity" : 0.8,
-      "position" : [0, 5, 20]
+      "position" : [0, 1, 15]
     }
   ]
 }

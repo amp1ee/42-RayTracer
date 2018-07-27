@@ -69,6 +69,7 @@ float3			return_point_color(int c);
 /*
 **
 */
+float noise(float x, float y, float z);
 
 void 			fresnel(float3 R, float3 N, float n1, float n2, float *kr);
 float3			RefractRay(float3 R, float3 N, float n1, float n2);
@@ -83,7 +84,7 @@ void			swap(float f, float s);
 
 float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 							__global int3 *t_i, __global int *textures);
-float2			calc_uv(float3 N, float3 P, t_figure obj);
+float3			calc_uv(float3 N, float3 P, t_figure obj);
 
 float2 			IntersectRaySphere(float3 O, float3 D, t_figure sphere);
 float2 			IntersectRayCylinder(float3 O, float3 D, t_figure cyl);

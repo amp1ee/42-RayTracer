@@ -260,7 +260,7 @@ t_figure		*get_object(char *str)
 		object->matirial = 1;
 	object->rfr = json_get_float(str, "\"refractive\"");
 	if (object->rfr > 0)
-		object->matirial = 2;
+		object->matirial = 1;
 	object->text = 1;
 
 	return (object);
@@ -284,15 +284,16 @@ t_figure		*get_light(char *str)
 	return (light);
 }
 
-static t_texture	*read_texture(const char *file)
+static t_texture	*read_texture(char *file, t_texture *img)
 {
-	t_texture	*img;
 	SDL_Surface	*surface;
 	int *pxl;
 
-	img = malloc(sizeof(t_texture));
 	if (!(surface = IMG_Load(file)))
+	{
+		free(img);
 		return (NULL);
+	}
 	pxl = surface->pixels;
 	img->pix = pxl;
 	img->h = surface->h;
@@ -322,9 +323,16 @@ t_texture		*get_texture(char *str)
 	t_texture	*text;
 	char		*name;
 
-	if (!(name = json_get_name(str, "\"texture\"")))
+	if (!(name = json_get_name(str, "\"texture\""))
+		|| !(text = malloc(sizeof(t_texture))))
 		return (NULL);
-	text = read_texture(name);
+	if (!(text = read_texture(name, text)))
+	{
+		if (!ft_strcmp(name, "perlin"))
+			;//text->disruption = "perlin";
+		else
+			free(text);
+	}
 	free(name);
 	return (text);
 }
@@ -351,12 +359,10 @@ t_slist			*parse_objects(char **str, char *type)
 	t_fig_text	*obj;
 
 	list = NULL;
-	//printf("LOLOLOLO\n");
 	substr = json_get_array(*str, type, NULL, 0);
 	char *copy = substr;
 	while (*substr)
 	{
-		//printf("%s\n\nEND\n\n", substr);
 		obj_str = json_get_object(substr, "{");
 		if (obj_str)
 		{
@@ -364,8 +370,8 @@ t_slist			*parse_objects(char **str, char *type)
 				exit_message("mem alloc err");
 			if (!ft_strcmp(type, "\"objects\""))
 			{
-				obj->text = get_texture(obj_str);
 				obj->fig = get_object(obj_str);
+				obj->text = get_texture(obj_str);
 				if (!obj->text)
 					obj->fig->text = 0;
 			}
@@ -377,15 +383,8 @@ t_slist			*parse_objects(char **str, char *type)
 		}
 		free(obj_str);
 		substr++;
-	//system("leaks rt");
-	//sleep(1);
 	}
 	free(copy);
-	printf("substr - %p\n", substr);
-	printf("obj_str - %p\n", obj_str);
-	printf("str - %p\n", str);
-	printf("obj - %p\n", obj);
-	//printf("LOLOLOLO\n");
 	return (list);
 }
 

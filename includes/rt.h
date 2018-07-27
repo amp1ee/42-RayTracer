@@ -74,6 +74,7 @@ typedef struct	s_figure
 
 typedef struct	s_texture
 {
+	const char	*disruption;
 	int			*pix;
 	int			h;
 	int			w;
@@ -163,6 +164,9 @@ void			cl_init(t_main *mlx);
 void			rendering(t_main *mlx);
 int				find_figure(t_main *mlx, int i, int j);
 void			apply_effects(t_main *mlx, int effect);
+t_texture		*get_perlin_noice(cl_float3 color, int type);
+void			cl_kernel_buffer_3(t_opencl *cl);
+void			cl_args_3(t_opencl *cl, cl_float3 color, int type);
 
 void			exit_message(const char *str);
 t_slist			*readf(char *argv);

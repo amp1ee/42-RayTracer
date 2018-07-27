@@ -87,3 +87,33 @@ int				find_figure(t_main *mlx, int i, int j)
 	free_mem(mlx->cl, 1);
 	return (res);
 }
+/*
+t_texture		*get_perlin_noice(cl_float3 color, int type)
+{
+	size_t		global_work_size[3];
+	int			ret;
+	t_texture	*text;
+	int			*res;
+
+	if (!(res = (int *)malloc(sizeof(int) * 1000000))
+		|| !(text = malloc(sizeof(t_texture))))
+		return (NULL);
+	global_work_size[0] = 1000;
+	global_work_size[1] = 1000;
+	global_work_size[2] = 0;
+	cl_kernel_buffer_3(mlx->cl, mlx);
+	cl_args_3(mlx->cl, mlx, color, type);
+	if ((ret = clEnqueueNDRangeKernel(mlx->cl->command_queue,
+				mlx->cl->kernel, 2, NULL,
+				global_work_size, NULL, 0, NULL, NULL)))
+		exit_message(ft_strjoin("failed to execute kernel ", ft_itoa(ret)));
+	if ((ret = clEnqueueReadBuffer(mlx->cl->command_queue,
+				mlx->cl->memobj_data, CL_TRUE, 0, sizeof(int),
+				res, 0, NULL, NULL)))
+		exit_message("failed to get buf data");
+	free_mem(mlx->cl, 1);
+	text->pix = res;
+	text->h = 1000;
+	text->w = 1000;
+	return (text);
+}*/

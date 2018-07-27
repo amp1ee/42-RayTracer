@@ -102,7 +102,7 @@ t_closest		closest_fig(float3 O, float3 D,
 float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
                     __global t_figure *light, int o_n, int l_n)
 {
-    float koef = 0.0f;
+    float koef = 0.1f;
     for (int i = 0; i < l_n; i++)
     {
         t_figure l = light[i];
@@ -209,11 +209,11 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	}
 	return N;
 }
-float2			calc_uv(float3 N, float3 P, t_figure obj)
+float3			calc_uv(float3 N, float3 P, t_figure obj)
 {
 	float3	U;
 	float3	V;
-	float2	ret = 0.0F;
+	float3	ret = 0.0F;
 
 	N = -N;
 	ret.x = 0.5F + atan2pi(N.z, N.x) / 2.0f;
@@ -251,7 +251,7 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 							__global int3 *t_i, __global int *textures)
 {
 	int2			textures_info;
-	float2			UV;
+	float3			UV;
 	int2			tex_pos;
 	__global int	*tex;
 	float 			scale;
@@ -270,6 +270,7 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 	tex = textures + tmp;
 	
 	UV = calc_uv(NL, P, obj);
+	UV = rotate_ort(UV, (float3){0,0,0});
 	textures_info = (int2) {t_i[i].y, t_i[i].x};
 
 	//if (obj.scale <= EPSILON)
@@ -313,18 +314,15 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 		N = compute_normal(figure, D, P);
 		c_l = compute_light(P, N, -D, 20.0f, figures, light, o_n, l_n);
 
-
-
 		if (figure.text)
 		{
 			//printf("%d\n", figure.index);
 			NL = dot(N, D) > 0.0F ? N * (-1.0F) : N;
-			
-			local_c = get_obj_color(NL, P, figure, textures_sz, textures) * c_l;
+			local_c = get_obj_color(NL, P, figure, textures_sz, textures);
 		}
 		else
-			local_c = figure.color * c_l;
-
+			local_c = figure.color;
+		local_c *= c_l;
 
 
 		mat = figure.matirial;
@@ -341,8 +339,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 			rfl_mask = rfl_mask * figure.rfl;
 			min = 0.001f;
 			i++;
-		}
-		/*
+		}/*
 		else if (mat == 2)
 		{	
 			float kr;
@@ -354,7 +351,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 				O = P;
 				hit_color += local_c * (1.0f - figure.rfr) * rfr_mask * (1.f - kr);
 				rfr_mask *= figure.rfr;
-				//min = 0.001f;
+				min = 0.001f;
 				i++;
 				continue ;
 			}
@@ -362,7 +359,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 			O = P;
 			hit_color += local_c * ((1.0f - figure.rfl) * rfl_mask * (kr));
 			rfl_mask *= figure.rfl;
-			//min = 0.001f;
+			min = 0.001f;
 		}
 		i++;*/
 	}
@@ -394,6 +391,85 @@ void apply_effects(__global int *data, __global int *out, int type)
 	out[j * 1200 + i] = return_int_color(c);
 }
 
+float fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+
+float lerp(float t, float a, float b) { return a + t * (b - a); }
+
+float grad(int hash, float x, float y, float z)
+{
+	int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
+	float u = h<8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
+	v = h<4 ? y : h==12||h==14 ? x : z;
+	return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
+}
+
+float noise1(float x, float y, float z) {
+	int p[512] = { 151,160,137,91,90,15,
+   131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
+   190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
+   88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
+   77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
+   102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
+   135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
+   5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
+   223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
+   129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
+   251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
+   49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
+   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180,151,160,137,91,90,15,
+   131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
+   190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
+   88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
+   77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
+   102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
+   135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
+   5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
+   223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
+   129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
+   251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
+   49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
+   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
+   };
+      int X = (int)floor(x) & 255,                  // FIND UNIT CUBE THAT
+          Y = (int)floor(y) & 255,                  // CONTAINS POINT.
+          Z = (int)floor(z) & 255;
+      x -= floor(x);                                // FIND RELATIVE X,Y,Z
+      y -= floor(y);                                // OF POINT IN CUBE.
+      z -= floor(z);
+      float u = fade(x),                                // COMPUTE FADE CURVES
+             v = fade(y),                                // FOR EACH OF X,Y,Z.
+             w = fade(z);
+      int A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
+          B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
+
+      return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
+                                     grad(p[BA  ], x-1, y  , z   )), // BLENDED
+                             lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
+                                     grad(p[BB  ], x-1, y-1, z   ))),// FROM  8
+                     lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),  // CORNERS
+                                     grad(p[BA+1], x-1, y  , z-1 )), // OF CUBE
+                             lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
+                                     grad(p[BB+1], x-1, y-1, z-1 ))));
+}
+
+__kernel void create_disruption(__global int * data, float3 color, int type)
+{
+	int j = get_global_id(0);
+	int i = get_global_id(1);
+
+	float koef = 20.f;
+	float dx = (float) j / 1000.0f;
+    float dy = (float) i / 1000.0f;
+    int frequency = 100;
+    float noise = noise1((dx * koef) + koef , (dy * koef) + koef, koef);
+    noise = (noise - 1) / 2;
+    int b = (int)(noise * 0xFF);
+    int g = b * 0x100;
+    int r = b * 0x10000;
+    int finalValue = r;
+    data[j * 1000 + i] = finalValue;
+}
+
 __kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
 					int l_n, int o_n, __global int *textures, __global int3 *textures_sz)
@@ -409,7 +485,8 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	D = rotate_ort(D, cam.d);
 
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
-	//e_black_white(&c);
+	
+	//float3 new = e_black_white(c);
 	data[j * 1200 + i] = return_int_color(c);
 }
 

@@ -197,3 +197,31 @@ void			cl_args_2(t_opencl *cl, t_main *mlx, int i, int j)
 		sizeof(int), &mlx->scene->o_num)))
 		exit_message("failed to set arg5");
 }
+
+void			cl_kernel_buffer_3(t_opencl *cl)
+{
+	int	ret;
+
+	cl->kernel = clCreateKernel(cl->program, "create_disruption", &ret);
+	if (ret)
+		exit_message("failed to create kernel");
+	cl->memobj_data = clCreateBuffer(cl->context, CL_MEM_READ_WRITE,
+				sizeof(int), NULL, &ret);
+	if (ret)
+		exit_message("failed to create buf1");
+}
+
+void			cl_args_3(t_opencl *cl, cl_float3 color, int type)
+{
+	int ret;
+
+	if ((ret = clSetKernelArg(cl->kernel, 0,
+		sizeof(cl_mem), &cl->memobj_data)))
+		exit_message("failed to set arg1");
+	if ((ret = clSetKernelArg(cl->kernel, 1,
+		sizeof(cl_float3), &color)))
+		exit_message("failed to set arg2 ");
+	if ((ret = clSetKernelArg(cl->kernel, 2,
+		sizeof(int), &type)))
+		exit_message("failed to set arg3");
+}
