@@ -54,9 +54,9 @@
 ** 6 - plane
 */
 
-
-# define HYPERBOLOID 7
+# define ELLIPSOID 9
 # define PARABOLOID 8
+# define HYPERBOLOID 7
 
 # define PLANE 6
 # define CYLINDER 5

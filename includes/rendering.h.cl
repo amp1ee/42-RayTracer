@@ -25,8 +25,9 @@
 ** 6 - plane
 */
 
-# define HYPERBOLOID 7
+# define ELLIPSOID 9
 # define PARABOLOID 8
+# define HYPERBOLOID 7
 # define PLANE 6
 # define CYLINDER 5
 # define CONE 4
@@ -39,6 +40,8 @@
 # define HYPERBOLOID 12
 
 # define NUM_REFL 4
+
+# define ELLIPS_COEF (0.7f)
 
 typedef struct	s_figure
 {
@@ -104,6 +107,7 @@ float2 			IntersectRayCone(float3 O, float3 D, t_figure cone);
 float2 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
 float2			IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid);
 float2			IntersectRayParaboloid(float3 O, float3 D, t_figure h_boloid);
+float2			IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse);
 
 float3   		compute_normal(t_figure figure, float3 D, float3 P, float k);
 float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,

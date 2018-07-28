@@ -30,6 +30,8 @@ int				na(char *name)
 		return (7);
 	else if (!ft_strcmp(name, "paraboloid"))
 		return (8);
+	else if (!ft_strcmp(name, "ellipsoid"))
+		return (9);
 	else
 		return (0);
 }
