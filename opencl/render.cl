@@ -458,8 +458,8 @@ __kernel void create_disruption(__global int * data, float3 color, int type)
 	int i = get_global_id(1);
 
 	float koef = 20.f;
-	float dx = (float) j / 1000.0f;
-    float dy = (float) i / 1000.0f;
+	float dx = (float) j / 1200.0f;
+    float dy = (float) i / 1200.0f;
     int frequency = 100;
     float noise = noise1((dx * koef) + koef , (dy * koef) + koef, koef);
     noise = (noise - 1) / 2;
@@ -467,7 +467,7 @@ __kernel void create_disruption(__global int * data, float3 color, int type)
     int g = b * 0x100;
     int r = b * 0x10000;
     int finalValue = r;
-    data[j * 1000 + i] = finalValue;
+    data[j * 1200 + i] = finalValue;
 }
 
 __kernel void rendering(__global int * data, __global t_figure *figures,

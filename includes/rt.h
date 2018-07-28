@@ -50,6 +50,9 @@
 # define CONE 4
 # define SPHERE 3
 
+
+# define MEM_LENGTH 1440000
+
 typedef struct	s_point
 {
 	int x;
@@ -74,7 +77,6 @@ typedef struct	s_figure
 
 typedef struct	s_texture
 {
-	const char	*disruption;
 	int			*pix;
 	int			h;
 	int			w;
@@ -164,7 +166,7 @@ void			cl_init(t_main *mlx);
 void			rendering(t_main *mlx);
 int				find_figure(t_main *mlx, int i, int j);
 void			apply_effects(t_main *mlx, int effect);
-t_texture		*get_perlin_noice(cl_float3 color, int type);
+t_texture		*get_perlin_noice(t_opencl *cl, cl_float3 color, int type);
 void			cl_kernel_buffer_3(t_opencl *cl);
 void			cl_args_3(t_opencl *cl, cl_float3 color, int type);
 
@@ -176,7 +178,7 @@ cl_float3		num_dil(cl_float3 p, float n);
 float			v_length(cl_float3 p);
 int				return_color(cl_float3 c);
 t_scene			*scene_create(char *argv);
-t_scene			*parse_json(char *file);
+t_scene			*parse_json(char *file, t_opencl *cl);
 
 /*
 ** HANDLERS

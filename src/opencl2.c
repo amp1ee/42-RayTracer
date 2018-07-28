@@ -206,7 +206,7 @@ void			cl_kernel_buffer_3(t_opencl *cl)
 	if (ret)
 		exit_message("failed to create kernel");
 	cl->memobj_data = clCreateBuffer(cl->context, CL_MEM_READ_WRITE,
-				sizeof(int), NULL, &ret);
+				MEM_LENGTH * sizeof(int), NULL, &ret);
 	if (ret)
 		exit_message("failed to create buf1");
 }

@@ -318,7 +318,7 @@ char			*json_get_name(char *str, char *pattern)
 	return (ret);
 }
 
-t_texture		*get_texture(char *str)
+t_texture		*get_texture(char *str, t_opencl *cl, cl_float3 color)
 {
 	t_texture	*text;
 	char		*name;
@@ -329,7 +329,9 @@ t_texture		*get_texture(char *str)
 	if (!(text = read_texture(name, text)))
 	{
 		if (!ft_strcmp(name, "perlin"))
-			;//text->disruption = "perlin";
+		{
+			text = get_perlin_noice(cl, color, 1);
+		}
 		else
 			free(text);
 	}
@@ -351,7 +353,7 @@ t_texture		*get_texture(char *str)
 **
 */
 
-t_slist			*parse_objects(char **str, char *type)
+t_slist			*parse_objects(char **str, char *type, t_opencl *cl)
 {
 	char 		*substr;
 	char 		*obj_str;
@@ -371,7 +373,7 @@ t_slist			*parse_objects(char **str, char *type)
 			if (!ft_strcmp(type, "\"objects\""))
 			{
 				obj->fig = get_object(obj_str);
-				obj->text = get_texture(obj_str);
+				obj->text = get_texture(obj_str, cl, obj->fig->color);
 				if (!obj->text)
 					obj->fig->text = 0;
 			}
@@ -494,7 +496,7 @@ int		*get_texture_array(t_slist *lst)
 	return (res);
 }
 
-t_scene		*parse_json(char *file)
+t_scene		*parse_json(char *file, t_opencl *cl)
 {
 	t_scene	*scene;
 	char 	*json_str;
@@ -512,10 +514,10 @@ t_scene		*parse_json(char *file)
 	parse_camera(&json_str, &scene->cam);
 
 	//system("leaks rt");
-	tmp = parse_objects(&json_str, "\"light\"");
+	tmp = parse_objects(&json_str, "\"light\"", cl);
 	scene->lights = array_cast(tmp, scene, 1, &text_list);
 	//free_lst(tmp);
-	tmp = parse_objects(&json_str, "\"objects\"");
+	tmp = parse_objects(&json_str, "\"objects\"", cl);
 	scene->objects = array_cast(tmp, scene, 0, &text_list);
 	//free_lst(tmp);
 

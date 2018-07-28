@@ -34,7 +34,7 @@
       "type" : "plane",
       "origin" : [2, -2, 20],
       "direction" : [0, 1, -0.1],
-      "color" : [255, 0, 0],
+      "color" : [255, 255, 0],
       "reflective" : 0
     },
     {
