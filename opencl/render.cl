@@ -306,7 +306,7 @@ float3   compute_normal(t_figure figure, float3 D, float3 P, float k)
 	{
 		float3 p = {figure.p.x, figure.p.y, figure.p.z};
 		float3 d = {figure.d.x, figure.d.y, figure.d.z};
-		float3	C = P - p;
+		float3 C = P - p;
 		N = C - d * k;
 		N = N / fast_length(N);
 	}

@@ -240,6 +240,12 @@ float2 IntersectRayTwoSheetHyperboloid(float3 O, float3 D, t_figure h_boloid)
 	float	C = P.x * P.x - P.y * P.y + P.z * P.z + R * R;
 	return (SolveQuadEquation(A, B, C));
 }
+	// OC = O - obj.pos;
+	// float3 coeff = {3.0F, 1.5F, 5.0F};
+	// k1 = (D.x * D.x / coeff.x) + (D.z * D.z / coeff.z);
+	// k2 = (2.0F * OC.x * D.x / coeff.x) + (2.0F * OC.z * D.z / coeff.z) - D.y;
+	// k3 =  (OC.x * OC.x / coeff.x) + (OC.z * OC.z / coeff.z) - OC.y;
+
 
 float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 {
