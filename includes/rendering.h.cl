@@ -51,6 +51,7 @@ typedef struct	s_figure
 	int			index;
 	int			type;
 	float		radius;
+	float		cap;
 	float		angle;
 	float		rfl;
 	float		cap;

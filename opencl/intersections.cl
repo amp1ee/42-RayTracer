@@ -276,6 +276,7 @@ float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 
 	float2	t = SolveQuadEquation(A, B, C);
 	float	t_min = t.x < t.y ? t.x : t.y;
+	float	t_max = t.x > t.y ? t.x : t.y;
 
 	float	cap = p_boloid.cap;
 	float	m = dot(O + D * t_min - c, V);

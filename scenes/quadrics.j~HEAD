@@ -18,31 +18,27 @@
       "type" : "hyperboloid",
       "origin" : [-5, 2, 20],
       "radius": 2.0,
-      "color" : [255, 255, 0],
-      "texture" : "perlin"
+      "color" : [255, 255, 0]
     },
     {
       "type" : "2sheet_hyperboloid",
-      "origin" : [-5, 2, 10],
+      "origin" : [-15, 2, 10],
       "radius": 1.0,
-      "color" : [255, 0, 255],
-      "texture" : "perlin"
+      "color" : [255, 0, 255]
     },
     {
       "type" : "ellipsoid",
       "origin" : [5, 2, 20],
       "direction" : [0, 0, -1],
       "radius": 1.0,
-      "color" : [0, 255, 255],
-      "texture" : "perlin"
+      "color" : [0, 255, 255]
     },
     {
       "type" : "paraboloid",
-      "origin" : [10, -2, 20],
-      "cap" : 1.0,
+      "origin" : [10, 2, 15],
+      "cap" : 20.0,
       "direction" : [0, 1, 0],
-      "color" : [255, 0, 0],
-      "texture" : "perlin"
+      "color" : [255, 0, 0]
     },
     {
       "type" : "plane",
@@ -52,10 +48,9 @@
     }
     {
       "type" : "plane",
-      "origin" : [0, 15, 20],
+      "origin" : [0, -15, 20],
       "direction" : [0, -1, 0],
-      "color" : [255, 255, 255],
-      "texture" : "perlin"
+      "color" : [255, 255, 255]
     }
   ],
 
@@ -63,9 +58,13 @@
     {
       "type" : "point",
       "intensity" : 0.8,
-      "position" : [0, 5, -10]
+      "position" : [5, 2, -10]
     },
-
+    {
+      "type" : "point",
+      "intensity" : 0.8,
+      "position" : [-5, 2, -10]
+    }
   ]
 }
 
