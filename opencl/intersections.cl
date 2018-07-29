@@ -139,6 +139,7 @@ float2 IntersectRayPlane(float3 O, float3 D, t_figure plane)
 
 float2 IntersectRayDisk(float3 O, float3 D, t_figure disk)
 {
+<<<<<<< HEAD
 	float2 t1;
 	float	t;
 	float3 	p;
@@ -215,6 +216,16 @@ float IntersectRayCube(float3 O, float3 D, t_figure box)
 
     // printf("%f\n", tmin);
     return tmin;
+=======
+	float desk = B * B - 4.0f * A * C;
+
+	if (desk < 0.0f)
+		return (float2){INFINITY, INFINITY};
+
+	float t1 = (-B + sqrt(desk)) / (2.0f * A);
+	float t2 = (-B - sqrt(desk)) / (2.0f * A);
+	return (float2){t1, t2};
+>>>>>>> Two-sheet hyperboloid +
 }
 
 float2 IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid)
@@ -237,6 +248,11 @@ float2 IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid)
 float2 IntersectRayTwoSheetHyperboloid(float3 O, float3 D, t_figure h_boloid)
 {
 	float3	c = {h_boloid.p.x, h_boloid.p.y, h_boloid.p.z};
+<<<<<<< HEAD
+=======
+	float3	V = {h_boloid.d.x, h_boloid.d.y, h_boloid.d.z};
+	V /= fast_length(V);
+>>>>>>> Two-sheet hyperboloid +
 	float3	P = O - c;
 	float	R = h_boloid.radius;
 
@@ -291,22 +307,3 @@ float2 IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse)
 	float	C = 4.f * r2 * dot(OC, OC) - A2 * A2;
 	return (SolveQuadEquation(A, B, C));
 }
-
-/*float2 IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse)
-{
-	float R = ellipse.radius;
-	float3 c = {ellipse.p.x, ellipse.p.y, ellipse.p.z};
-	float3 oc = (float3){O.x - c.x, O.y - c.y, O.z - c.z};
-
-	D.x /= 1.5f;
-	D.y /= 3.0f;
-	D.z /= 2.0f;
-	oc.x /= 1.5f;
-	oc.y /= 3.0f;
-	oc.z /= 2.0f;
-	float A = dot(D,D);
-	float B = 2.0f * (dot(oc,D));
-	float C = dot(oc,oc) - R * R;
-
-	return (SolveQuadEquation(A, B, C));
-}*/

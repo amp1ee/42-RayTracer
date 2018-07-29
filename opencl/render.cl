@@ -216,7 +216,7 @@ void 	fresnel(float3 R, float3 N, float n1, float n2, float *kr)
     }
 }
 
-float3   compute_normal(t_figure figure, float3 D, float3 P, float k)
+float3   compute_normal(t_figure figure, float3 D, float3 P)
 {
 	float3 N;
 	
@@ -307,7 +307,7 @@ float3   compute_normal(t_figure figure, float3 D, float3 P, float k)
 		float3 p = {figure.p.x, figure.p.y, figure.p.z};
 		float3 d = {figure.d.x, figure.d.y, figure.d.z};
 		float3 C = P - p;
-		N = C - d * k;
+		N = C - d;
 		N = N / fast_length(N);
 	}
 	else if (figure.type == ELLIPSOID)
@@ -422,7 +422,7 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 			break ;
 		figure = clos.figure;
 		P = O + D * closest;
-		N = compute_normal(figure, D, P, closest);
+		N = compute_normal(figure, D, P);
 		c_l = compute_light(P, N, -D, 20.0f, figures, light, o_n, l_n);
 
 		if (figure.text)

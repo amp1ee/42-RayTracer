@@ -56,6 +56,7 @@
 
 # define ELLIPSOID 9
 # define PARABOLOID 8
+# define TWOSHEET_HYPERBOLOID 70
 # define HYPERBOLOID 7
 
 # define PLANE 6

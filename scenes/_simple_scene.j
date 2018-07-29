@@ -15,16 +15,15 @@
       "reflective" : 1
     },
     {
-      "type" : "ellipsoid",
-      "origin" : [-5, 0, 20],
-      "direction" : [0, 1, 0],
-      "radius": 3.0,
+      "type" : "2sheet_hyperboloid",
+      "origin" : [-5, 2, 20],
+      "radius": 1.0,
       "color" : [255, 255, 0]
     },
     {
-      "type" : "sphere",
-      "origin" : [5, 0, 20],
-      "radius" : 1,
+      "type" : "paraboloid",
+      "origin" : [10, 8, 20],
+      "direction" : [0, -1, 0],
       "color" : [255, 0, 0]
     },
     {

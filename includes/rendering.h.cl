@@ -27,6 +27,7 @@
 
 # define ELLIPSOID 9
 # define PARABOLOID 8
+# define TWOSHEET_HYPERBOLOID 70
 # define HYPERBOLOID 7
 # define PLANE 6
 # define CYLINDER 5
@@ -106,10 +107,11 @@ float2 			IntersectRayCylinder(float3 O, float3 D, t_figure cyl);
 float2 			IntersectRayCone(float3 O, float3 D, t_figure cone);
 float2 			IntersectRayPlane(float3 O, float3 D, t_figure plane);
 float2			IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid);
+float2			IntersectRayTwoSheetHyperboloid(float3 O, float3 D, t_figure h_boloid);
 float2			IntersectRayParaboloid(float3 O, float3 D, t_figure h_boloid);
 float2			IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse);
 
-float3   		compute_normal(t_figure figure, float3 D, float3 P, float k);
+float3   		compute_normal(t_figure figure, float3 D, float3 P);
 float			compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
 					__global t_figure *light, int o_n, int l_n);
 t_closest		closest_fig(float3 O, float3 D,
