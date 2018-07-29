@@ -248,11 +248,6 @@ float2 IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid)
 float2 IntersectRayTwoSheetHyperboloid(float3 O, float3 D, t_figure h_boloid)
 {
 	float3	c = {h_boloid.p.x, h_boloid.p.y, h_boloid.p.z};
-<<<<<<< HEAD
-=======
-	float3	V = {h_boloid.d.x, h_boloid.d.y, h_boloid.d.z};
-	V /= fast_length(V);
->>>>>>> Two-sheet hyperboloid +
 	float3	P = O - c;
 	float	R = h_boloid.radius;
 
@@ -276,7 +271,6 @@ float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 
 	float2	t = SolveQuadEquation(A, B, C);
 	float	t_min = t.x < t.y ? t.x : t.y;
-	float	t_max = t.x > t.y ? t.x : t.y;
 
 	float	cap = p_boloid.cap;
 	float	m = dot(O + D * t_min - c, V);
@@ -308,3 +302,23 @@ float2 IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse)
 	float	C = 4.f * r2 * dot(OC, OC) - A2 * A2;
 	return (SolveQuadEquation(A, B, C));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

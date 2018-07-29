@@ -314,14 +314,16 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	{
 		float3	p = {figure.p.x, figure.p.y, figure.p.z};
 		float3	d = {figure.d.x, figure.d.y, figure.d.z};
+		d /= fast_length(d);
 		float3	C = p;
 		float	r = figure.radius;
-		float	k = r * ELLIPS_COEF;
-		float3	Cmid = C + d * k / 2.0f;
-		float3	R = P - Cmid;
 
-		float	b = ELLIPS_COEF;
-		N = R - d * (1.0f - (b * b)) * dot(R, d);
+		float	coef = ELLIPS_COEF;
+		float	k = r * sqrtf(1.f - coef * coef);
+
+		float3	Cmid = C + (d * k / 2.f);
+		float3	R = P - Cmid;
+		N = R - d * (1.f - (coef * coef)) * dot(R, d);
 		N = N / fast_length(N);
 	}
 	return N;
