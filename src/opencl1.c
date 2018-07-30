@@ -22,18 +22,16 @@ void			exit_message(const char *str)
 static void		free_mem(t_opencl *cl, int index)
 {
 	clReleaseKernel(cl->kernel);
+	clReleaseMemObject(cl->memobj_figures);
 	if (index == 0)
 	{
 		clReleaseMemObject(cl->memobj_data);
 		clReleaseMemObject(cl->memobj_light);
-		clReleaseMemObject(cl->memobj_figures);
 	}
-	else if (index == 1)
+	else if (index == 2)
 	{
-		clReleaseMemObject(cl->memobj_figures);
-	}
-	else
 		clReleaseMemObject(cl->memobj_data);
+	}
 }
 
 void			cl_init(t_main *mlx)
@@ -60,7 +58,7 @@ void			rendering(t_main *mlx)
 				global_work_size, NULL, 0, NULL, NULL)))
 		exit_message("failed to execute kernel");
 	if ((ret = clEnqueueReadBuffer(mlx->cl->command_queue,
-				mlx->cl->memobj_data, CL_TRUE, 0, MEM_LENGTH * sizeof(int),
+				mlx->cl->memobj_data, CL_TRUE, 0, sizeof(int) * MEM_LENGTH,
 				mlx->sdl->sur->pixels, 0, NULL, NULL)))
 		exit_message("failed to get buf data");
 	mlx->sdl->text =
@@ -71,36 +69,30 @@ void			rendering(t_main *mlx)
 	free_mem(mlx->cl, 0);
 }
 
-t_texture		*get_perlin_noice(t_opencl *cl, cl_float3 color, int type)
+void		get_disruption(t_texture *text,
+					t_opencl *cl, cl_float3 color, int type)
 {
 	size_t		global_work_size[3];
-	int			ret;
-	t_texture	*text;
+	int			r;
 	int			*res;
 
-	(void)type;
-
-	if (!(res = (int *)malloc(sizeof(int) * TEXTURE_SZ * TEXTURE_SZ))
-		|| !(text = malloc(sizeof(t_texture))))
-		return (NULL);
+	if (!(res = (int *)malloc(TEXTURE_SZ * TEXTURE_SZ * sizeof(int))))
+		exit_message("mem alloc err");
 	global_work_size[0] = TEXTURE_SZ;
 	global_work_size[1] = TEXTURE_SZ;
 	global_work_size[2] = 0;
 	cl_kernel_buffer_3(cl);
 	cl_args_3(cl, color, type);
-	if ((ret = clEnqueueNDRangeKernel(cl->command_queue,
-				cl->kernel, 2, NULL,
-				global_work_size, NULL, 0, NULL, NULL)))
-		exit_message(ft_strjoin("failed to execute kernel ", ft_itoa(ret)));
-	if ((ret = clEnqueueReadBuffer(cl->command_queue,
-				cl->memobj_data, CL_TRUE, 0, TEXTURE_SZ * TEXTURE_SZ * sizeof(int),
-				res, 0, NULL, NULL)))
-		exit_message(ft_strjoin("failed to get buf data ", ft_itoa(ret)));
+	if ((r = clEnqueueNDRangeKernel(cl->command_queue,
+	cl->kernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL)))
+		exit_message(ft_strjoin("failed to execute kernel ", ft_itoa(r)));
+	if ((r = clEnqueueReadBuffer(cl->command_queue, cl->memobj_data,
+CL_TRUE, 0, sizeof(int) * TEXTURE_SZ * TEXTURE_SZ, res, 0, NULL, NULL)))
+		exit_message(ft_strjoin("failed to get buf data ", ft_itoa(r)));
 	free_mem(cl, 2);
 	text->pix = res;
 	text->h = TEXTURE_SZ;
 	text->w = TEXTURE_SZ;
-	return (text);
 }
 
 int				find_figure(t_main *mlx, int i, int j)

@@ -12,17 +12,17 @@
 
 #include "rt.h"
 
-int 		match_brack(char open, char close)
+int			match_brack(char open, char close)
 {
 	if ((open == '[' && close == ']') || (open == '{' && close == '}'))
 		return (1);
 	return (0);
 }
 
-char 		*ft_brackets(char *str, int len)
+char		*ft_brackets(char *str, int len)
 {
-	int 	top;
-	char 	*stack;
+	int		top;
+	char	*stack;
 
 	top = 0;
 	stack = ft_strnew(len);
@@ -63,11 +63,11 @@ static char		*free_strjoin(char *s1, char *s2)
 	return (new);
 }
 
-char 		*ft_fgets(char *file)
+char			*ft_fgets(char *file)
 {
-	int 	fd;
-	char 	*str;
-	char 	*tmp;
+	int		fd;
+	char	*str;
+	char	*tmp;
 
 	if ((fd = open(file, O_RDONLY)) < 0)
 	{
@@ -99,18 +99,16 @@ char			*ft_get_substr(const char *str, char *start, char *end)
 	return (new);
 }
 
-char 		*json_get_array(char *str, char *pattern, char *stack, int top)
+char		*json_get_array(char *str, char *pattern, char *stack, int top)
 {
-	char 	*start;
-	char 	*ret;
-	char 	*s_ptr;
+	char	*start;
+	char	*ret;
+	char	*s_ptr;
 	char	*copy;
 
 	copy = str;
 	if (!(start = ft_strstr(copy, pattern)))
-	{
 		exit_message(ft_strjoin("Unable to find \n", pattern));
-	}
 	s_ptr = start;
 	stack = ft_strnew(ft_strlen(start));
 	while (*s_ptr)
@@ -118,30 +116,26 @@ char 		*json_get_array(char *str, char *pattern, char *stack, int top)
 		if (*s_ptr == '[')
 			stack[top++] = *s_ptr;
 		if (*s_ptr == ']')
-		{
 			if (--top == 0)
-				break;
-		}
+				break ;
 		s_ptr++;
 	}
 	free(stack);
 	ret = ft_get_substr(start, start, s_ptr);
 	ft_memmove(start, s_ptr + 1, ft_strlen(s_ptr));
-	//free(start);
 	return (ret);
 }
 
-cl_float3		json_arr_to_vector(char *str, char *pattern, char *start, char *end)
+cl_float3		json_arr_to_vector(char *str,
+			char *pattern, char *start, char *end)
 {
 	cl_float3	vector;
-	char 		**tab;
-	float 		arr[3];
-	int 		i;
+	char		**tab;
+	float		arr[3];
+	int			i;
 
 	if (!(start = ft_strstr(str, pattern)))
-	{
 		return (json_arr_to_vector("[0,0,0]", "[", NULL, NULL));
-	}
 	start = ft_strstr(start, "[");
 	end = ft_strstr(start, "]");
 	start = ft_get_substr(start, start + 1, end);
@@ -169,7 +163,7 @@ cl_float3	get_unit_vector(cl_float3 vec)
 
 void		parse_camera(char **str, t_figure *camera)
 {
-	char 	*substr;
+	char	*substr;
 	char	*copy;
 
 	copy = ft_strdup(*str);
@@ -180,11 +174,11 @@ void		parse_camera(char **str, t_figure *camera)
 	free(substr);
 }
 
-char 		*json_get_object(char *str, char *pattern)
+char		*json_get_object(char *str, char *pattern)
 {
-	char 	*start;
-	char 	*end;
-	char 	*ret;
+	char	*start;
+	char	*end;
+	char	*ret;
 
 	if (!(start = ft_strstr(str, pattern)))
 		return (NULL);
@@ -194,10 +188,10 @@ char 		*json_get_object(char *str, char *pattern)
 	return (ret);
 }
 
-float 			json_get_float(char *str, char *pattern)
+float			json_get_float(char *str, char *pattern)
 {
-	float 		ret;
-	char 		*substr;
+	float		ret;
+	char		*substr;
 
 	substr = ft_strstr(str, pattern);
 	if (substr == NULL)
@@ -208,7 +202,8 @@ float 			json_get_float(char *str, char *pattern)
 	return (ret);
 }
 
-cl_float3		json_arr_to_color(char *str, char *pattern, char *start, char *end)
+cl_float3		json_arr_to_color(char *str,
+					char *pattern, char *start, char *end)
 {
 	cl_float3	color;
 	float		arr[3];
@@ -217,9 +212,7 @@ cl_float3		json_arr_to_color(char *str, char *pattern, char *start, char *end)
 
 	start = ft_strstr(str, pattern);
 	if (start == NULL)
-	{
 		return (json_arr_to_color("[0,0,0]", "[", NULL, NULL));
-	}
 	start = ft_strstr(start, "[");
 	end = ft_strstr(start, "]");
 	start = ft_get_substr(start, start + 1, end);
@@ -258,11 +251,7 @@ t_figure		*get_object(char *str)
 	object->rfl = json_get_float(str, "\"reflective\"");
 	if (object->rfl > 0)
 		object->matirial = 1;
-	object->rfr = json_get_float(str, "\"refractive\"");
-	if (object->rfr > 0)
-		object->matirial = 1;
 	object->text = 1;
-
 	return (object);
 }
 
@@ -284,28 +273,10 @@ t_figure		*get_light(char *str)
 	return (light);
 }
 
-static t_texture	*read_texture(char *file, t_texture *img)
-{
-	SDL_Surface	*surface;
-	int *pxl;
-
-	if (!(surface = IMG_Load(file)))
-	{
-		free(img);
-		return (NULL);
-	}
-	pxl = surface->pixels;
-	img->pix = pxl;
-	img->h = surface->h;
-	img->w = surface->w;
-	SDL_FreeSurface(surface);
-	return (img);
-}
-
 char			*json_get_name(char *str, char *pattern)
 {
-	char 		*ret;
-	char 		*substr;
+	char		*ret;
+	char		*substr;
 	char		**splitted;
 
 	substr = ft_strstr(str, pattern);
@@ -314,73 +285,81 @@ char			*json_get_name(char *str, char *pattern)
 	splitted = ft_strsplit(substr, '\"');
 	ret = ft_strdup(splitted[2]);
 	ft_del_str(splitted);
-	//printf("%s\n", ret);
 	return (ret);
+}
+
+static int	read_texture(char *file, t_texture *text)
+{
+	SDL_Surface	*surface;
+
+	if (!(surface = IMG_Load(file)))
+		return (0);
+	text->pix = malloc(sizeof(int) * surface->w * surface->h);
+	ft_memcpy(text->pix, surface->pixels,
+		sizeof(int) * surface->w * surface->h);
+	text->h = surface->h;
+	text->w = surface->w;
+	SDL_FreeSurface(surface);
+	return (1);
 }
 
 t_texture		*get_texture(char *str, t_opencl *cl, cl_float3 color)
 {
 	t_texture	*text;
 	char		*name;
+	int			res;
 
 	if (!(name = json_get_name(str, "\"texture\""))
 		|| !(text = malloc(sizeof(t_texture))))
 		return (NULL);
-	if (!(text = read_texture(name, text)))
+	if (!(res = read_texture(name, text)))
 	{
 		if (!ft_strcmp(name, "perlin"))
-		{
-			text = get_perlin_noice(cl, color, 1);
-		}
+			get_disruption(text, cl, color, 1);
+		else if (!ft_strcmp(name, "chessboard"))
+			get_disruption(text, cl, color, 2);
 		else
 			free(text);
 	}
 	free(name);
 	return (text);
 }
-/*
-**
-**
 
+t_fig_text		*fill_t_fig_text(char *obj_str, t_opencl *cl, char *type)
+{
+	t_fig_text	*obj;
 
-
-
-
-
-
-
-**
-**
-*/
+	if (!(obj = ft_memalloc(sizeof(t_fig_text))))
+		exit_message("mem alloc err");
+	if (!ft_strcmp(type, "\"objects\""))
+	{
+		obj->fig = get_object(obj_str);
+		obj->text = get_texture(obj_str, cl, obj->fig->color);
+		if (!obj->text)
+			obj->fig->text = 0;
+	}
+	else if (!ft_strcmp(type, "\"light\""))
+		obj->fig = get_light(obj_str);
+	return (obj);
+}
 
 t_slist			*parse_objects(char **str, char *type, t_opencl *cl)
 {
-	char 		*substr;
-	char 		*obj_str;
+	char		*substr;
+	char		*obj_str;
 	t_slist		*list;
 	t_fig_text	*obj;
+	char		*copy;
 
 	list = NULL;
 	substr = json_get_array(*str, type, NULL, 0);
-	char *copy = substr;
+	copy = substr;
 	while (*substr)
 	{
 		obj_str = json_get_object(substr, "{");
 		if (obj_str)
 		{
-			if (!(obj = malloc(sizeof(t_fig_text))))
-				exit_message("mem alloc err");
-			if (!ft_strcmp(type, "\"objects\""))
-			{
-				obj->fig = get_object(obj_str);
-				obj->text = get_texture(obj_str, cl, obj->fig->color);
-				if (!obj->text)
-					obj->fig->text = 0;
-			}
-			else if (!ft_strcmp(type, "\"light\""))
-			{
-				obj->fig = get_light(obj_str);
-			}
+			obj = fill_t_fig_text(obj_str, cl, type);
 			ft_list_push_back(&list, obj);
 		}
 		free(obj_str);
@@ -388,6 +367,21 @@ t_slist			*parse_objects(char **str, char *type, t_opencl *cl)
 	}
 	free(copy);
 	return (list);
+}
+
+void			get_counters(t_scene *sc, int sz, int num)
+{
+	if (!num)
+		sc->o_num = sz;
+	else
+		sc->l_num = sz;
+}
+
+void			free_tmp(t_slist **tmp)
+{
+	free(((t_fig_text *)(*tmp)->data)->fig);
+	free((*tmp)->data);
+	free((*tmp));
 }
 
 static t_figure	*array_cast(t_slist *lst, t_scene *sc, int num, t_slist **text)
@@ -398,10 +392,7 @@ static t_figure	*array_cast(t_slist *lst, t_scene *sc, int num, t_slist **text)
 	t_slist		*tmp;
 
 	sz = ft_list_count(lst);
-	if (!num)
-		sc->o_num = sz;
-	else
-		sc->l_num = sz;
+	get_counters(sc, sz, num);
 	if (!(ret = malloc(sizeof(t_figure) * sz)))
 		exit_message("memory allocation err");
 	i = -1;
@@ -416,18 +407,16 @@ static t_figure	*array_cast(t_slist *lst, t_scene *sc, int num, t_slist **text)
 			ft_list_push_back(text, ((t_fig_text *)(tmp->data))->text);
 		}
 		lst = lst->next;
-		free(((t_fig_text *)tmp->data)->fig);
-		free(tmp->data);
-		free(tmp);
+		free_tmp(&tmp);
 	}
 	return (ret);
 }
 
-cl_int3		*get_texture_info(t_slist *lst)
+cl_int3			*get_texture_info(t_slist *lst)
 {
-	cl_int3 *info;
-	t_texture *tmp;
-	int i;
+	cl_int3		*info;
+	t_texture	*tmp;
+	int			i;
 
 	if (!(info = (cl_int3 *)malloc(sizeof(cl_int3) * ft_list_count(lst))))
 		return (NULL);
@@ -444,10 +433,10 @@ cl_int3		*get_texture_info(t_slist *lst)
 	return (info);
 }
 
-static int size_texture(t_slist *lst)
+static int		size_texture(t_slist *lst)
 {
-	int i;
-	t_texture *tmp;
+	int			i;
+	t_texture	*tmp;
 
 	i = 0;
 	while (lst)
@@ -459,7 +448,7 @@ static int size_texture(t_slist *lst)
 	return (i);
 }
 
-int		*ft_intcat(int *dest, int *src, int *sz1, int sz2)
+int				*ft_intcat(int *dest, int *src, int *sz1, int sz2)
 {
 	int i;
 
@@ -468,19 +457,17 @@ int		*ft_intcat(int *dest, int *src, int *sz1, int sz2)
 	{
 		dest[i + *sz1] = src[i];
 	}
-	////////////////////
 	*sz1 += sz2;
 	return (dest);
 }
 
-
-int		*get_texture_array(t_slist *lst)
+int				*get_texture_array(t_slist *lst)
 {
-	int *res;
-	t_texture *tmp_text;
-	int *tmp_int;
-	int size;
-	int count;
+	int			*res;
+	t_texture	*tmp_text;
+	int			*tmp_int;
+	int			size;
+	int			count;
 
 	count = 0;
 	size = size_texture(lst);
@@ -496,31 +483,23 @@ int		*get_texture_array(t_slist *lst)
 	return (res);
 }
 
-t_scene		*parse_json(char *file, t_opencl *cl)
+void		*free_lst1(t_slist *list)
 {
-	t_scene	*scene;
-	char 	*json_str;
-	t_slist *text_list;
-	char	*copy;
 	t_slist *tmp;
 
-	text_list = NULL;
-	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
-		exit_message("Memallocation error");
-	json_str = ft_fgets(file);
-	copy = json_str;
-	if (ft_brackets(json_str, ft_strlen(json_str)) != NULL)
-		exit_message("No valid");
-	parse_camera(&json_str, &scene->cam);
+	while (list)
+	{
+		tmp = list;
+		list = list->next;
+		free(((t_texture *)tmp->data)->pix);
+		free(tmp->data);
+		free(tmp);
+	}
+	return (NULL);
+}
 
-	//system("leaks rt");
-	tmp = parse_objects(&json_str, "\"light\"", cl);
-	scene->lights = array_cast(tmp, scene, 1, &text_list);
-	//free_lst(tmp);
-	tmp = parse_objects(&json_str, "\"objects\"", cl);
-	scene->objects = array_cast(tmp, scene, 0, &text_list);
-	//free_lst(tmp);
-
+void			filling_textures(t_scene *scene, t_slist *text_list)
+{
 	if (!text_list)
 	{
 		scene->textures_num = 1;
@@ -534,8 +513,31 @@ t_scene		*parse_json(char *file, t_opencl *cl)
 		scene->textures = get_texture_array(text_list);
 		scene->textures_num = ft_list_count(text_list);
 		scene->textures_info = get_texture_info(text_list);
-		free_lst(text_list);
+		free_lst1(text_list);
 	}
+}
+
+t_scene			*parse_json(char *file, t_opencl *cl)
+{
+	t_scene	*scene;
+	char	*json_str;
+	t_slist	*text_list;
+	char	*copy;
+	t_slist	*tmp;
+
+	text_list = NULL;
+	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
+		exit_message("Memallocation error");
+	json_str = ft_fgets(file);
+	copy = json_str;
+	if (ft_brackets(json_str, ft_strlen(json_str)) != NULL)
+		exit_message("No valid");
+	parse_camera(&json_str, &scene->cam);
+	tmp = parse_objects(&json_str, "\"light\"", cl);
+	scene->lights = array_cast(tmp, scene, 1, &text_list);
+	tmp = parse_objects(&json_str, "\"objects\"", cl);
+	scene->objects = array_cast(tmp, scene, 0, &text_list);
+	filling_textures(scene, text_list);
 	free(copy);
 	return (scene);
 }

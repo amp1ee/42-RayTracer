@@ -42,9 +42,6 @@ SOURCES = main.c \
 			handlers.c \
 			color_vector.c \
 			ft_makelist.c \
-			readf.c \
-			read_help.c \
-			get_obj.c \
 			opencl1.c \
 			opencl2.c \
 			add_figures.c \

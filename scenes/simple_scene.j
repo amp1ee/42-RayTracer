@@ -21,7 +21,7 @@
       "radius" : 1,
       "color" : [255, 0, 0],
       "refractive" : 1,
-      "texture" : "./textures/earth.png"
+      "texture" : "chessboard"
     },
     {
       "type" : "sphere",

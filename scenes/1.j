@@ -1,3 +1,5 @@
+ergwer
+
 {
   "camera" : [
     {
@@ -19,21 +21,21 @@
       "origin" : [0, 0, 20],
       "radius" : 1,
       "color" : [0, 0, 255],
-      "texture" : "./textures/wall.jpg"
+      "texture" : "chessboard"
     },
     {
       "type" : "sphere",
       "origin" : [2, 0, 20],
       "radius" : 1,
       "color" : [255, 255, 0],
-      "texture" : "./textures/wall.jpg"
+      "texture" : "perlin"
     },
     {
       "type" : "sphere",
       "origin" : [0, 2, 20],
       "radius" : 1,
       "color" : [255, 255, 0],
-      "texture" : "./textures/earth.png"
+      "texture" : "chessboard"
     },
     {
       "type" : "sphere",
@@ -47,7 +49,7 @@
       "origin" : [-2, 2, 20],
       "radius" : 1,
       "color" : [255, 255, 0],
-      "texture" : "./textures/earth.png"
+      "texture" : "chessboard"
     },
     {
       "type" : "sphere",
@@ -68,7 +70,7 @@
       "origin" : [-2, -2, 20],
       "radius" : 1,
       "color" : [255, 255, 0],
-      "texture" : "./textures/pustynia.jpg"
+      "texture" : "perlin"
     }
   ],
 

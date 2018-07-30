@@ -96,32 +96,20 @@ void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth)
 				memlenth * sizeof(int), NULL, &ret);
 	if (ret)
 		exit_message("failed to create buf1");
-	cl->memobj_figures = clCreateBuffer(cl->context,
-		CL_MEM_USE_HOST_PTR,
+	cl->memobj_figures = clCreateBuffer(cl->context, CL_MEM_USE_HOST_PTR,
 		mlx->scene->o_num * sizeof(t_figure), mlx->scene->objects, &ret);
 	if (ret)
 		exit_message("failed to create buf2");
-	cl->memobj_light = clCreateBuffer(cl->context,
-		CL_MEM_USE_HOST_PTR,
+	cl->memobj_light = clCreateBuffer(cl->context, CL_MEM_USE_HOST_PTR,
 		mlx->scene->l_num * sizeof(t_figure), mlx->scene->lights, &ret);
 	if (ret)
 		exit_message("failed to create buf3");
-	/*
-	**
-	*/
-
-	//for (int i = 0; i < 2; i++)
-	//	printf("%d %d %d\n", mlx->scene->textures_info[i].x, mlx->scene->textures_info[i].y, mlx->scene->textures_info[i].z);
-
-	cl->memobj_textures = clCreateBuffer(cl->context,
-		CL_MEM_USE_HOST_PTR,
+	cl->memobj_textures = clCreateBuffer(cl->context, CL_MEM_USE_HOST_PTR,
 		count_arr(*mlx->scene) * sizeof(int), mlx->scene->textures, &ret);
 	if (ret)
 		exit_message("failed to create buf4");
-	/////
-	cl->memobj_textures_sz = clCreateBuffer(cl->context,
-		CL_MEM_USE_HOST_PTR,
-		mlx->scene->textures_num * sizeof(cl_int3), mlx->scene->textures_info, &ret);
+	cl->memobj_textures_sz = clCreateBuffer(cl->context, CL_MEM_USE_HOST_PTR,
+mlx->scene->textures_num * sizeof(cl_int3), mlx->scene->textures_info, &ret);
 	if (ret)
 		exit_message("failed to create buf5");
 }
@@ -130,8 +118,7 @@ void			cl_args_1(t_opencl *cl, t_main *mlx)
 {
 	int ret;
 
-	if ((ret = clSetKernelArg(cl->kernel, 0,
-		sizeof(cl_mem), &cl->memobj_data)))
+	if ((ret = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->memobj_data)))
 		exit_message("failed to set arg1");
 	if ((ret = clSetKernelArg(cl->kernel, 1,
 		sizeof(cl_mem), &cl->memobj_figures)))
@@ -198,17 +185,36 @@ void			cl_args_2(t_opencl *cl, t_main *mlx, int i, int j)
 		exit_message("failed to set arg5");
 }
 
+int				*random_array(int size)
+{
+	int *ret;
+	int i;
+
+	ret = malloc(sizeof(int) * size);
+	i = -1;
+	while (++i < size)
+		ret[i] = rand() % 255;
+	return (ret);
+}
+
 void			cl_kernel_buffer_3(t_opencl *cl)
 {
 	int	ret;
+	int	*rand;
 
+	rand = random_array(512);
 	cl->kernel = clCreateKernel(cl->program, "create_disruption", &ret);
 	if (ret)
 		exit_message("failed to create kernel");
 	cl->memobj_data = clCreateBuffer(cl->context, CL_MEM_READ_WRITE,
-				MEM_LENGTH * sizeof(int), NULL, &ret);
+				sizeof(int) * MEM_LENGTH, NULL, &ret);
 	if (ret)
 		exit_message("failed to create buf1");
+	cl->memobj_figures = clCreateBuffer(cl->context, CL_MEM_USE_HOST_PTR,
+				512 * sizeof(int), rand, &ret);
+	if (ret)
+		exit_message("failed to create buf2");
+	free(rand);
 }
 
 void			cl_args_3(t_opencl *cl, cl_float3 color, int type)
@@ -223,5 +229,8 @@ void			cl_args_3(t_opencl *cl, cl_float3 color, int type)
 		exit_message("failed to set arg2 ");
 	if ((ret = clSetKernelArg(cl->kernel, 2,
 		sizeof(int), &type)))
+		exit_message("failed to set arg3");
+	if ((ret = clSetKernelArg(cl->kernel, 3,
+		sizeof(cl_mem), &cl->memobj_figures)))
 		exit_message("failed to set arg3");
 }
