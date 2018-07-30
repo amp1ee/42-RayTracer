@@ -20,7 +20,7 @@
       "size" : 10,
       "radius" : 1,
       "color" : [255, 0, 0],
-      "texture" : "chessboard"
+      "texture" : "perlin"
     },
     {
       "type" : "disk",

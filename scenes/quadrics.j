@@ -29,7 +29,7 @@
     {
       "type" : "ellipsoid",
       "origin" : [5, 2, 20],
-      "direction" [1, 0, 1],
+      "direction" : [1, 0, 1],
       "radius": 2.0,
       "color" : [0, 255, 255]
     },

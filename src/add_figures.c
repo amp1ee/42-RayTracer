@@ -97,6 +97,132 @@ t_figure	new_plane(t_figure cam)
 	return (f);
 }
 
+t_figure	new_hyperboloid(t_figure cam)
+{
+	t_figure f;
+
+	f.type = HYPERBOLOID;
+	f.radius = 0.5f;
+	f.rfl = 0.f;
+	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.p = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).z };
+	return (f);
+}
+
+t_figure	new_twosheet_hyperboloid(t_figure cam)
+{
+	t_figure f;
+
+	f.type = TWOSHEET_HYPERBOLOID;
+	f.radius = 0.5f;
+	f.rfl = 0.f;
+	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.p = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).z };
+	return (f);
+}
+
+t_figure	new_paraboloid(t_figure cam)
+{
+	t_figure f;
+
+	f.type = PARABOLOID;
+	f.radius = 0.1f;
+	f.rfl = 0.f;
+	f.cap = 5.f;
+	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.p = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=20}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=20}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=20}, cam.d).z };
+	f.d = (cl_float3){.x=
+		rotate_ort((cl_float3){.x=0, .y=1, .z=0}, cam.d).x,
+						.y=
+		rotate_ort((cl_float3){.x=0, .y=1, .z=0}, cam.d).y,
+						.z=
+		rotate_ort((cl_float3){.x=0, .y=1, .z=0}, cam.d).z };
+	return (f);
+}
+
+t_figure	new_ellipsoid(t_figure cam)
+{
+	t_figure f;
+
+	f.type = ELLIPSOID;
+	f.radius = 0.5f;
+	f.rfl = 0.f;
+	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.p = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).z };
+	f.d = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=1, .z=5}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=1, .z=5}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=1, .z=5}, cam.d).z };
+	return (f);
+}
+
+t_figure	new_disk(t_figure cam)
+{
+	t_figure f;
+
+	f.type = DISK;
+	f.radius = 0.5f;
+	f.rfl = 0.f;
+	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.p = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).z };
+	f.d = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=0, .y=1, .z=0}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=0, .y=1, .z=0}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=0, .y=1, .z=0}, cam.d).z };
+	return (f);
+}
+
+t_figure	new_cube(t_figure cam)
+{
+	t_figure f;
+
+	f.type = CUBE;
+	f.rfl = 0.f;
+	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.min = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=-1, .y=2, .z=5}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=-1, .y=2, .z=5}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=-1, .y=2, .z=5}, cam.d).z };
+	f.max = (cl_float3){.x=cam.p.x +
+		rotate_ort((cl_float3){.x=1, .y=2, .z=6}, cam.d).x,
+						.y=cam.p.y +
+		rotate_ort((cl_float3){.x=1, .y=2, .z=6}, cam.d).y,
+						.z=cam.p.z +
+		rotate_ort((cl_float3){.x=1, .y=2, .z=6}, cam.d).z};
+	return (f);
+}
+
 void		add_figure(t_figure **figures, t_figure cam, int *o_num)
 {
 	t_figure	*new;
@@ -109,7 +235,7 @@ void		add_figure(t_figure **figures, t_figure cam, int *o_num)
 	while (++i < *o_num)
 		new[i] = (*figures)[i];
 	index = (*figures)[i - 1].index;
-	new[i] = new_sphere(cam);
+	new[i] = new_cube(cam);
 	new[i].index = index + 1;
 	new[i].matirial = 0;
 	new[i].text = 0;

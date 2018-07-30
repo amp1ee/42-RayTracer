@@ -254,7 +254,7 @@ float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 
 	float	cap = p_boloid.cap;
 	float	m = dot(O + D * t_min - c, V);
-	if (m > cap)
+	if (m > INFINITY)
 		return ((float2){INFINITY, INFINITY});
 	else
 		return (t);

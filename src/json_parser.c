@@ -229,17 +229,8 @@ cl_float3		json_arr_to_color(char *str,
 	return (color);
 }
 
-void			get_fig_type()
+void			get_fig_type(t_figure *object, char *str)
 {
-	
-}
-
-t_figure		*get_object(char *str)
-{
-	t_figure	*object;
-
-	if (!(object = (t_figure *)malloc(sizeof(t_figure))))
-		return (NULL);
 	if (ft_strstr(str, "\"sphere\"") != NULL)
 		object->type = 3;
 	else if (ft_strstr(str, "\"cone\"") != NULL)
@@ -260,6 +251,15 @@ t_figure		*get_object(char *str)
 		object->type = PARABOLOID;
 	else if (ft_strstr(str, "\"ellipsoid\"") != NULL)
 		object->type = ELLIPSOID;
+}
+
+t_figure		*get_object(char *str)
+{
+	t_figure	*object;
+
+	if (!(object = (t_figure *)malloc(sizeof(t_figure))))
+		return (NULL);
+	get_fig_type(object, str);
 	object->p = json_arr_to_vector(str, "\"origin\"", NULL, NULL);
 	object->d = json_arr_to_vector(str, "\"direction\"", NULL, NULL);
 	object->radius = json_get_float(str, "\"radius\"");
