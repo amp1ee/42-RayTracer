@@ -23,7 +23,7 @@
     },
     {
       "type" : "2sheet_hyperboloid",
-      "origin" : [-5, 2, 10],
+      "origin" : [-15, 2, 10],
       "radius": 1.0,
       "color" : [255, 0, 255],
       "texture" : "perlin"
@@ -52,7 +52,7 @@
     }
     {
       "type" : "plane",
-      "origin" : [0, 15, 20],
+      "origin" : [0, -15, 20],
       "direction" : [0, -1, 0],
       "color" : [255, 255, 255],
       "texture" : "perlin"
@@ -63,7 +63,7 @@
     {
       "type" : "point",
       "intensity" : 0.8,
-      "position" : [0, 5, -10]
+      "position" : [-5, 2, -10]
     }
   ]
 }

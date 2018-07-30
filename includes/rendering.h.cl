@@ -42,8 +42,6 @@
 
 # define NUM_REFL 4
 
-# define ELLIPS_COEF (0.7f)
-
 typedef struct	s_figure
 {
 	int			text;

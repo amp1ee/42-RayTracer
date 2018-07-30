@@ -304,12 +304,12 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	}
 	else if (figure.type == PARABOLOID)
 	{
-		float3 p = {figure.p.x, figure.p.y, figure.p.z};
-		float3 d = {figure.d.x, figure.d.y, figure.d.z};
+		float3	p = {figure.p.x, figure.p.y, figure.p.z};
+		float3	d = {figure.d.x, figure.d.y, figure.d.z};
 		d /= fast_length(d);
-		float3 C = P - p;
-		float m = dot(C, d);
-		float radius = 1.f;
+		float3	C = P - p;
+		float	m = dot(C, d);
+		float	radius = 1.f;
 		N = C - d * (m + radius);
 		N = N / fast_length(N);
 	}
@@ -320,7 +320,7 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 		d /= fast_length(d);
 		float	r = figure.radius;
 
-		float	coef = ELLIPS_COEF;
+		float	coef = 0.7f;
 		float	k = r * sqrtf(1.f - coef * coef);
 
 		float3	Cmid = p + (d * k / 2.f);
