@@ -58,6 +58,11 @@
     {
       "type" : "point",
       "intensity" : 0.8,
+      "position" : [5, 2, -10]
+    },
+    {
+      "type" : "point",
+      "intensity" : 0.8,
       "position" : [-5, 2, -10]
     }
   ]

@@ -1,43 +1,43 @@
 {
   "camera" : [
     {
-      "origin" : [0,0,0],
+      "origiewn" : [0,0,0],
       "direction" : [0, 0, 0]
     }
   ],
 
   "objects" : [
     {
-      "type" : "cube",
-      "min" : [0, 0, 20],
+      "type" : "cuberge",
+      "min" : [-0.300000000000000000000000, 0, 20],
       "max" : [1, 1, 21],
       "color" : [255, 0, 0]
     },
     {
-      "type" : "cylinder",
+      "type" : "cylinergder",
       "origin" : [-2, 0, 20],
       "direction" : [-2, 1, 20],
       "size" : 10,
       "radius" : 1,
       "color" : [255, 0, 0],
-      "texture" : "perlin"
+      "texture" : "chessboarewrd"
     },
     {
-      "type" : "disk",
+      "type" : "diergsk",
       "origin" : [2, 5, 20],
-      "direction" : [0, 0.2, -1],
+      "direction" : [0, 0, -1],
       "radius" : 1,
       "color" : [255, 0, 0]
     },
     {
-      "type" : "plane",
+      "type" : "plergane",
       "origin" : [2, -2, 20],
       "direction" : [0, 1, -0.1],
       "color" : [255, 255, 0],
       "reflective" : 0
     },
     {
-      "type" : "plane",
+      "type" : "plaergne",
       "origin" : [2, -2, 20],
       "direction" : [0, -1, 0.1],
       "color" : [255, 0, 0],

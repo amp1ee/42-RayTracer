@@ -105,6 +105,7 @@ typedef struct	s_slist
 
 typedef struct	s_scene
 {
+	int			effect;
 	int			l_num;
 	int			o_num;
 	t_figure	cam;
@@ -193,6 +194,7 @@ t_scene			*parse_json(char *file, t_opencl *cl);
 ** HANDLERS
 */
 
+void			write_in_file(t_scene sc);
 int				key(int key_code, t_main *mlx);
 int				mouse(int key_code, int x, int y, t_main *mlx);
 void			figure_actions(t_main *mlx, int x, int y);

@@ -48,7 +48,8 @@ void	key_events(t_main *mlx, SDL_Event *event)
 (add_figure(&mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num)) : 0;
 	(event->K_K == SDL_SCANCODE_KP_MINUS) ? (call_dialog(mlx)) : 0;
 	(event->K_K == SDL_SCANCODE_KP_0) ? screen_shoot(*mlx) : 0;
-	(event->K_K == SDL_SCANCODE_KP_1) ? apply_effects(mlx, 1) : 0;
+	(event->K_K == SDL_SCANCODE_KP_1) ? mlx->scene->effect++ : 0;
+	(event->K_K == SDL_SCANCODE_KP_3) ? write_in_file(*mlx->scene) : 0;
 }
 
 void	mouse_events(t_main *mlx)

@@ -269,6 +269,7 @@ t_figure		*get_object(char *str)
 	object->color = json_arr_to_color(str, "\"color\"", NULL, NULL);
 	object->cap = json_get_float(str, "\"cap\"");
 	object->matirial = 0;
+	object->angle = 0;
 	object->rfl = json_get_float(str, "\"reflective\"");
 	if (object->rfl > 0)
 		object->matirial = 1;
@@ -302,7 +303,9 @@ char			*json_get_name(char *str, char *pattern)
 
 	substr = ft_strstr(str, pattern);
 	if (!substr)
+	{
 		return (NULL);
+	}
 	splitted = ft_strsplit(substr, '\"');
 	ret = ft_strdup(splitted[2]);
 	ft_del_str(splitted);
@@ -340,7 +343,11 @@ t_texture		*get_texture(char *str, t_opencl *cl, cl_float3 color)
 		else if (!ft_strcmp(name, "chessboard"))
 			get_disruption(text, cl, color, 2);
 		else
+		{
+			free(name);
 			free(text);
+			return (NULL);
+		}
 	}
 	free(name);
 	return (text);

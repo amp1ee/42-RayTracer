@@ -208,18 +208,20 @@ t_figure	new_cube(t_figure cam)
 	f.type = CUBE;
 	f.rfl = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
+	f.p = (cl_float3){.x=0, .y=0, .z=0};
+	f.d = (cl_float3){.x=0, .y=0, .z=0};
 	f.min = (cl_float3){.x=cam.p.x +
-		rotate_ort((cl_float3){.x=-1, .y=2, .z=5}, cam.d).x,
+		rotate_ort((cl_float3){.x=-1, .y=-1, .z=5}, cam.d).x,
 						.y=cam.p.y +
-		rotate_ort((cl_float3){.x=-1, .y=2, .z=5}, cam.d).y,
+		rotate_ort((cl_float3){.x=-1, .y=-1, .z=5}, cam.d).y,
 						.z=cam.p.z +
-		rotate_ort((cl_float3){.x=-1, .y=2, .z=5}, cam.d).z };
+		rotate_ort((cl_float3){.x=-1, .y=-1, .z=5}, cam.d).z };
 	f.max = (cl_float3){.x=cam.p.x +
-		rotate_ort((cl_float3){.x=1, .y=2, .z=6}, cam.d).x,
+		rotate_ort((cl_float3){.x=1, .y=0, .z=7}, cam.d).x,
 						.y=cam.p.y +
-		rotate_ort((cl_float3){.x=1, .y=2, .z=6}, cam.d).y,
+		rotate_ort((cl_float3){.x=1, .y=0, .z=7}, cam.d).y,
 						.z=cam.p.z +
-		rotate_ort((cl_float3){.x=1, .y=2, .z=6}, cam.d).z};
+		rotate_ort((cl_float3){.x=1, .y=0, .z=7}, cam.d).z};
 	return (f);
 }
 

@@ -425,30 +425,6 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	return hit_color;
 }
 
-void apply_effects(__global int *data, __global int *out, int type)
-{
-	int j = get_global_id(0);
-	int i = get_global_id(1);
-	float3 c;
-	float3 a = return_point_color(data[j * 1200 + i]);
-	if (type == 1)
-	{
-		c = e_grades_gray(a);
-	}
-	else if (type == 2)
-	{
-		c = e_sepia(a);
-	}
-	else if (type == 3)
-	{
-		c = e_negative(a);
-	}
-	else if (type == 4)
-	{
-		c = e_black_white(a);
-	}
-	out[j * 1200 + i] = return_int_color(c);
-}
 
 float fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); }
 
@@ -515,9 +491,32 @@ __kernel void create_disruption(__global int * data, float3 color, int type, __g
     data[j * 1200 + i] = finalValue;
 }
 
+int apply_effects(float3 a, int type)
+{
+	float3 c;
+	if (type == 1)
+	{
+		c = e_grades_gray(a);
+	}
+	else if (type == 2)
+	{
+		c = e_sepia(a);
+	}
+	else if (type == 3)
+	{
+		c = e_negative(a);
+	}
+	else if (type == 4)
+	{
+		c = e_black_white(a);
+	}
+	return return_int_color(c);
+}
+
+
 __kernel void rendering(__global int * data, __global t_figure *figures,
 					__global t_figure *light, t_figure cam,
-					int l_n, int o_n, __global int *textures, __global int3 *textures_sz)
+					int l_n, int o_n, __global int *textures, __global int3 *textures_sz, int effects)
 {
 	int j = get_global_id(0);
 	int i = get_global_id(1);
@@ -531,8 +530,8 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 
 	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
 	
-	//float3 new = e_black_white(c);
-	data[j * 1200 + i] = return_int_color(c);
+	int new = apply_effects(c, effects);
+	data[j * 1200 + i] = (new);
 }
 
 

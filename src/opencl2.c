@@ -123,8 +123,7 @@ void			cl_args_1(t_opencl *cl, t_main *mlx)
 	if ((ret = clSetKernelArg(cl->kernel, 1,
 		sizeof(cl_mem), &cl->memobj_figures)))
 		exit_message("failed to set arg2 ");
-	if ((ret = clSetKernelArg(cl->kernel, 2,
-		sizeof(cl_mem), &cl->memobj_light)))
+	if ((ret = clSetKernelArg(cl->kernel, 2, sizeof(cl_mem), &cl->memobj_light)))
 		exit_message("failed to set arg3");
 	if ((ret = clSetKernelArg(cl->kernel, 3,
 		sizeof(t_figure), &mlx->scene->cam)))
@@ -140,6 +139,9 @@ void			cl_args_1(t_opencl *cl, t_main *mlx)
 		exit_message("failed to set arg7");
 	if ((ret = clSetKernelArg(cl->kernel, 7,
 		sizeof(cl_mem), &cl->memobj_textures_sz)))
+		exit_message("failed to set arg8");
+	if ((ret = clSetKernelArg(cl->kernel, 8,
+		sizeof(int), &mlx->scene->effect)))
 		exit_message("failed to set arg8");
 }
 
