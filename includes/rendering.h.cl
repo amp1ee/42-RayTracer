@@ -29,6 +29,12 @@
 # define CYLINDER 5
 # define CONE 4
 # define SPHERE 3
+# define DISK 7
+# define CUBE 8
+# define ELLIPSOID 9
+# define PARABOLOID 10
+# define TWOSHEET_HYPERBOLOID 11
+# define HYPERBOLOID 12
 
 # define NUM_REFL 4
 
@@ -41,10 +47,13 @@ typedef struct	s_figure
 	float		radius;
 	float		angle;
 	float		rfl;
-	float		rfr;
+	float		cap;
 	float3		color;
 	float3		p;
 	float3		d;
+	float3		min;
+	float3		max;
+	float 		size;
 }				t_figure;
 
 typedef struct	s_closest

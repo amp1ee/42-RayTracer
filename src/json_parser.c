@@ -229,6 +229,11 @@ cl_float3		json_arr_to_color(char *str,
 	return (color);
 }
 
+void			get_fig_type()
+{
+	
+}
+
 t_figure		*get_object(char *str)
 {
 	t_figure	*object;
@@ -243,10 +248,26 @@ t_figure		*get_object(char *str)
 		object->type = 5;
 	else if (ft_strstr(str, "\"plane\"") != NULL)
 		object->type = 6;
+	else if (ft_strstr(str, "\"disk\"") != NULL)
+		object->type = 7;
+	else if (ft_strstr(str, "\"cube\"") != NULL)
+		object->type = 8;
+	else if (ft_strstr(str, "\"hyperboloid\"") != NULL)
+		object->type = HYPERBOLOID;
+	else if (ft_strstr(str, "\"2sheet_hyperboloid\"") != NULL)
+		object->type = TWOSHEET_HYPERBOLOID;
+	else if (ft_strstr(str, "\"paraboloid\"") != NULL)
+		object->type = PARABOLOID;
+	else if (ft_strstr(str, "\"ellipsoid\"") != NULL)
+		object->type = ELLIPSOID;
 	object->p = json_arr_to_vector(str, "\"origin\"", NULL, NULL);
 	object->d = json_arr_to_vector(str, "\"direction\"", NULL, NULL);
 	object->radius = json_get_float(str, "\"radius\"");
+	object->size = json_get_float(str, "\"size\"");
+	object->min = json_arr_to_vector(str, "\"min\"", NULL, NULL);
+	object->max = json_arr_to_vector(str, "\"max\"", NULL, NULL);
 	object->color = json_arr_to_color(str, "\"color\"", NULL, NULL);
+	object->cap = json_get_float(str, "\"cap\"");
 	object->matirial = 0;
 	object->rfl = json_get_float(str, "\"reflective\"");
 	if (object->rfl > 0)

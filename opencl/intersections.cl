@@ -12,9 +12,22 @@
 
 #include "rendering.h.cl"
 
+static inline float2 SolveQuadEquation(float A, float B, float C)
+{
+	float desk = B * B - 4.0f * A * C;
+
+	if (desk < 0.0f)
+		return (float2){INFINITY, INFINITY};
+
+	float t1 = (-B + sqrt(desk)) / (2.0f * A);
+	float t2 = (-B - sqrt(desk)) / (2.0f * A);
+	return (float2){t1, t2};
+}
+
 float2 IntersectRayCone(float3 O, float3 D, t_figure cone)
 {
 	float A = cone.angle;
+	float tmp;
 	float3 d = {cone.d.x, cone.d.y, cone.d.z};
 	float3 p = {cone.p.x, cone.p.y, cone.p.z};
 
@@ -36,12 +49,22 @@ float2 IntersectRayCone(float3 O, float3 D, t_figure cone)
 	float C1 = cos(A) * cos(A) * dot(tmp2, tmp2)
 					- sin(A) * sin(A)* sc2 * sc2;
 
-	float desk = B1 * B1 - 4.0f * A1 * C1;
-	if (desk < 0.0f)
-		return (float2){INFINITY, INFINITY};
-	
-	float t1 = (-B1 + sqrt(desk)) / (2.0f * A1);
-	float t2 = (-B1 - sqrt(desk)) / (2.0f * A1);
+	float2 r_f = SolveQuadEquation(A1, B1, C1);
+	float t1 = r_f.x;
+	float t2 = r_f.y;
+
+	/*if (t1 < t2)
+		tmp = t1;
+	else
+		tmp = t2;
+	if (tmp >= 1. && tmp <= INFINITY)
+	{
+		float3 P = O + D * tmp;
+		float3 v = P - cone.p;
+		float l = dot(v, v);
+		if (l >= cone.size)
+			return INFINITY;
+	}*/
 	return (float2){t1, t2};
 }
 
@@ -55,18 +78,14 @@ float2 IntersectRaySphere(float3 O, float3 D, t_figure sphere)
 	float k2 = 2.0f * dot(oc,D);
 	float k3 = dot(oc,oc) - R * R;
 
-	float desk = k2 * k2 - 4.0f * k1 * k3;
-	if (desk < 0.0f)
-		return (float2){INFINITY, INFINITY};
 	
-	float t1 = (-k2 + sqrt(desk)) / (2.0f * k1);
-	float t2 = (-k2 - sqrt(desk)) / (2.0f * k1);
-	return (float2){t1, t2};
+	return SolveQuadEquation(k1, k2, k3);
 }
 
 float2 IntersectRayCylinder(float3 O, float3 D, t_figure cyl)
 {
 	float R = cyl.radius;
+	float tmp;
 
 	float3 V = D;
 	float3 P = O;
@@ -81,12 +100,22 @@ float2 IntersectRayCylinder(float3 O, float3 D, t_figure cyl)
 	float B = 2.0f * dot(tmp1, tmp2);
 	float C = dot(tmp2, tmp2) - R * R;
 
-	float desk = B * B - 4.0f * A * C;
-	if (desk < 0.0f)
-		return (float2){INFINITY, INFINITY};
-	
-	float t1 = (-B + sqrt(desk)) / (2.0f * A);
-	float t2 = (-B - sqrt(desk)) / (2.0f * A);
+	float2 cc = SolveQuadEquation(A, B, C);
+	float t1 = cc.x;
+	float t2 = cc.y;
+	// if (t1 < t2)
+	// 	tmp = t1;
+	// else
+	// 	tmp = t2;
+	// if (tmp >= 1. && tmp <= INFINITY)
+	// {
+	// 	float3 P = O + D * tmp;
+	// 	float3 v = P - cyl.p;
+	// 	float l = dot(v, v);
+	// 	if (l >= cyl.size)
+	// 		return INFINITY;
+
+	// }
 	return (float2){t1, t2};
 }
 
@@ -108,3 +137,145 @@ float2 IntersectRayPlane(float3 O, float3 D, t_figure plane)
 	return (float2) {INFINITY, INFINITY};
 }
 
+float2 IntersectRayDisk(float3 O, float3 D, t_figure disk)
+{
+	float2 t1;
+	float	t;
+	float3 	p;
+	float 	d;
+	float3 	v;
+
+	float3 p0 = {disk.p.x, disk.p.y, disk.p.z};
+	t1 = IntersectRayPlane(O, D, disk);
+	t = t1.x;
+
+	if (t > 1.0 && t < INFINITY)
+	{
+		p = O + D * t;
+		v = p - p0;
+		d = dot(v, v);
+		if (d <= disk.radius)
+        return (float2){t, INFINITY}; 
+	}
+    return (float2){INFINITY, INFINITY}; 
+}
+
+float2 IntersectRayCube(float3 O, float3 D, t_figure box)
+{
+	// printf("%s\n", "CUBE");
+	float3 min = {box.min.x, box.min.y, box.min.z};
+  	float3 max = {box.max.x, box.max.y, box.max.z};
+	float tmin = (min.x - O.x) / D.x;
+	float tmax = (max.x - O.x) / D.x;
+
+	if (tmin > tmax)
+    {
+    	float tmp = tmin;
+    	tmin = tmax;
+    	tmax = tmp;
+    }
+    float tymin = (min.y - O.y) / D.y; 
+    float tymax = (max.y - O.y) / D.y; 
+    if (tymin > tymax)
+    {
+    	float tmp = tymin;
+    	tymin = tymax;
+    	tymax = tmp;
+    } 
+    if ((tmin > tymax) || (tymin > tmax)) 
+        return (float2){INFINITY, INFINITY}; 
+
+    if (tymin > tmin) 
+        tmin = tymin;
+ 
+    if (tymax < tmax) 
+        tmax = tymax;
+ 
+    float tzmin = (min.z - O.z) / D.z; 
+    float tzmax = (max.z - O.z) / D.z; 
+    if (tzmin > tzmax)
+    {
+    	float tmp = tzmin;
+    	tzmin = tzmax;
+    	tzmax = tmp;
+    }
+
+    if ((tmin > tzmax) || (tzmin > tmax)) 
+        return (float2){INFINITY, INFINITY}; 
+ 
+    if (tzmin > tmin) 
+        tmin = tzmin; 
+ 
+    if (tzmax < tmax) 
+        tmax = tzmax; 
+
+    // printf("%f\n", tmin);
+        return (float2){tmin, INFINITY}; 
+}
+
+float2 IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid)
+{
+	float3	c = {h_boloid.p.x, h_boloid.p.y, h_boloid.p.z};
+	float3	P = O - c;
+	float	R = h_boloid.radius;
+
+	float	A = D.x * D.x - D.y * D.y + D.z * D.z;
+	float	B = 2.0f * (P.x * D.x - P.y * D.y + P.z * D.z);
+	float	C = P.x * P.x - P.y * P.y + P.z * P.z - R * R;
+	return (SolveQuadEquation(A, B, C));
+}
+
+float2 IntersectRayTwoSheetHyperboloid(float3 O, float3 D, t_figure h_boloid)
+{
+	float3	c = {h_boloid.p.x, h_boloid.p.y, h_boloid.p.z};
+	float3	P = O - c;
+	float	R = h_boloid.radius;
+
+	float	A = D.x * D.x - D.y * D.y + D.z * D.z;
+	float	B = 2.0f * (P.x * D.x - P.y * D.y + P.z * D.z);
+	float	C = P.x * P.x - P.y * P.y + P.z * P.z + R * R;
+	return (SolveQuadEquation(A, B, C));
+}
+
+float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
+{
+	float3	c = {p_boloid.p.x, p_boloid.p.y, p_boloid.p.z};
+	float3	V = {p_boloid.d.x, p_boloid.d.y, p_boloid.d.z};
+	V /= fast_length(V);
+	float3	P = O - c;
+
+	float	k = 1.0;
+	float	A = dot(D, D) - dot(D, V) * dot(D, V);
+	float	B = 2.0f * (dot(D, P) - dot(D, V) * (dot(P, V) + 2.0f*k));
+	float	C = dot(P, P) - dot(P, V) * (dot(P, V) + 4.0f*k);
+
+	float2	t = SolveQuadEquation(A, B, C);
+	float	t_min = t.x < t.y ? t.x : t.y;
+
+	float	cap = p_boloid.cap;
+	float	m = dot(O + D * t_min - c, V);
+	if (m > cap)
+		return ((float2){INFINITY, INFINITY});
+	else
+		return (t);
+}
+
+float2 IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse)
+{
+	float R = 2.f * ellipse.radius;
+	float R2 = R * R;
+	float3 c = {ellipse.p.x, ellipse.p.y, ellipse.p.z};
+	float3 V = {ellipse.d.x, ellipse.d.y, ellipse.d.z};
+	V /= fast_length(V);
+	float3 OC = (float3){O.x - c.x, O.y - c.y, O.z - c.z};
+
+	float	coef = 0.7f;
+	float	k = R * sqrtf(1.f - coef * coef);
+
+	float	A1 = 2.f * k * dot(D, V);
+	float	A2 = R2 + 2.f * k * dot(OC, V) - k;
+	float	A = 4.f * R2 * dot(D, D) - A1 * A1;
+	float	B = 8.f * R2 * dot(D, OC) - 2.f * A1 * A2;
+	float	C = 4.f * R2 * dot(OC, OC) - A2 * A2;
+	return (SolveQuadEquation(A, B, C));
+}

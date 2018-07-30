@@ -84,6 +84,18 @@ t_closest		closest_fig(float3 O, float3 D,
 			tmp = IntersectRayPlane(O, D, figures[i]);
 		else if (figures[i].type == SPHERE)
 			tmp = IntersectRaySphere(O, D, figures[i]);
+		else if (figures[i].type == DISK)
+			tmp = IntersectRayDisk(O, D, figures[i]);
+		else if (figures[i].type == CUBE)
+			tmp = IntersectRayCube(O, D, figures[i]);
+		else if (figures[i].type == HYPERBOLOID)
+			tmp = IntersectRayHyperboloid(O, D, figures[i]);
+		else if (figures[i].type == TWOSHEET_HYPERBOLOID)
+			tmp = IntersectRayTwoSheetHyperboloid(O, D, figures[i]);
+		else if (figures[i].type == PARABOLOID)
+			tmp = IntersectRayParaboloid(O, D, figures[i]);
+		else if (figures[i].type == ELLIPSOID)
+			tmp = IntersectRayEllipsoid(O, D, figures[i]);
 
 		if (tmp.x >= min && tmp.x <= max && tmp.x < closest)
 		{
@@ -172,7 +184,7 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 {
 	float3 N;
 	
-	if (figure.type == PLANE)
+	if (figure.type == PLANE  || figure.type == DISK)
 	{
 		float3 d = {figure.d.x, figure.d.y, figure.d.z};
 		if (dot(d,D) < 0.0f)
@@ -206,6 +218,53 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 		T = T / fast_length(T);
 		T = T * dot(N, T);
 		N = (N - T) / fast_length(N - T);
+	}
+	else if (figure.type == CUBE)
+	{
+		float3 center = {(figure.min.x + figure.max.x) / 2., 
+			(figure.min.y + figure.max.y) / 2., (figure.min.z + figure.max.z) / 2.};
+		float3 center_p = P - center;
+		double bias = 1.00001;
+		float3 d = {fabs(figure.min.x - figure.max.x) / 2., 
+			fabs(figure.min.y - figure.max.y) / 2., fabs(figure.min.z - figure.max.z) / 2.};
+		N = (float3){center_p.x / fabs(d.x) * bias, center_p.y / fabs(d.y) * bias,
+		 center_p.z / fabs(d.z) * bias};
+		N = fast_normalize(N);
+		// printf("%f %f %f \n", N.x, N.y, N.z);
+	}
+	else if (figure.type == HYPERBOLOID || figure.type == TWOSHEET_HYPERBOLOID)
+	{
+		float3 p = {figure.p.x, figure.p.y, figure.p.z};
+		float3 C = P - p;
+
+		N = (float3){2.f * C.x, -2.f * C.y, 2.f * C.z};
+		N = N / fast_length(N);
+	}
+	else if (figure.type == PARABOLOID)
+	{
+		float3	p = {figure.p.x, figure.p.y, figure.p.z};
+		float3	d = {figure.d.x, figure.d.y, figure.d.z};
+		d /= fast_length(d);
+		float3	C = P - p;
+		float	m = dot(C, d);
+		float	radius = 1.f;
+		N = C - d * (m + radius);
+		N = N / fast_length(N);
+	}
+	else if (figure.type == ELLIPSOID)
+	{
+		float3	p = {figure.p.x, figure.p.y, figure.p.z};
+		float3	d = {figure.d.x, figure.d.y, figure.d.z};
+		d /= fast_length(d);
+		float	r = figure.radius;
+
+		float	coef = 0.7f;
+		float	k = r * sqrtf(1.f - coef * coef);
+
+		float3	Cmid = p + (d * k / 2.f);
+		float3	R = P - Cmid;
+		N = R - d * (1.f - (coef * coef)) * dot(R, d);
+		N = N / fast_length(N);
 	}
 	return N;
 }

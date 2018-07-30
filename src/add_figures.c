@@ -19,7 +19,6 @@ t_figure	new_sphere(t_figure cam)
 	f.type = SPHERE;
 	f.radius = 0.5f;
 	f.rfl = 0.f;
-	f.rfr = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
@@ -37,7 +36,6 @@ t_figure	new_cylinder(t_figure cam)
 	f.type = CYLINDER;
 	f.radius = 0.5f;
 	f.rfl = 0.f;
-	f.rfr = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
@@ -61,7 +59,6 @@ t_figure	new_cone(t_figure cam)
 	f.type = CONE;
 	f.angle = 10;
 	f.rfl = 0.f;
-	f.rfr = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
@@ -84,7 +81,6 @@ t_figure	new_plane(t_figure cam)
 
 	f.type = PLANE;
 	f.rfl = 0.f;
-	f.rfr = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,

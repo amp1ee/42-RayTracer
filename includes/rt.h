@@ -49,7 +49,12 @@
 # define CYLINDER 5
 # define CONE 4
 # define SPHERE 3
-
+# define DISK 7
+# define CUBE 8
+# define ELLIPSOID 9
+# define PARABOLOID 10
+# define TWOSHEET_HYPERBOLOID 11
+# define HYPERBOLOID 12
 
 # define MEM_LENGTH 1440000
 
@@ -69,10 +74,13 @@ typedef struct	s_figure
 	float		radius;
 	float		angle;
 	float		rfl;
-	float		rfr;
+	float		cap;
 	cl_float3	color;
 	cl_float3	p;
 	cl_float3	d;
+	cl_float3	min;
+	cl_float3	max;
+	float		size;
 }				t_figure;
 
 typedef struct	s_texture
