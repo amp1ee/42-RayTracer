@@ -64,8 +64,7 @@
       "type" : "point",
       "intensity" : 0.8,
       "position" : [0, 5, -10]
-    },
-
+    }
   ]
 }
 

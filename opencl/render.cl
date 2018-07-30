@@ -306,8 +306,11 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	{
 		float3 p = {figure.p.x, figure.p.y, figure.p.z};
 		float3 d = {figure.d.x, figure.d.y, figure.d.z};
+		d /= fast_length(d);
 		float3 C = P - p;
-		N = C - d;
+		float m = dot(C, d);
+		float radius = 1.f;
+		N = C - d * (m + radius);
 		N = N / fast_length(N);
 	}
 	else if (figure.type == ELLIPSOID)
@@ -315,13 +318,12 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 		float3	p = {figure.p.x, figure.p.y, figure.p.z};
 		float3	d = {figure.d.x, figure.d.y, figure.d.z};
 		d /= fast_length(d);
-		float3	C = p;
 		float	r = figure.radius;
 
 		float	coef = ELLIPS_COEF;
 		float	k = r * sqrtf(1.f - coef * coef);
 
-		float3	Cmid = C + (d * k / 2.f);
+		float3	Cmid = p + (d * k / 2.f);
 		float3	R = P - Cmid;
 		N = R - d * (1.f - (coef * coef)) * dot(R, d);
 		N = N / fast_length(N);
