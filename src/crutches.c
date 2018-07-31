@@ -14,8 +14,8 @@
 
 char			*ft_ftoa(float num)
 {
-	int 		whole;
-	int 		fract;
+	int			whole;
+	int			fract;
 	char		*str;
 
 	str = ft_strnew(1);
@@ -28,7 +28,7 @@ char			*ft_ftoa(float num)
 	str = ft_strjoinfree(str, ft_itoa(whole));
 	str = ft_strjoinlit(str, ".");
 	str = ft_strjoinfree(str, ft_itoa(fract));
-	return(str);
+	return (str);
 }
 
 void			change_float_val(float *val, char operator, float nb, float max)

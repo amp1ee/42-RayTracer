@@ -12,19 +12,6 @@
 
 #include "rt.h"
 
-// void			create_sidebar(t_main *mlx, t_sdl *sdl)
-// {
-// 	SDL_Surface	*message;
-// 	SDL_Rect	dst;
-// 	SDL_Color	red = {.r = 255, .g = 0, .b = 0};
-
-// 	if (mlx && sdl)
-// 		printf("\n");
-// 	dst = (SDL_Rect){.x = 10, .y = 10, .h = 50, .w = 200};
-// 	message = TTF_RenderText_Blended(sdl->ui.roboto, "Camera", red);
-// 	SDL_BlitSurface(message, NULL, sdl->ui.sidebar, &dst);
-// }
-
 void			draw_button(t_sdl *sdl, int i, int x, int width)
 {
 	SDL_Rect	dst;

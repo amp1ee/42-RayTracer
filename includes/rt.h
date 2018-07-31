@@ -89,6 +89,7 @@ typedef struct	s_figure
 	cl_float3	min;
 	cl_float3	max;
 	float		size;
+	float		scale;
 }				t_figure;
 
 typedef struct	s_texture
@@ -119,7 +120,7 @@ typedef struct	s_scene
 	t_figure	cam;
 	int			textures_num;
 	int			*textures;
-	cl_int3		*textures_info;
+	cl_int4		*textures_info;
 	t_figure	*objects;
 	t_figure	*lights;
 }				t_scene;
@@ -143,7 +144,7 @@ typedef struct	s_opencl
 	cl_mem				memobj_textures_sz;
 }				t_opencl;
 
-typedef struct s_interface
+typedef struct	s_interface
 {
 	SDL_Surface		*menu;
 	SDL_Surface		*sb;
@@ -190,10 +191,8 @@ typedef struct	s_main
 */
 
 t_figure		new_sphere(t_figure cam, float r);
-/*t_figure		new_cylinder(t_figure cam);
-t_figure		new_cone(t_figure cam);
-t_figure		new_plane(t_figure cam);*/
-void			add_figure(t_main *mlx, t_figure **figures, t_figure cam, int *o_num, char type);
+void			add_figure(t_main *mlx, t_figure **figures,
+					t_figure cam, int *o_num, char type);
 cl_float3		rotate_ort(cl_float3 point, cl_float3 rot);
 int				figure_actions(t_main *mlx, int x, int y);
 
@@ -204,7 +203,8 @@ int				figure_actions(t_main *mlx, int x, int y);
 void			cl_start(t_opencl *cl);
 void			cl_kernel_buffer_1(t_opencl *cl, t_main *mlx, int memlenth);
 void			cl_kernel_buffer_2(t_opencl *cl, t_main *mlx);
-void			cl_args_1(t_opencl *cl, t_main *mlx);
+void			cl_args_1_1(t_opencl *cl, t_main *mlx);
+void			cl_args_1_2(t_opencl *cl, t_main *mlx);
 void			cl_args_2(t_opencl *cl, t_main *mlx, int i, int j);
 void			cl_init(t_main *mlx);
 void			rendering(t_main *mlx);
@@ -269,10 +269,10 @@ void			print_message(t_sdl *sdl, const char *str, char type, int *y);
 
 void			draw_info_btns(t_sdl *sdl);
 
-
 /*
 ** init_interface.c
 */
+
 SDL_Surface		*create_button(char *src);
 void			init_ui(t_sdl *sdl);
 void			init_buttons(SDL_Surface **menu_button);
@@ -282,11 +282,11 @@ char			*ft_strjoinlit(char *s1, const char *s2);
 /*
 ** sidebar.c
 */
+
 void			draw_sidebar(t_sdl *sdl, t_scene *scene);
 char			*cam_pos_message(t_figure cam, char type);
 char			*light_message(t_figure *light, int i);
 void			show_fig_info(t_sdl *sdl, t_figure *curr);
-//<<<<<<< HEAD
 void			print_fig_float(t_sdl *sdl, float nb, int *y, int i);
 
 /*
@@ -296,11 +296,13 @@ void			print_fig_col(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_dir(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_pos(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_type(t_sdl *sdl, t_figure *figure, int *y);
-void			print_info_message(t_sdl *sdl, const char *str, char type, int *y);
+void			print_info_message(t_sdl *sdl,
+					const char *str, char type, int *y);
 
 /*
 ** button_manipulator.c
 */
+
 void			handle_curr_obj(t_main *mlx, int x, int y);
 void			handle_curr_obj2(t_main *mlx, int x, int y);
 void			handle_curr_obj3(t_main *mlx, int x, int y);
@@ -316,8 +318,9 @@ void			draw_info_btns3(t_sdl *sdl);
 /*
 ** crutches.c
 */
-char			*ft_ftoa(float num);
-void			change_float_val(float *val, char operator, float nb, float max);
 
+char			*ft_ftoa(float num);
+void			change_float_val(float *val,
+					char operator, float nb, float max);
 
 #endif

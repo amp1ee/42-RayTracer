@@ -111,7 +111,6 @@ int			figure_actions(t_main *mlx, int x, int y)
 	int index;
 
 	index = find_figure(mlx, x - SIDE_W, y - MEN_H);
-	//printf("%d\n", index);
 	if (index == -1)
 		mlx->sdl->ui.show_info = 0;
 	return (index);
@@ -191,4 +190,3 @@ t_scene			*empty_scene(void)
 	scene->objects->color = (cl_float3){.x = 0, .y = 0, .z = 0};
 	return (scene);
 }
-

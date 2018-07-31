@@ -114,16 +114,18 @@ mlx->scene->textures_num * sizeof(cl_int3), mlx->scene->textures_info, &ret);
 		exit_message("failed to create buf5");
 }
 
-void			cl_args_1(t_opencl *cl, t_main *mlx)
+void			cl_args_1_1(t_opencl *cl, t_main *mlx)
 {
 	int ret;
 
-	if ((ret = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->memobj_data)))
+	if ((ret = clSetKernelArg(cl->kernel, 0,
+		sizeof(cl_mem), &cl->memobj_data)))
 		exit_message("failed to set arg1");
 	if ((ret = clSetKernelArg(cl->kernel, 1,
 		sizeof(cl_mem), &cl->memobj_figures)))
 		exit_message("failed to set arg2 ");
-	if ((ret = clSetKernelArg(cl->kernel, 2, sizeof(cl_mem), &cl->memobj_light)))
+	if ((ret = clSetKernelArg(cl->kernel, 2,
+		sizeof(cl_mem), &cl->memobj_light)))
 		exit_message("failed to set arg3");
 	if ((ret = clSetKernelArg(cl->kernel, 3,
 		sizeof(t_figure), &mlx->scene->cam)))
@@ -131,6 +133,12 @@ void			cl_args_1(t_opencl *cl, t_main *mlx)
 	if ((ret = clSetKernelArg(cl->kernel, 4,
 		sizeof(int), &mlx->scene->l_num)))
 		exit_message("failed to set arg5");
+}
+
+void			cl_args_1_2(t_opencl *cl, t_main *mlx)
+{
+	int ret;
+
 	if ((ret = clSetKernelArg(cl->kernel, 5,
 		sizeof(int), &mlx->scene->o_num)))
 		exit_message("failed to set arg6");

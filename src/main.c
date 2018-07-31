@@ -29,9 +29,17 @@ void	init_sdl(t_sdl *sdl)
 		exit_message("Error in creating renderer");
 	if (!(sdl->sur = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0)))
 		exit_message("Error in creating surface");
-	if (!(sdl->ui.menu_button = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * BT_COUNT)))
+	if (!(sdl->ui.menu_button =
+		(SDL_Surface **)malloc(sizeof(SDL_Surface *) * BT_COUNT)))
 		exit_message("Error in UI");
 	sdl->keyboard_state = SDL_GetKeyboardState(NULL);
+}
+
+void	effects(int *a)
+{
+	(*a)++;
+	*a = *a % 5;
+	printf("%d\n", *a);
 }
 
 void	key_events(t_main *mlx, SDL_Event *event)
@@ -48,11 +56,9 @@ void	key_events(t_main *mlx, SDL_Event *event)
 	(event->K_K == SDL_SCANCODE_E) ? (mlx->scene->cam.p.y += 0.5f) : 0;
 	(event->K_K == SDL_SCANCODE_Q) ? (mlx->scene->cam.p.y -= 0.5f) : 0;
 	(event->K_K == SDL_SCANCODE_KP_PLUS) ?
-(add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 's')) : 0;
-	(event->K_K == SDL_SCANCODE_KP_MINUS) ? (call_dialog(mlx)) : 0;
-	(event->K_K == SDL_SCANCODE_KP_0) ? screen_shoot(*mlx) : 0;
-	(event->K_K == SDL_SCANCODE_KP_1) ? mlx->scene->effect++ : 0;
-	(event->K_K == SDL_SCANCODE_KP_3) ? write_in_file(*mlx->scene) : 0;
+(add_figure(mlx, &mlx->scene->objects,
+	mlx->scene->cam, &mlx->scene->o_num, 'e')) : 0;
+	(event->K_K == SDL_SCANCODE_KP_1) ? effects(&mlx->scene->effect) : 0;
 }
 
 void	mouse_events(t_main *mlx)
@@ -70,17 +76,22 @@ void	mouse_events(t_main *mlx)
 	else if (x > 298 && x < 415 && y > 15 && y < BT_H + 15)
 		screen_shoot(*mlx);
 	else if (x > 435 && x < 520 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 's');
+		add_figure(mlx, &mlx->scene->objects,
+			mlx->scene->cam, &mlx->scene->o_num, 's');
 	else if (x > 540 && x < 617 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'p');
+		add_figure(mlx, &mlx->scene->objects,
+			mlx->scene->cam, &mlx->scene->o_num, 'p');
 	else if (x > 637 && x < 709 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'c');
+		add_figure(mlx, &mlx->scene->objects,
+			mlx->scene->cam, &mlx->scene->o_num, 'c');
 	else if (x > 729 && x < 826 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'y');
+		add_figure(mlx, &mlx->scene->objects,
+			mlx->scene->cam, &mlx->scene->o_num, 'y');
 	else if (x > SIDE_W && y > MEN_H)
 	{
 		mlx->sdl->ui.show_info = 1;
-		set_curr_fig(&mlx->sdl->ui.curr_figure, mlx->scene->objects, figure_actions(mlx, x, y));
+		set_curr_fig(&mlx->sdl->ui.curr_figure,
+			mlx->scene->objects, figure_actions(mlx, x, y));
 	}
 	handle_curr_obj(mlx, x, y);
 }
@@ -109,14 +120,17 @@ void	mousewheel_events(t_main *mlx, SDL_Event *event)
 {
 	int		x;
 	int		y;
-	
+
 	SDL_GetMouseState(&x, &y);
-	if (mlx->sdl->keyboard_state[SDL_SCANCODE_LSHIFT] && x > SIDE_W && y > MEN_H)
+	if (mlx->sdl->keyboard_state[SDL_SCANCODE_LSHIFT]
+		&& x > SIDE_W && y > MEN_H)
 	{
 		if (event->wheel.y > 0)
-			mlx->scene->cam.p = vector_add(mlx->scene->cam.p, mlx->scene->cam.color);
+			mlx->scene->cam.p =
+		vector_add(mlx->scene->cam.p, mlx->scene->cam.color);
 		else if (event->wheel.y < 0)
-			mlx->scene->cam.p = vector_subtract(mlx->scene->cam.p, mlx->scene->cam.color);
+			mlx->scene->cam.p =
+		vector_subtract(mlx->scene->cam.p, mlx->scene->cam.color);
 	}
 }
 
@@ -126,7 +140,8 @@ void	mousemove_events(t_main *mlx)
 	int		y;
 
 	SDL_GetMouseState(&x, &y);
-	if (mlx->sdl->keyboard_state[SDL_SCANCODE_LSHIFT] && x > SIDE_W && y > MEN_H)
+	if (mlx->sdl->keyboard_state[SDL_SCANCODE_LSHIFT]
+		&& x > SIDE_W && y > MEN_H)
 	{
 		if (x > mlx->prev.mouse_x)
 			mlx->scene->cam.d.y -= 0.5;
@@ -141,7 +156,6 @@ void	mousemove_events(t_main *mlx)
 	mlx->prev.mouse_y = y;
 }
 
-
 void	sdl_events(t_main *mlx, SDL_Event *event)
 {
 	cl_float3	d;
@@ -149,7 +163,6 @@ void	sdl_events(t_main *mlx, SDL_Event *event)
 	d.x = 0;
 	d.y = 0;
 	d.z = 1;
-
 	mlx->scene->cam.color = rotate_ort(d, mlx->scene->cam.d);
 	mlx->scene->cam.color = get_unit_vector(mlx->scene->cam.color);
 	while (SDL_PollEvent(event))

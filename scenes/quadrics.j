@@ -18,8 +18,7 @@
       "type" : "hyperboloid",
       "origin" : [-5, 2, 20],
       "radius": 2.0,
-      "color" : [255, 255, 0],
-      "reflective" : 1
+      "color" : [255, 255, 0]
     },
     {
       "type" : "2sheet_hyperboloid",
@@ -30,8 +29,8 @@
     {
       "type" : "ellipsoid",
       "origin" : [5, 2, 20],
-      "direction" : [1, 0, 1],
-      "radius": 2.0,
+      "direction" : [0, 0, -1],
+      "radius": 1.0,
       "color" : [0, 255, 255]
     },
     {

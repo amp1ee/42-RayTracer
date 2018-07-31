@@ -228,27 +228,6 @@ t_figure	new_cube(t_figure cam)
 		rotate_ort((cl_float3){.x=1, .y=0, .z=7}, cam.d).z};
 	return (f);
 }
-/*
-void		add_figure(t_figure **figures, t_figure cam, int *o_num)
-{
-	t_figure	*new;
-	int			i;
-	int			index;
-
-	if (!(new = (t_figure *)malloc(sizeof(t_figure) * (*o_num + 1))))
-		exit_message("failed");
-	i = -1;
-	while (++i < *o_num)
-		new[i] = (*figures)[i];
-	index = (*figures)[i - 1].index;
-	new[i] = new_sphere(cam);
-	new[i].index = index + 1;
-	new[i].matirial = 0;
-	new[i].text = 0;
-	free(*figures);
-	*figures = new;
-	*o_num = i + 1;
-}*/
 
 void		add_figure(t_main *mlx, t_figure **figures, t_figure cam, int *o_num, char type)
 {
@@ -272,6 +251,8 @@ void		add_figure(t_main *mlx, t_figure **figures, t_figure cam, int *o_num, char
 		new[i] = new_cone(cam);
 	else if (type == 'y')
 		new[i] = new_cylinder(cam);
+	else if (type == 'e')
+		new[i] = new_ellipsoid(cam);
 	new[i].index = index + 1;
 	new[i].matirial = 0;
 	new[i].text = 0;

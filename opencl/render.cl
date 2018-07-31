@@ -388,6 +388,7 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 	int	tmp = 0;
 	int i = -1;
 
+	scale = obj.scale;
 	//for (int i = 0; i < 2; i++)
 	//	printf("%d %d %d\n", t_i[i].x, t_i[i].y, t_i[i].z);
 
@@ -404,7 +405,6 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 	textures_info = (int2) {t_i[i].y, t_i[i].x};
 
 	//if (obj.scale <= EPSILON)
-	scale = 1.0F;
 
 	tex_pos.x = (int)((UV.x) * scale * (float)textures_info.x) % textures_info.x;
 	if (tex_pos.x < 0)
@@ -496,31 +496,6 @@ float3 TraceRay(float3 O, float3 D, float min, float max, __global t_figure *fig
 	return hit_color;
 }
 
-void apply_effects(__global int *data, __global int *out, int type)
-{
-	int j = get_global_id(0);
-	int i = get_global_id(1);
-	float3 c;
-	float3 a = return_point_color(data[j * 1200 + i]);
-	if (type == 1)
-	{
-		c = e_grades_gray(a);
-	}
-	else if (type == 2)
-	{
-		c = e_sepia(a);
-	}
-	else if (type == 3)
-	{
-		c = e_negative(a);
-	}
-	else if (type == 4)
-	{
-		c = e_black_white(a);
-	}
-	out[j * 1200 + i] = return_int_color(c);
-}
-
 float fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); }
 
 float lerp(float t, float a, float b) { return a + t * (b - a); }
@@ -586,27 +561,6 @@ __kernel void create_disruption(__global int * data, float3 color, int type, __g
     data[j * 1200 + i] = finalValue;
 }
 
-__kernel void rendering(__global int * data, __global t_figure *figures,
-					__global t_figure *light, t_figure cam,
-					int l_n, int o_n, __global int *textures, __global int3 *textures_sz, int effects)
-{
-	int j = get_global_id(0);
-	int i = get_global_id(1);
-
-	float3 O = { cam.p.x, cam.p.y, cam.p.z };
-	float3 D;
-	D.x = ((float)i - (float)WIDTH / 2.0f) * 0.5f / (float)WIDTH;
-	D.y = (-(float)j + (float)WIDTH / 2.0f) * 0.5f / (float)HEIGHT;
-	D.z = 1.f; // vv from cam
-	D = rotate_ort(D, cam.d);
-
-	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
-	
-	//float3 new = e_black_white(c);
-	data[j * 1200 + i] = return_int_color(c);
-}
-
-
 __kernel void find_figure(__global int *returnable,
 							__global t_figure *figures,
 							t_figure cam, int i, int j, int o_n)
@@ -624,6 +578,51 @@ __kernel void find_figure(__global int *returnable,
 		*returnable = -1;
 	else
 		*returnable = clos.figure.index;
+}
+
+int apply_effects(float3 a, int type)
+{
+	float3 c;
+	
+	c = a;
+	if (type == 1)
+	{
+		c = e_grades_gray(a);
+	}
+	else if (type == 2)
+	{
+		c = e_sepia(a);
+	}
+	else if (type == 3)
+	{
+		c = e_negative(a);
+	}
+	else if (type == 4)
+	{
+		c = e_black_white(a);
+	}
+	return return_int_color(c);
+}
+
+__kernel void rendering(__global int * data, __global t_figure *figures,
+					__global t_figure *light, t_figure cam,
+					int l_n, int o_n, __global int *textures, __global int3 *textures_sz, int effects)
+{
+	int j = get_global_id(0);
+	int i = get_global_id(1);
+
+	if (!i && !j)
+		printf("%d\n", effects);
+	float3 O = { cam.p.x, cam.p.y, cam.p.z };
+	float3 D;
+	D.x = ((float)i - (float)WIDTH / 2.0f) * 0.5f / (float)WIDTH;
+	D.y = (-(float)j + (float)WIDTH / 2.0f) * 0.5f / (float)HEIGHT;
+	D.z = 1.f; // vv from cam
+	D = rotate_ort(D, cam.d);
+
+	float3 c = TraceRay(O, D, 1.0F, INFINITY, figures, light, o_n, l_n, textures, textures_sz);
+	int new = apply_effects(c, effects);
+	data[j * 1200 + i] = new;
 }
 
 // /******************************************************************************/

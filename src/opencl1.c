@@ -54,10 +54,10 @@ void			rendering(t_main *mlx)
 	global_work_size[1] = 1200;
 	global_work_size[2] = 0;
 	cl_kernel_buffer_1(mlx->cl, mlx, MEM_LENGTH);
-	cl_args_1(mlx->cl, mlx);
+	cl_args_1_1(mlx->cl, mlx);
+	cl_args_1_2(mlx->cl, mlx);
 	if ((ret = clEnqueueNDRangeKernel(mlx->cl->command_queue,
-				mlx->cl->kernel, 2, NULL,
-				global_work_size, NULL, 0, NULL, NULL)))
+mlx->cl->kernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL)))
 		exit_message("failed to execute kernel");
 	if ((ret = clEnqueueReadBuffer(mlx->cl->command_queue,
 				mlx->cl->memobj_data, CL_TRUE, 0, sizeof(int) * MEM_LENGTH,

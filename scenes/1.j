@@ -14,7 +14,7 @@ ergwer
       "origin" : [-2, 0, 20],
       "radius" : 1,
       "color" : [255, 0, 0],
-      "texture" : "./textures/wall.jpg"
+      "texture" : "./textures/waller.jpg"
     },
     {
       "type" : "sphere",

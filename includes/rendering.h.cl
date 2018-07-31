@@ -53,7 +53,8 @@ typedef struct	s_figure
 	float3		d;
 	float3		min;
 	float3		max;
-	float 		size;
+	float		size;
+	float		scale;
 }				t_figure;
 
 typedef struct	s_closest

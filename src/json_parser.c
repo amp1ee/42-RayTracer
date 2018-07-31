@@ -270,6 +270,7 @@ t_figure		*get_object(char *str)
 	object->cap = json_get_float(str, "\"cap\"");
 	object->angle = json_get_float(str, "\"angle\"");
 	object->matirial = 0;
+	object->scale = 1;
 	object->rfl = json_get_float(str, "\"reflective\"");
 	if (object->rfl > 0)
 		object->matirial = 1;
@@ -440,7 +441,7 @@ static t_figure	*array_cast(t_slist *lst, t_scene *sc, int num, t_slist **text)
 	return (ret);
 }
 
-cl_int3			*get_texture_info(t_slist *lst)
+cl_int4			*get_texture_info(t_slist *lst)
 {
 	cl_int3		*info;
 	t_texture	*tmp;
@@ -454,7 +455,7 @@ cl_int3			*get_texture_info(t_slist *lst)
 		tmp = lst->data;
 		info[i] = (cl_int3) {.x = tmp->h,
 								.y = tmp->w,
-								.z = tmp->index };
+								.z = tmp->index};
 		lst = lst->next;
 		i++;
 	}
@@ -565,6 +566,7 @@ t_scene			*parse_json(char *file, t_opencl *cl)
 	scene->lights = array_cast(tmp, scene, 1, &text_list);
 	tmp = parse_objects(&json_str, "\"objects\"", cl);
 	scene->objects = array_cast(tmp, scene, 0, &text_list);
+	scene->effect = 0;
 	filling_textures(scene, text_list);
 	free(copy);
 	return (scene);

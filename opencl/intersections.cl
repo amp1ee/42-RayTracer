@@ -266,7 +266,7 @@ float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 
 float2 IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse)
 {
-	float R = 2.f * ellipse.radius;
+	float R = ellipse.radius;
 	float R2 = R * R;
 	float3 c = {ellipse.p.x, ellipse.p.y, ellipse.p.z};
 	float3 V = {ellipse.d.x, ellipse.d.y, ellipse.d.z};
