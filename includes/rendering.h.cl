@@ -25,10 +25,6 @@
 ** 6 - plane
 */
 
-# define ELLIPSOID 9
-# define PARABOLOID 8
-# define TWOSHEET_HYPERBOLOID 70
-# define HYPERBOLOID 7
 # define PLANE 6
 # define CYLINDER 5
 # define CONE 4
@@ -52,7 +48,6 @@ typedef struct	s_figure
 	float		cap;
 	float		angle;
 	float		rfl;
-	float		cap;
 	float3		color;
 	float3		p;
 	float3		d;
