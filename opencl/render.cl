@@ -249,6 +249,7 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	{
 		float3 p = {figure.p.x, figure.p.y, figure.p.z};
 		float3 d = {figure.d.x, figure.d.y, figure.d.z};
+		d /= fast_length(d);
 		N = P - p;
 		float3 T = d - p;
 		T = T / fast_length(T);
@@ -270,8 +271,8 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 	}
 	else if (figure.type == HYPERBOLOID || figure.type == TWOSHEET_HYPERBOLOID)
 	{
-		float3 p = {figure.p.x, figure.p.y, figure.p.z};
-		float3 C = P - p;
+		float3	p = {figure.p.x, figure.p.y, figure.p.z};
+		float3	C = P - p;
 
 		N = (float3){2.f * C.x, -2.f * C.y, 2.f * C.z};
 		N = N / fast_length(N);
@@ -321,12 +322,13 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 		float	r = figure.radius;
 
 		float	coef = 0.7f;
-		float	k = r * sqrtf(1.f - coef * coef);
+		float	a = figure.radius;
+		float	b = coef * a;
 
-		float3	Cmid = p + (d * k / 2.f);
+		float3	Cmid = p + d * (sqrtf(a * a - b * b));
 		float3	R = P - Cmid;
-		N = R - d * (1.f - (coef * coef)) * dot(R, d);
-		N = N / fast_length(N);
+		N = R - d * (1.f - (b * b / a * a)) * dot(R, d);
+		N /= fast_length(N);
 	}
 	return N;
 }

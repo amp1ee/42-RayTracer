@@ -250,7 +250,7 @@ float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 	V /= fast_length(V);
 	float3	P = O - c;
 
-	float	k = 1.0;
+	float	k = 1.0f;
 	float	A = dot(D, D) - dot(D, V) * dot(D, V);
 	float	B = 2.0f * (dot(D, P) - dot(D, V) * (dot(P, V) + 2.0f*k));
 	float	C = dot(P, P) - dot(P, V) * (dot(P, V) + 4.0f*k);
