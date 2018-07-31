@@ -12,12 +12,13 @@
 
 #include "rt.h"
 
-t_figure	new_sphere(t_figure cam)
+t_figure	new_sphere(t_figure cam, float radius)
 {
 	t_figure f;
 
 	f.type = SPHERE;
 	f.radius = 0.5f;
+	f.radius = radius;
 	f.rfl = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
@@ -26,6 +27,7 @@ t_figure	new_sphere(t_figure cam)
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).y,
 						.z=cam.p.z +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).z };
+	f.d = (cl_float3){.x=0, .y=0, .z=0};
 	return (f);
 }
 
@@ -59,6 +61,7 @@ t_figure	new_cone(t_figure cam)
 	f.type = CONE;
 	f.angle = 10;
 	f.rfl = 0.f;
+	f.radius = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
@@ -81,6 +84,7 @@ t_figure	new_plane(t_figure cam)
 
 	f.type = PLANE;
 	f.rfl = 0.f;
+	f.radius = 0.f;
 	f.color = (cl_float3){.x=0.0f, .y=255.0f, .z=0.0f };
 	f.p = (cl_float3){.x=cam.p.x +
 		rotate_ort((cl_float3){.x=0, .y=0, .z=5}, cam.d).x,
@@ -224,7 +228,7 @@ t_figure	new_cube(t_figure cam)
 		rotate_ort((cl_float3){.x=1, .y=0, .z=7}, cam.d).z};
 	return (f);
 }
-
+/*
 void		add_figure(t_figure **figures, t_figure cam, int *o_num)
 {
 	t_figure	*new;
@@ -237,11 +241,43 @@ void		add_figure(t_figure **figures, t_figure cam, int *o_num)
 	while (++i < *o_num)
 		new[i] = (*figures)[i];
 	index = (*figures)[i - 1].index;
-	new[i] = new_cube(cam);
+	new[i] = new_sphere(cam);
 	new[i].index = index + 1;
 	new[i].matirial = 0;
 	new[i].text = 0;
 	free(*figures);
 	*figures = new;
 	*o_num = i + 1;
+}*/
+
+void		add_figure(t_main *mlx, t_figure **figures, t_figure cam, int *o_num, char type)
+{
+	t_figure	*new;
+	int			i;
+	int			index;
+
+	if (!(new = (t_figure *)malloc(sizeof(t_figure) * (*o_num + 1))))
+		exit_message("failed");
+	i = -1;
+	mlx->sdl->ui.show_info = 0;
+	printf("kek\n");
+	while (++i < *o_num)
+		new[i] = (*figures)[i];
+	index = (*figures)[i - 1].index;
+	if (type == 's')
+		new[i] = new_sphere(cam, 1.0f);
+	else if (type == 'p')
+		new[i] = new_plane(cam);
+	else if (type == 'c')
+		new[i] = new_cone(cam);
+	else if (type == 'y')
+		new[i] = new_cylinder(cam);
+	new[i].index = index + 1;
+	new[i].matirial = 0;
+	new[i].text = 0;
+	if (*o_num > 1)
+		free(*figures);
+	*figures = new;
+	*o_num = i + 1;
 }
+

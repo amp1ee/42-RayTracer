@@ -29,11 +29,11 @@ LIB_FLAGS += -L$(LIBTFD_DIR) -ltfd
 
 INCLUDES	+=	-I./frameworks/SDL2.framework/Headers
 INCLUDES	+=  -I./frameworks/SDL2_image.framework/Headers
+INCLUDES	+=  -I./frameworks/SDL2_ttf.framework/Headers/SDL_ttf.h
 INCLUDES	+=  -F./frameworks 
 
 FRAMEWORKS	=	-framework OpenGL -framework AppKit -framework OpenCL \
-					-framework SDL2 -framework SDL2_image -rpath ./frameworks \
-				   -rpath ./frameworks	
+					-framework SDL2 -framework SDL2_image -framework SDL2_ttf -rpath ./frameworks 
 
 SRC_DIR = ./src/
 OBJ_DIR = ./obj/
@@ -46,7 +46,14 @@ SOURCES = main.c \
 			opencl2.c \
 			add_figures.c \
 			json_parser.c \
-			write_in_file.c
+			write_in_file.c \
+			user_interface.c \
+			init_interface.c \
+			sidebar.c \
+			printer.c \
+			button_manipulator.c \
+			button_drawer.c \
+			crutches.c
 
 OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 

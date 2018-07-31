@@ -1,8 +1,4 @@
-{
-    "textures" : [
-        "./textures/earth.png",
-        "./textures/floor.png"
-    ], 
+{ 
     "camera" : [
         {
             "origin" : [0,0,0],
@@ -21,9 +17,8 @@
             "type" : "sphere",
             "origin" : [-3, 0, 20],
             "radius" : 1,
-            "color" : [255, 255, 255],
-            "texture" : "./textures/earth.png",
-            "reflective" : 0.6
+            "color" : [255, 0, 0],
+            "reflective" : 0.5
         },
         {
             "type" : "plane",
@@ -40,8 +35,8 @@
         },
         {
             "type" : "direct",
-            "intensity" : 0,
-            "direction" : [0, 1, 0]
+            "intensity" : 0.6,
+            "position" : [0, 1, 0]
         },
         {
             "type" : "ambient",

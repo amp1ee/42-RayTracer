@@ -15,12 +15,20 @@
 
 # define HEIGHT 1200
 # define WIDTH 1200
+# define SIDE_W 400
+# define MEN_H 60
+# define BT_H 30
+# define BT_W 100
+# define BT_COUNT 10
 # define MAX_SOURCE_SIZE 0x100000
 
 # include "../libft/libft.h"
 # include "../libTFD/tinyfiledialogs.h"
 # include <math.h>
 # include <pwd.h>
+
+# include "../frameworks/SDL2.framework/Headers/SDL.h"
+# include "../frameworks/SDL2_ttf.framework/Headers/SDL_ttf.h"
 
 # ifdef linux
 #  include <SDL2/SDL.h>
@@ -135,6 +143,23 @@ typedef struct	s_opencl
 	cl_mem				memobj_textures_sz;
 }				t_opencl;
 
+typedef struct s_interface
+{
+	SDL_Surface		*menu;
+	SDL_Surface		*sb;
+	SDL_Surface		**menu_button;
+	SDL_Surface		*message;
+	SDL_Texture		*menu_text;
+	SDL_Texture		*sb_text;
+	TTF_Font		*heading;
+	TTF_Font		*par;
+	SDL_Color		grey;
+	SDL_Color		black;
+	char			show_info;
+	t_figure		*curr_figure;
+	int				btn_pos_y[12];
+}				t_interface;
+
 typedef struct	s_sdl
 {
 	SDL_Window		*wind;
@@ -142,25 +167,35 @@ typedef struct	s_sdl
 	SDL_Surface		*sur;
 	SDL_Texture		*text;
 	SDL_Event		event;
+	const Uint8		*keyboard_state;
+	t_interface		ui;
 }				t_sdl;
+
+typedef struct	s_prev
+{
+	int			mouse_x;
+	int			mouse_y;
+}				t_prev;
 
 typedef struct	s_main
 {
 	t_scene		*scene;
 	t_opencl	*cl;
 	t_sdl		*sdl;
+	t_prev		prev;
 }				t_main;
 
 /*
 ** ADD Figure
 */
 
-t_figure		new_sphere(t_figure cam);
-t_figure		new_cylinder(t_figure cam);
+t_figure		new_sphere(t_figure cam, float r);
+/*t_figure		new_cylinder(t_figure cam);
 t_figure		new_cone(t_figure cam);
-t_figure		new_plane(t_figure cam);
-void			add_figure(t_figure **figures, t_figure cam, int *o_num);
+t_figure		new_plane(t_figure cam);*/
+void			add_figure(t_main *mlx, t_figure **figures, t_figure cam, int *o_num, char type);
 cl_float3		rotate_ort(cl_float3 point, cl_float3 rot);
+int				figure_actions(t_main *mlx, int x, int y);
 
 /*
 **	CL parsing
@@ -197,7 +232,6 @@ t_scene			*parse_json(char *file, t_opencl *cl);
 void			write_in_file(t_scene sc);
 int				key(int key_code, t_main *mlx);
 int				mouse(int key_code, int x, int y, t_main *mlx);
-void			figure_actions(t_main *mlx, int x, int y);
 void			screen_shoot(t_main mlx);
 void			call_dialog(t_main *mlx);
 
@@ -219,5 +253,71 @@ int				return_color_t(char **splitted, char *value, cl_float3 *p);
 cl_float3		*norming(cl_float3 *p);
 int				ft_list_count(t_slist *begin_list);
 int				na(char *name);
+
+void			user_interface(t_sdl *sdl, t_scene *scene);
+void			draw_button(t_sdl *sdl, int i, int x, int width);
+cl_float3		get_unit_vector(cl_float3 vec);
+cl_float3		rotate_dir(cl_float3 point, cl_float3 rot);
+
+void			del_scene(t_main *mlx);
+void			set_curr_fig(t_figure **curr, t_figure *fig, int i);
+char			*ft_strjoinfree(char *s1, char *s2);
+char			*ft_strjoinlit(char *s1, const char *s2);
+
+void			handle_curr_obj(t_main *mlx, int x, int y);
+void			print_message(t_sdl *sdl, const char *str, char type, int *y);
+
+void			draw_info_btns(t_sdl *sdl);
+
+
+/*
+** init_interface.c
+*/
+SDL_Surface		*create_button(char *src);
+void			init_ui(t_sdl *sdl);
+void			init_buttons(SDL_Surface **menu_button);
+char			*ft_strjoinfree(char *s1, char *s2);
+char			*ft_strjoinlit(char *s1, const char *s2);
+
+/*
+** sidebar.c
+*/
+void			draw_sidebar(t_sdl *sdl, t_scene *scene);
+char			*cam_pos_message(t_figure cam, char type);
+char			*light_message(t_figure *light, int i);
+void			show_fig_info(t_sdl *sdl, t_figure *curr);
+//<<<<<<< HEAD
+void			print_fig_float(t_sdl *sdl, float nb, int *y, int i);
+
+/*
+** printer.c
+*/
+void			print_fig_col(t_sdl *sdl, t_figure *figure, int *y, char *patt);
+void			print_fig_dir(t_sdl *sdl, t_figure *figure, int *y, char *patt);
+void			print_fig_pos(t_sdl *sdl, t_figure *figure, int *y, char *patt);
+void			print_fig_type(t_sdl *sdl, t_figure *figure, int *y);
+void			print_info_message(t_sdl *sdl, const char *str, char type, int *y);
+
+/*
+** button_manipulator.c
+*/
+void			handle_curr_obj(t_main *mlx, int x, int y);
+void			handle_curr_obj2(t_main *mlx, int x, int y);
+void			handle_curr_obj3(t_main *mlx, int x, int y);
+void			handle_curr_obj4(t_main *mlx, int x, int y);
+
+/*
+** button_drawer.c
+*/
+void			draw_info_btns(t_sdl *sdl);
+void			draw_info_btns2(t_sdl *sdl);
+void			draw_info_btns3(t_sdl *sdl);
+
+/*
+** crutches.c
+*/
+char			*ft_ftoa(float num);
+void			change_float_val(float *val, char operator, float nb, float max);
+
 
 #endif

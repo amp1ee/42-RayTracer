@@ -24,7 +24,7 @@ static unsigned int	put_camera(char *str, t_scene sc)
 			cam.p.x, cam.p.y, cam.p.z, cam.d.x, cam.d.y, cam.d.z);
 }
 
-static char *get_type(int type)
+static char *get_fig_type(int type)
 {
 	if (type == SPHERE)
 		return "sphere";
@@ -46,6 +46,17 @@ static char *get_type(int type)
 		return "paraboloid";
 	else if (type == ELLIPSOID)
 		return "ellipsoid";
+	return (NULL);
+}
+
+static char *get_light_type(int type)
+{
+	if (type == 1)
+		return "ambient";
+	else if (type == 2)
+		return "point";
+	else if (type == 3)
+		return "direct";
 	return (NULL);
 }
 
@@ -71,7 +82,7 @@ static unsigned int	put_objects(char *str, t_scene sc)
 			f[i].p.x, f[i].p.y, f[i].p.z,
 			f[i].d.x, f[i].d.y, f[i].d.z,
 			f[i].color.x, f[i].color.y, f[i].color.z,
-			get_type(f[i].type), f[i].rfl, f[i].radius, f[i].angle);
+			get_fig_type(f[i].type), f[i].rfl, f[i].radius, f[i].angle);
 		if (f[i].type == CUBE)
 			len += sprintf(str + len, "\t\t\t\"min\" : [%.2f,%.2f,%.2f],"
 				"\n\t\t\t\"max\" : [%.2f,%.2f,%.2f],\n",
@@ -98,8 +109,8 @@ static unsigned int	put_light(char *str, t_scene sc)
 	{
 		len += sprintf(str + len, "\t\t{\n\t\t\t\"position\" : [%.2f,%.2f,%.2f],"
 				"\n\t\t\t\"intensity\" : %.2f,\n\t\t"
-				"\t\"type\" : \"point\",\n\t\t},\n",
-			l[i].p.x, l[i].p.y, l[i].p.z, l[i].angle);
+				"\t\"type\" : \"%s\",\n\t\t},\n",
+			l[i].p.x, l[i].p.y, l[i].p.z, l[i].angle, get_light_type(l[i].type));
 	}
 	len += sprintf(str + len, "\t],");
 	

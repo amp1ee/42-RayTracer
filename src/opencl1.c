@@ -39,6 +39,7 @@ void			cl_init(t_main *mlx)
 	t_opencl *cl;
 
 	cl = malloc(sizeof(t_opencl));
+	mlx->sdl = (t_sdl *)malloc(sizeof(t_sdl));
 	cl_start(cl);
 	mlx->cl = cl;
 }
@@ -47,6 +48,7 @@ void			rendering(t_main *mlx)
 {
 	size_t		global_work_size[3];
 	int			ret;
+	SDL_Rect	dst_r;
 
 	global_work_size[0] = 1200;
 	global_work_size[1] = 1200;
@@ -63,7 +65,9 @@ void			rendering(t_main *mlx)
 		exit_message("failed to get buf data");
 	mlx->sdl->text =
 	SDL_CreateTextureFromSurface(mlx->sdl->rend, mlx->sdl->sur);
-	SDL_RenderCopy(mlx->sdl->rend, mlx->sdl->text, NULL, NULL);
+	dst_r = (SDL_Rect){.x = SIDE_W, .y = MEN_H, .w = WIDTH, .h = HEIGHT};
+	SDL_RenderCopy(mlx->sdl->rend, mlx->sdl->text, NULL, &dst_r);
+	user_interface(mlx->sdl, mlx->scene);
 	SDL_RenderPresent(mlx->sdl->rend);
 	SDL_DestroyTexture(mlx->sdl->text);
 	free_mem(mlx->cl, 0);

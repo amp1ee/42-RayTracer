@@ -268,8 +268,8 @@ t_figure		*get_object(char *str)
 	object->max = json_arr_to_vector(str, "\"max\"", NULL, NULL);
 	object->color = json_arr_to_color(str, "\"color\"", NULL, NULL);
 	object->cap = json_get_float(str, "\"cap\"");
+	object->angle = json_get_float(str, "\"angle\"");
 	object->matirial = 0;
-	object->angle = 0;
 	object->rfl = json_get_float(str, "\"reflective\"");
 	if (object->rfl > 0)
 		object->matirial = 1;

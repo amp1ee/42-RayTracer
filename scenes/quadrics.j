@@ -18,7 +18,8 @@
       "type" : "hyperboloid",
       "origin" : [-5, 2, 20],
       "radius": 2.0,
-      "color" : [255, 255, 0]
+      "color" : [255, 255, 0],
+      "reflective" : 1
     },
     {
       "type" : "2sheet_hyperboloid",

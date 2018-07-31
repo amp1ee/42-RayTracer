@@ -26,7 +26,7 @@ static inline float2 SolveQuadEquation(float A, float B, float C)
 
 float2 IntersectRayCone(float3 O, float3 D, t_figure cone)
 {
-	float A = cone.angle;
+	float A = cone.angle * M_PI / 180.0f;
 	float tmp;
 	float3 d = {cone.d.x, cone.d.y, cone.d.z};
 	float3 p = {cone.p.x, cone.p.y, cone.p.z};
@@ -160,20 +160,23 @@ float2 IntersectRayDisk(float3 O, float3 D, t_figure disk)
     return (float2){INFINITY, INFINITY}; 
 }
 
-float2 IntersectRayCube(float3 O, float3 D, t_figure box)
+float IntersectRayCube(float3 O, float3 D, t_figure box)
 {
-	// printf("%s\n", "CUBE");
 	float3 min = {box.min.x, box.min.y, box.min.z};
   	float3 max = {box.max.x, box.max.y, box.max.z};
+  	if (D.x == 0 && (O.x < 0.5 || O.x > 0.5))
+		return INFINITY;
 	float tmin = (min.x - O.x) / D.x;
 	float tmax = (max.x - O.x) / D.x;
-
+	float tmp = 0;
 	if (tmin > tmax)
     {
     	float tmp = tmin;
     	tmin = tmax;
     	tmax = tmp;
     }
+    if (D.y == 0 && (O.y < 0.5 || O.y > 0.5))
+		return INFINITY;
     float tymin = (min.y - O.y) / D.y; 
     float tymax = (max.y - O.y) / D.y; 
     if (tymin > tymax)
@@ -183,14 +186,15 @@ float2 IntersectRayCube(float3 O, float3 D, t_figure box)
     	tymax = tmp;
     } 
     if ((tmin > tymax) || (tymin > tmax)) 
-        return (float2){INFINITY, INFINITY}; 
+        return INFINITY;
 
     if (tymin > tmin) 
         tmin = tymin;
  
     if (tymax < tmax) 
         tmax = tymax;
- 
+    if (D.z == 0 && (O.z < 0.5 || O.z > 0.5))
+		return INFINITY;
     float tzmin = (min.z - O.z) / D.z; 
     float tzmax = (max.z - O.z) / D.z; 
     if (tzmin > tzmax)
@@ -201,7 +205,7 @@ float2 IntersectRayCube(float3 O, float3 D, t_figure box)
     }
 
     if ((tmin > tzmax) || (tzmin > tmax)) 
-        return (float2){INFINITY, INFINITY}; 
+        return INFINITY; 
  
     if (tzmin > tmin) 
         tmin = tzmin; 
@@ -210,7 +214,7 @@ float2 IntersectRayCube(float3 O, float3 D, t_figure box)
         tmax = tzmax; 
 
     // printf("%f\n", tmin);
-        return (float2){tmin, INFINITY}; 
+    return tmin;
 }
 
 float2 IntersectRayHyperboloid(float3 O, float3 D, t_figure h_boloid)

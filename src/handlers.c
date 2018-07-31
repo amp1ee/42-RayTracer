@@ -106,12 +106,15 @@ cl_float3		rotate_ort(cl_float3 point, cl_float3 rot)
 **   void	delete_figure()
 */
 
-void			figure_actions(t_main *mlx, int x, int y)
+int			figure_actions(t_main *mlx, int x, int y)
 {
 	int index;
 
-	index = find_figure(mlx, x, y);
-	printf("%d\n", index);
+	index = find_figure(mlx, x - SIDE_W, y - MEN_H);
+	//printf("%d\n", index);
+	if (index == -1)
+		mlx->sdl->ui.show_info = 0;
+	return (index);
 }
 
 void			call_dialog(t_main *mlx)
@@ -130,8 +133,62 @@ void			call_dialog(t_main *mlx)
 	mlx->scene = parse_json((char *)open, mlx->cl);
 }
 
-void	apply_effects(t_main *mlx, int effect)
+t_figure		new_ambient(float intensity)
 {
-	(void)mlx;
-	(void)effect;
+	t_figure	light;
+
+	light.type = 1;
+	light.angle = intensity;
+	return (light);
 }
+
+t_scene			*zero_scene(void)
+{
+	t_scene	*scene;
+
+	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
+		exit_message("Memallocation error");
+	if (!(scene->lights = (t_figure *)malloc(sizeof(t_figure))))
+		exit_message("Memallocation error");
+	if (!(scene->objects = (t_figure *)malloc(sizeof(t_figure))))
+		exit_message("Memallocation error");
+	scene->l_num = 1;
+	scene->o_num = 1;
+	scene->cam.p = (cl_float3){.x = 0, .y = 0, .z = 0};
+	scene->cam.d = (cl_float3){.x = 0, .y = 0, .z = 0};
+	*scene->lights = new_ambient(0.5);
+	*scene->objects = new_sphere(scene->cam, 0);
+	return (scene);
+}
+
+void			del_scene(t_main *mlx)
+{
+	free(mlx->scene->objects);
+	free(mlx->scene->lights);
+	free(mlx->scene);
+	mlx->scene = zero_scene();
+	mlx->sdl->ui.show_info = 0;
+	mlx->scene = parse_json((char *)open, mlx->cl);
+}
+
+t_scene			*empty_scene(void)
+{
+	t_scene		*scene;
+
+	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
+		exit_message("Memallocation error");
+	scene->l_num = 1;
+	scene->o_num = 1;
+	scene->cam.p = (cl_float3){.x = 0, .y = 0, .z = 0};
+	scene->cam.d = (cl_float3){.x = 0, .y = 0, .z = 0};
+	scene->lights = (t_figure *)malloc(sizeof(t_figure));
+	scene->lights->type = 1;
+	scene->lights->radius = 0;
+	scene->objects = (t_figure *)malloc(sizeof(t_figure));
+	scene->objects->type = 1;
+	scene->objects->radius = 0.01;
+	scene->objects->p = (cl_float3){.x = 100, .y = 100, .z = 100};
+	scene->objects->color = (cl_float3){.x = 0, .y = 0, .z = 0};
+	return (scene);
+}
+
