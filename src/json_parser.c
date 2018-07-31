@@ -293,6 +293,8 @@ t_figure		*get_light(char *str)
 	light->p = json_arr_to_vector(str, "\"position\"", NULL, NULL);
 	light->d = json_arr_to_vector(str, "\"direction\"", NULL, NULL);
 	light->angle = json_get_float(str, "\"intensity\"");
+	if (light->angle > 1 || light->angle < 0)
+		light->angle = 1;
 	return (light);
 }
 

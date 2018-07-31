@@ -5,6 +5,7 @@
       "direction" : [0, 0, 0]
     }
   ],
+
   "objects" : [
     {
       "type" : "plane",
@@ -124,7 +125,7 @@
   "light" : [
     {
       "type" : "point",
-      "intensity" : 0.5,
+      "intensity" : 0.1,
       "position" : [-2, 0, -4]
     },
     {

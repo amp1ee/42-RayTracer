@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   button_drawer.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aminadzh <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 20115/07/30 20:11:01 by aminadzh          #+#    #+#             */
-/*   Updated: 20115/07/30 20:11:02 by aminadzh         ###   ########.fr       */
+/*   Created: 2018/07/31 20:50:52 by mstorcha          #+#    #+#             */
+/*   Updated: 2018/07/31 20:50:56 by mstorcha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,28 @@ void			draw_info_btns2(t_sdl *sdl)
 	draw_info_btns3(sdl);
 }
 
+void			draw_info_btns4(t_sdl *sdl)
+{
+	SDL_Rect	dst;
+
+	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[15], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[15], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[16], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[16], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[17], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[17], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[18], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
+	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[18], .h = 16, .w = 15};
+	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
+}
+
 void			draw_info_btns3(t_sdl *sdl)
 {
 	SDL_Rect	dst;
@@ -90,20 +112,5 @@ void			draw_info_btns3(t_sdl *sdl)
 	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
 	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[14], .h = 16, .w = 15};
 	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[15], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[15], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[16], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[16], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[17], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[17], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 10, .y = sdl->ui.btn_pos_y[18], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[15], NULL, sdl->ui.message, &dst);
-	dst = (SDL_Rect){.x = 31, .y = sdl->ui.btn_pos_y[18], .h = 16, .w = 15};
-	SDL_BlitSurface(sdl->ui.menu_button[16], NULL, sdl->ui.message, &dst);
+	draw_info_btns4(sdl);
 }

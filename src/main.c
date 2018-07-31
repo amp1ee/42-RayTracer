@@ -38,7 +38,7 @@ void	init_sdl(t_sdl *sdl)
 void	effects(int *a)
 {
 	(*a)++;
-	*a = *a % 5;
+	*a = *a % 7;
 }
 
 void	key_events(t_main *mlx, SDL_Event *event)

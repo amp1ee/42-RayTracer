@@ -13,12 +13,6 @@
 #include "rt.h"
 #define TEXTURE_SZ 1200
 
-void			exit_message(const char *str)
-{
-	ft_putendl(str);
-	exit(1);
-}
-
 static void		free_mem(t_opencl *cl, int index)
 {
 	clReleaseKernel(cl->kernel);
@@ -73,7 +67,7 @@ mlx->cl->kernel, 2, NULL, global_work_size, NULL, 0, NULL, NULL)))
 	free_mem(mlx->cl, 0);
 }
 
-void		get_disruption(t_texture *text,
+void			get_disruption(t_texture *text,
 					t_opencl *cl, cl_float3 color, int type)
 {
 	size_t		global_work_size[3];

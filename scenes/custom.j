@@ -1,8 +1,8 @@
 {
 	"camera" : [
 		{
-			"origin" : [8.50,0.00,-16.50],
-			"direction" : [0.00,25.00,0.00]
+			"origin" : [0.00,0.00,0.00],
+			"direction" : [0.00,0.00,0.00]
 		}
 	],
 	"objects" : [
@@ -18,7 +18,7 @@
 		{
 			"origin" : [0.00,0.00,20.00],
 			"direction" : [0.00,0.00,0.00],
-			"color" : [0.00,0.00,255.00],
+			"color" : [255.00,0.00,255.00],
 			"type" : "sphere",
 			"reflective" : "0.00",
 			"radius" : "1.00",
@@ -85,71 +85,6 @@
 			"type" : "sphere",
 			"reflective" : "0.00",
 			"radius" : "1.00",
-			"angle" : "0.00",
-		},
-		{
-			"origin" : [0.00,0.00,6.20],
-			"direction" : [0.60,0.40,0.20],
-			"color" : [0.00,255.00,0.00],
-			"type" : "sphere",
-			"reflective" : "1.00",
-			"radius" : "0.30",
-			"angle" : "1.00",
-		},
-		{
-			"origin" : [0.86,-0.44,4.91],
-			"direction" : [0.00,0.00,0.00],
-			"color" : [0.00,255.00,0.00],
-			"type" : "sphere",
-			"reflective" : "0.00",
-			"radius" : "0.30",
-			"angle" : "0.00",
-		},
-		{
-			"origin" : [0.00,-0.44,4.98],
-			"direction" : [0.00,0.56,5.07],
-			"color" : [0.00,255.00,0.00],
-			"type" : "cone",
-			"reflective" : "0.00",
-			"radius" : "0.00",
-			"angle" : "10.00",
-		},
-		{
-			"origin" : [0.21,-0.44,4.81],
-			"direction" : [1.48,1.00,0.08],
-			"color" : [0.00,255.00,0.00],
-			"type" : "disk",
-			"reflective" : "0.00",
-			"radius" : "0.50",
-			"angle" : "0.00",
-		},
-		{
-			"origin" : [0.00,0.00,0.00],
-			"direction" : [0.00,0.00,0.00],
-			"color" : [0.00,255.00,0.00],
-			"type" : "cube",
-			"reflective" : "0.00",
-			"radius" : "0.00",
-			"angle" : "0.00",
-			"min" : [-1.56,-0.12,4.20],
-			"max" : [-0.51,1.22,6.67],
-		},
-		{
-			"origin" : [-3.45,0.00,14.63],
-			"direction" : [0.00,1.00,0.00],
-			"color" : [0.00,255.00,0.00],
-			"type" : "paraboloid",
-			"reflective" : "0.00",
-			"radius" : "0.10",
-			"angle" : "0.00",
-		},
-		{
-			"origin" : [2.89,0.00,-6.47],
-			"direction" : [0.00,0.00,0.00],
-			"color" : [17.00,10.00,79.00],
-			"type" : "2sheet_hyperboloid",
-			"reflective" : "0.00",
-			"radius" : "0.50",
 			"angle" : "0.00",
 		},
 	],

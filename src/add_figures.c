@@ -286,9 +286,8 @@ void		add_figure(t_main *mlx, t_figure **figures, t_figure cam, int *o_num, char
 	new[i].matirial = 0;
 	new[i].text = 0;
 	new[i].scale = 1;
-	if (*o_num > 1)
+	if (*o_num >= 1)
 		free(*figures);
 	*figures = new;
 	*o_num = i + 1;
 }
-

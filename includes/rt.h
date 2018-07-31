@@ -269,6 +269,8 @@ void			print_message(t_sdl *sdl, const char *str, char type, int *y);
 
 void			draw_info_btns(t_sdl *sdl);
 
+void			filling_textures(t_scene *scene, t_slist *text_list);
+
 /*
 ** init_interface.c
 */
@@ -297,7 +299,8 @@ void			print_fig_col(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_dir(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_pos(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_type(t_sdl *sdl, t_figure *figure, int *y);
-void			print_info_message(t_sdl *sdl, const char *str, char type, int *y);
+void			print_info_message(t_sdl *sdl,
+	const char *str, char type, int *y);
 void			print_fig_min(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_max(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 
@@ -309,6 +312,10 @@ void			handle_curr_obj(t_main *mlx, int x, int y);
 void			handle_curr_obj2(t_main *mlx, int x, int y);
 void			handle_curr_obj3(t_main *mlx, int x, int y);
 void			handle_curr_obj4(t_main *mlx, int x, int y);
+void			handle_curr_obj8(t_main *mlx, int x, int y);
+void			handle_curr_obj7(t_main *mlx, int x, int y);
+void			handle_curr_obj6(t_main *mlx, int x, int y);
+void			handle_curr_obj5(t_main *mlx, int x, int y);
 
 /*
 ** button_drawer.c

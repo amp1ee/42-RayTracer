@@ -121,7 +121,9 @@ float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
 		t_figure l = light[i];
 		float3 Lp = {l.p.x, l.p.y, l.p.z};
 		if (l.type == 1)
+		{
 			koef += l.angle;
+		}
 		else if (l.type == 2)
 		{
 			float3 L = Lp - P;
@@ -294,11 +296,11 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 		float	coef = 0.7f;
 		float	a = figure.radius;
 		float	b = coef * a;
-		float	r = 2.f * a;
 
 		float3	Cmid = p + d * (sqrtf(a * a - b * b));
 		float3	R = P - Cmid;
 		N = R - d * (1.f - (b * b / a * a)) * dot(R, d);
+		N /= fast_length(N);
 	}
 	return N;
 }
@@ -557,6 +559,14 @@ int apply_effects(float3 a, int type)
 	else if (type == 4)
 	{
 		c = e_black_white(a);
+	}
+	else if (type == 5)
+	{
+		c = e_casting(a);
+	}
+	else if (type == 6)
+	{
+		c = e_comic(a);
 	}
 	return return_int_color(c);
 }

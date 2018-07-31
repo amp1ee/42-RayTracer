@@ -39,19 +39,25 @@ SRC_DIR = ./src/
 OBJ_DIR = ./obj/
 
 SOURCES = main.c \
-			handlers.c \
+			handlers1.c \
+			handlers2.c \
 			color_vector.c \
 			ft_makelist.c \
 			opencl1.c \
 			opencl2.c \
+			opencl3.c \
+			opencl4.c \
 			add_figures.c \
 			json_parser.c \
 			write_in_file.c \
 			user_interface.c \
 			init_interface.c \
 			sidebar.c \
+			sidebar1.c \
 			printer.c \
+			printer1.c \
 			button_manipulator.c \
+			button_manipulator1.c \
 			button_drawer.c \
 			crutches.c
 
@@ -62,7 +68,7 @@ all: $(NAME)
 $(NAME): $(LIBFTA) $(TFDA) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c ./includes/rt.h
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
 $(OBJ): | $(OBJ_DIR)

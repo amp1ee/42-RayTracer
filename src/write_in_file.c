@@ -13,20 +13,7 @@
 #include "rt.h"
 #include <time.h>
 
-static unsigned int	put_camera(char *str, t_scene sc)
-{
-	t_figure	cam;
-	int			len;
-
-	cam = sc.cam;
-	len = sprintf(str, "\"camera\" : [\n\t\t"
-						"{\n\t\t\t\"origin\" : [%.2f,%.2f,%.2f],"
-						"\n\t\t\t\"direction\" : [%.2f,%.2f,%.2f]\n\t\t}\n\t],",
-			cam.p.x, cam.p.y, cam.p.z, cam.d.x, cam.d.y, cam.d.z);
-	return (len);
-}
-
-static char		*get_fig_type(int type)
+static char			*get_fig_type(int type)
 {
 	if (type == SPHERE)
 		return ("sphere");
@@ -51,7 +38,7 @@ static char		*get_fig_type(int type)
 	return (NULL);
 }
 
-static char		*get_light_type(int type)
+static char			*get_light_type(int type)
 {
 	if (type == 1)
 		return ("ambient");
@@ -113,16 +100,21 @@ static unsigned int	put_light(char *str, t_scene sc)
 	return (len);
 }
 
-void		write_in_file(t_scene sc)
+void				write_in_file(t_scene sc)
 {
 	char			*str;
 	char			*tmp1;
 	unsigned int	len;
+	t_figure		cam;
 	FILE			*f;
 
+	cam = sc.cam;
 	str = malloc(sizeof(char) * MAX_SOURCE_SIZE);
 	len = sprintf(str, "{\n\t");
-	len += put_camera((str + len), sc);
+	len += sprintf((str + len), "\"camera\" : [\n\t\t"
+						"{\n\t\t\t\"origin\" : [%.2f,%.2f,%.2f],"
+						"\n\t\t\t\"direction\" : [%.2f,%.2f,%.2f]\n\t\t}\n\t],",
+			cam.p.x, cam.p.y, cam.p.z, cam.d.x, cam.d.y, cam.d.z);
 	len += put_objects((str + len), sc);
 	len += put_light((str + len), sc);
 	len += sprintf(str + len, "\n}");

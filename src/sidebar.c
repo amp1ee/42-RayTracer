@@ -93,6 +93,29 @@ char			*light_message(t_figure *light, int i)
 	return (mes);
 }
 
+void			show_fig_info1(t_sdl *sdl, t_figure *curr, int *pos)
+{
+	print_fig_type(sdl, curr, pos);
+	print_info_message(sdl, "Position:", 'p', pos);
+	print_fig_pos(sdl, curr, pos, "x\0y\0z\0");
+	print_info_message(sdl, "Direction:", 'p', pos);
+	print_fig_dir(sdl, curr, pos, "x\0y\0z\0");
+	print_info_message(sdl, "Min:", 'p', pos);
+	print_fig_min(sdl, curr, pos, "x\0y\0z\0");
+	print_info_message(sdl, "Max:", 'p', pos);
+	print_fig_max(sdl, curr, pos, "x\0y\0z\0");
+	print_info_message(sdl, "Color:", 'p', pos);
+	print_fig_col(sdl, curr, pos, "r\0g\0b\0");
+	print_info_message(sdl, "Radius:", 'p', pos);
+	print_fig_float(sdl, curr->radius, pos, 15);
+	print_info_message(sdl, "Angle:", 'p', pos);
+	print_fig_float(sdl, curr->angle, pos, 16);
+	print_info_message(sdl, "Reflectiveness:", 'p', pos);
+	print_fig_float(sdl, curr->rfl, pos, 17);
+	print_info_message(sdl, "Scale:", 'p', pos);
+	print_fig_float(sdl, curr->scale, pos, 18);
+}
+
 void			show_fig_info(t_sdl *sdl, t_figure *curr)
 {
 	SDL_Rect	dst;
@@ -102,43 +125,7 @@ void			show_fig_info(t_sdl *sdl, t_figure *curr)
 	dst = (SDL_Rect){.x = 0, .y = HEIGHT / 3, .h = HEIGHT / 3 * 2, .w = SIDE_W};
 	SDL_FillRect(sdl->ui.message, NULL, SDL_MapRGB(sdl->ui.message->format,
 		235, 237, 239));
-	print_fig_type(sdl, curr, &pos);
-	print_info_message(sdl, "Position:", 'p', &pos);
-	print_fig_pos(sdl, curr, &pos, "x\0y\0z\0");
-	print_info_message(sdl, "Direction:", 'p', &pos);
-	print_fig_dir(sdl, curr, &pos, "x\0y\0z\0");
-	print_info_message(sdl, "Min:", 'p', &pos);
-	print_fig_min(sdl, curr, &pos, "x\0y\0z\0");
-	print_info_message(sdl, "Max:", 'p', &pos);
-	print_fig_max(sdl, curr, &pos, "x\0y\0z\0");
-	print_info_message(sdl, "Color:", 'p', &pos);
-	print_fig_col(sdl, curr, &pos, "r\0g\0b\0");
-	print_info_message(sdl, "Radius:", 'p', &pos);
-	print_fig_float(sdl, curr->radius, &pos, 15);
-	print_info_message(sdl, "Angle:", 'p', &pos);
-	print_fig_float(sdl, curr->angle, &pos, 16);
-	print_info_message(sdl, "Reflectiveness:", 'p', &pos);
-	print_fig_float(sdl, curr->rfl, &pos, 17);
-	print_info_message(sdl, "Scale:", 'p', &pos);
-	print_fig_float(sdl, curr->scale, &pos, 18);
+	show_fig_info1(sdl, curr, &pos);
 	draw_info_btns(sdl);
 	SDL_BlitSurface(sdl->ui.message, NULL, sdl->ui.sb, &dst);
-}
-
-void			print_fig_float(t_sdl *sdl, float nb, int *y, int i)
-{
-	SDL_Surface	*message;
-	SDL_Rect	dst;
-	char		*str;
-
-	str = ft_strnew(100);
-	str = ft_strjoinfree(str, ft_ftoa(nb));
-	dst = (SDL_Rect) {.y = *y, .x = 50};
-	message = TTF_RenderText_Solid(sdl->ui.par, str, sdl->ui.grey);
-	TTF_SizeText(sdl->ui.par, str, &dst.w, &dst.h);
-	SDL_BlitSurface(message, NULL, sdl->ui.message, &dst);
-	ft_strdel(&str);
-	sdl->ui.btn_pos_y[i] = *y + 5;
-	*y = *y + dst.h;
-	SDL_FreeSurface(message);
 }

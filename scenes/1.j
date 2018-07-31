@@ -20,7 +20,7 @@ ergwer
       "type" : "sphere",
       "origin" : [0, 0, 20],
       "radius" : 1,
-      "color" : [0, 0, 255],
+      "color" : [255, 0, 255],
       "texture" : "chessboard"
     },
     {
