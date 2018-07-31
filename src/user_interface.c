@@ -31,6 +31,13 @@ void			draw_menu(t_sdl *sdl)
 	draw_button(sdl, 5, 540, 77);
 	draw_button(sdl, 6, 637, 72);
 	draw_button(sdl, 7, 729, 97);
+	draw_button(sdl, 8, 846, 68);
+	draw_button(sdl, 9, 934, 71);
+	draw_button(sdl, 11, 1025, 71);
+	draw_button(sdl, 12, 1116, 79);
+	draw_button(sdl, 13, 1215, 84);
+	draw_button(sdl, 14, 1319, 64);
+	draw_button(sdl, 10, 1404, 80);
 }
 
 void			print_message(t_sdl *sdl, const char *str, char type, int *y)

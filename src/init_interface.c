@@ -48,8 +48,15 @@ void			init_buttons(SDL_Surface **menu_button)
 	menu_button[5] = create_button("./images/button_plane_1.png");
 	menu_button[6] = create_button("./images/button_cone_1.png");
 	menu_button[7] = create_button("./images/button_cylinder_1.png");
-	menu_button[8] = create_button("./images/button_plus.png");
-	menu_button[9] = create_button("./images/button_minus.png");
+	menu_button[8] = create_button("./images/button_disk.png");
+	menu_button[9] = create_button("./images/button_cube.png");
+	menu_button[10] = create_button("./images/button_effect.png");
+	menu_button[11] = create_button("./images/button_elips.png");
+	menu_button[12] = create_button("./images/button_parab.png");
+	menu_button[13] = create_button("./images/button_tw-hy.png");
+	menu_button[14] = create_button("./images/button_hyp.png");
+	menu_button[15] = create_button("./images/button_plus.png");
+	menu_button[16] = create_button("./images/button_minus.png");
 }
 
 SDL_Surface		*create_button(char *src)

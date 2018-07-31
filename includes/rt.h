@@ -19,7 +19,7 @@
 # define MEN_H 60
 # define BT_H 30
 # define BT_W 100
-# define BT_COUNT 10
+# define BT_COUNT 17
 # define MAX_SOURCE_SIZE 0x100000
 
 # include "../libft/libft.h"
@@ -158,7 +158,7 @@ typedef struct	s_interface
 	SDL_Color		black;
 	char			show_info;
 	t_figure		*curr_figure;
-	int				btn_pos_y[12];
+	int				btn_pos_y[19];
 }				t_interface;
 
 typedef struct	s_sdl
@@ -292,12 +292,14 @@ void			print_fig_float(t_sdl *sdl, float nb, int *y, int i);
 /*
 ** printer.c
 */
+
 void			print_fig_col(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_dir(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_pos(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 void			print_fig_type(t_sdl *sdl, t_figure *figure, int *y);
-void			print_info_message(t_sdl *sdl,
-					const char *str, char type, int *y);
+void			print_info_message(t_sdl *sdl, const char *str, char type, int *y);
+void			print_fig_min(t_sdl *sdl, t_figure *figure, int *y, char *patt);
+void			print_fig_max(t_sdl *sdl, t_figure *figure, int *y, char *patt);
 
 /*
 ** button_manipulator.c

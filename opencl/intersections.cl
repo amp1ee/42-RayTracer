@@ -266,20 +266,23 @@ float2 IntersectRayParaboloid(float3 O, float3 D, t_figure p_boloid)
 
 float2 IntersectRayEllipsoid(float3 O, float3 D, t_figure ellipse)
 {
-	float R = ellipse.radius;
-	float R2 = R * R;
 	float3 c = {ellipse.p.x, ellipse.p.y, ellipse.p.z};
 	float3 V = {ellipse.d.x, ellipse.d.y, ellipse.d.z};
 	V /= fast_length(V);
 	float3 OC = (float3){O.x - c.x, O.y - c.y, O.z - c.z};
 
 	float	coef = 0.7f;
-	float	k = R * sqrtf(1.f - coef * coef);
+	float	a = ellipse.radius;
+	float	b = coef * a;
+	float	r = 2.f * a;
+	float	r2 = r * r;
+	
+	float	k = 2.f * sqrtf(a * a - b * b);
 
 	float	A1 = 2.f * k * dot(D, V);
-	float	A2 = R2 + 2.f * k * dot(OC, V) - k;
-	float	A = 4.f * R2 * dot(D, D) - A1 * A1;
-	float	B = 8.f * R2 * dot(D, OC) - 2.f * A1 * A2;
-	float	C = 4.f * R2 * dot(OC, OC) - A2 * A2;
+	float	A2 = r2 + 2.f * k * dot(OC, V) - k;
+	float	A = 4.f * r2 * dot(D, D) - A1 * A1;
+	float	B = 8.f * r2 * dot(D, OC) - 2.f * A1 * A2;
+	float	C = 4.f * r2 * dot(OC, OC) - A2 * A2;
 	return (SolveQuadEquation(A, B, C));
 }

@@ -39,7 +39,6 @@ void	effects(int *a)
 {
 	(*a)++;
 	*a = *a % 5;
-	printf("%d\n", *a);
 }
 
 void	key_events(t_main *mlx, SDL_Event *event)
@@ -55,10 +54,6 @@ void	key_events(t_main *mlx, SDL_Event *event)
 	(event->K_K == SDL_SCANCODE_S) ? (mlx->scene->cam.p.z -= 0.5f) : 0;
 	(event->K_K == SDL_SCANCODE_E) ? (mlx->scene->cam.p.y += 0.5f) : 0;
 	(event->K_K == SDL_SCANCODE_Q) ? (mlx->scene->cam.p.y -= 0.5f) : 0;
-	(event->K_K == SDL_SCANCODE_KP_PLUS) ?
-(add_figure(mlx, &mlx->scene->objects,
-	mlx->scene->cam, &mlx->scene->o_num, 'e')) : 0;
-	(event->K_K == SDL_SCANCODE_KP_1) ? effects(&mlx->scene->effect) : 0;
 }
 
 void	mouse_events(t_main *mlx)
@@ -76,22 +71,31 @@ void	mouse_events(t_main *mlx)
 	else if (x > 298 && x < 415 && y > 15 && y < BT_H + 15)
 		screen_shoot(*mlx);
 	else if (x > 435 && x < 520 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects,
-			mlx->scene->cam, &mlx->scene->o_num, 's');
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 's');
 	else if (x > 540 && x < 617 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects,
-			mlx->scene->cam, &mlx->scene->o_num, 'p');
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'p');
 	else if (x > 637 && x < 709 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects,
-			mlx->scene->cam, &mlx->scene->o_num, 'c');
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'c');
 	else if (x > 729 && x < 826 && y > 15 && y < BT_H + 15)
-		add_figure(mlx, &mlx->scene->objects,
-			mlx->scene->cam, &mlx->scene->o_num, 'y');
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'y');
+	else if (x > 846 && x < 914 && y > 15 && y < BT_H + 15)
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'd');
+	else if (x > 934 && x < 1005 && y > 15 && y < BT_H + 15)
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'k');
+	else if (x > 1025 && x < 1096 && y > 15 && y < BT_H + 15)
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'e');
+	else if (x > 1116 && x < 1195 && y > 15 && y < BT_H + 15)
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'a');
+	else if (x > 1215 && x < 1299 && y > 15 && y < BT_H + 15)
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 't');
+	else if (x > 1319 && x < 1384 && y > 15 && y < BT_H + 15)
+		add_figure(mlx, &mlx->scene->objects, mlx->scene->cam, &mlx->scene->o_num, 'h');
+	else if (x > 1404 && x < 1484 && y > 15 && y < BT_H + 15)
+		effects(&mlx->scene->effect);
 	else if (x > SIDE_W && y > MEN_H)
 	{
 		mlx->sdl->ui.show_info = 1;
-		set_curr_fig(&mlx->sdl->ui.curr_figure,
-			mlx->scene->objects, figure_actions(mlx, x, y));
+		set_curr_fig(&mlx->sdl->ui.curr_figure, mlx->scene->objects, figure_actions(mlx, x, y));
 	}
 	handle_curr_obj(mlx, x, y);
 }

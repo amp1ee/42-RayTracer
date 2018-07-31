@@ -107,14 +107,20 @@ void			show_fig_info(t_sdl *sdl, t_figure *curr)
 	print_fig_pos(sdl, curr, &pos, "x\0y\0z\0");
 	print_info_message(sdl, "Direction:", 'p', &pos);
 	print_fig_dir(sdl, curr, &pos, "x\0y\0z\0");
+	print_info_message(sdl, "Min:", 'p', &pos);
+	print_fig_min(sdl, curr, &pos, "x\0y\0z\0");
+	print_info_message(sdl, "Max:", 'p', &pos);
+	print_fig_max(sdl, curr, &pos, "x\0y\0z\0");
 	print_info_message(sdl, "Color:", 'p', &pos);
 	print_fig_col(sdl, curr, &pos, "r\0g\0b\0");
 	print_info_message(sdl, "Radius:", 'p', &pos);
-	print_fig_float(sdl, curr->radius, &pos, 9);
+	print_fig_float(sdl, curr->radius, &pos, 15);
 	print_info_message(sdl, "Angle:", 'p', &pos);
-	print_fig_float(sdl, curr->angle, &pos, 10);
+	print_fig_float(sdl, curr->angle, &pos, 16);
 	print_info_message(sdl, "Reflectiveness:", 'p', &pos);
-	print_fig_float(sdl, curr->rfl, &pos, 11);
+	print_fig_float(sdl, curr->rfl, &pos, 17);
+	print_info_message(sdl, "Scale:", 'p', &pos);
+	print_fig_float(sdl, curr->scale, &pos, 18);
 	draw_info_btns(sdl);
 	SDL_BlitSurface(sdl->ui.message, NULL, sdl->ui.sb, &dst);
 }

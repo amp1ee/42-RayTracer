@@ -129,6 +129,7 @@ void			call_dialog(t_main *mlx)
 	free(mlx->scene->objects);
 	free(mlx->scene->lights);
 	free(mlx->scene);
+	mlx->sdl->ui.show_info = 0;
 	mlx->scene = parse_json((char *)open, mlx->cl);
 }
 

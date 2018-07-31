@@ -114,8 +114,6 @@ t_closest		closest_fig(float3 O, float3 D,
 float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *figures,
                     __global t_figure *light, int o_n, int l_n)
 {
-//<<<<<<< HEAD
-//<<<<<<< HEAD
 	float koef = 0;
 	int i = -1;
 	while (++i < l_n)
@@ -176,41 +174,6 @@ float   compute_light(float3 P, float3 N, float3 V, float s, __global t_figure *
 		}
 	}
 	return (koef > 1.0) ? 1.0 : koef;
-// //=======
-//     float koef = 0;
-// //=======
-//     float koef = 0.0f;
-// //>>>>>>> mstorcha
-//     for (int i = 0; i < l_n; i++)
-//     {
-//         t_figure l = light[i];
-//         float3 Lp = {l.p.x, l.p.y, l.p.z};
-//         float3 L = Lp - P;
-//         //shadow
-//         t_closest clos = closest_fig(P, L, 0.001f, 0.99f, figures, o_n);
-//         float closest = INFINITY;
-//         closest = clos.closest;
-//         if (closest != INFINITY)
-//             continue;
-//         //difuse
-//         float n_dot_l = dot(N,L);
-//         if (n_dot_l > 0.0f)
-//             koef += l.angle * n_dot_l / (fast_length(N) * fast_length(L));
-//         //zerk
-//         if (s != -1.0f)
-//         {
-//             float3 R = N * 2.0f * n_dot_l - L;
-//             float r_dot_v = dot(R,V);
-//             if (r_dot_v > 0.0f)
-//                 koef += l.angle*pow(r_dot_v / (fast_length(R) * fast_length(V)), s);
-//         }
-//     }
-// //<<<<<<< HEAD
-//     return (koef > 1.0) ? 1.0 : koef;
-// //>>>>>>> mstorcha
-// //=======
-//     return (koef > 1.0f) ? 1.0f : koef;
-//>>>>>>> mstorcha
 }
 
 float3	ReflectRay(float3 R, float3 N)
@@ -327,15 +290,15 @@ float3   compute_normal(t_figure figure, float3 D, float3 P)
 		float3	p = {figure.p.x, figure.p.y, figure.p.z};
 		float3	d = {figure.d.x, figure.d.y, figure.d.z};
 		d /= fast_length(d);
-		float	r = figure.radius;
 
 		float	coef = 0.7f;
-		float	k = r * sqrtf(1.f - coef * coef);
+		float	a = figure.radius;
+		float	b = coef * a;
+		float	r = 2.f * a;
 
-		float3	Cmid = p + (d * k / 2.f);
+		float3	Cmid = p + d * (sqrtf(a * a - b * b));
 		float3	R = P - Cmid;
-		N = R - d * (1.f - (coef * coef)) * dot(R, d);
-		N = N / fast_length(N);
+		N = R - d * (1.f - (b * b / a * a)) * dot(R, d);
 	}
 	return N;
 }
@@ -389,22 +352,16 @@ float3			get_obj_color(float3 NL, float3 P, t_figure obj,
 	int i = -1;
 
 	scale = obj.scale;
-	//for (int i = 0; i < 2; i++)
-	//	printf("%d %d %d\n", t_i[i].x, t_i[i].y, t_i[i].z);
 
 	while (t_i[++i].z != obj.index)
 	{
-		//printf("%d %d %d\n", t_i[i].x, t_i[i].y, t_i[i].z);
 		tmp += t_i[i].x * t_i[i].y;
 	}
-	//printf("our\n");
 	tex = textures + tmp;
 	
 	UV = calc_uv(NL, P, obj);
 	UV = rotate_ort(UV, (float3){0,0,0});
 	textures_info = (int2) {t_i[i].y, t_i[i].x};
-
-	//if (obj.scale <= EPSILON)
 
 	tex_pos.x = (int)((UV.x) * scale * (float)textures_info.x) % textures_info.x;
 	if (tex_pos.x < 0)
@@ -611,8 +568,6 @@ __kernel void rendering(__global int * data, __global t_figure *figures,
 	int j = get_global_id(0);
 	int i = get_global_id(1);
 
-	if (!i && !j)
-		printf("%d\n", effects);
 	float3 O = { cam.p.x, cam.p.y, cam.p.z };
 	float3 D;
 	D.x = ((float)i - (float)WIDTH / 2.0f) * 0.5f / (float)WIDTH;

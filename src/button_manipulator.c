@@ -75,27 +75,27 @@ void			handle_curr_obj3(t_main *mlx, int x, int y)
 	if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[6] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[6] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].color.x, '+', 2, 250);
+			[mlx->sdl->ui.curr_figure->index].min.x, '+', 0.2, 0);
 	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[6] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[6] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].color.x, '-', 2, 250);
+			[mlx->sdl->ui.curr_figure->index].min.x, '-', 0.2, 0);
 	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[7] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[7] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].color.y, '+', 2, 250);
+			[mlx->sdl->ui.curr_figure->index].min.y, '+', 0.2, 0);
 	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[7] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[7] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].color.y, '-', 2, 250);
+			[mlx->sdl->ui.curr_figure->index].min.y, '-', 0.2, 0);
 	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[8] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[8] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].color.z, '+', 2, 250);
+			[mlx->sdl->ui.curr_figure->index].min.z, '+', 0.2, 0);
 	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[8] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[8] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].color.z, '-', 2, 250);
+			[mlx->sdl->ui.curr_figure->index].min.z, '-', 0.2, 0);
 	handle_curr_obj4(mlx, x, y);
 }
 
@@ -104,21 +104,69 @@ void			handle_curr_obj4(t_main *mlx, int x, int y)
 	if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[9] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[9] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].radius, '+', 0.1, 0);
+			[mlx->sdl->ui.curr_figure->index].max.x, '+', 0.1, 0);
 	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[9] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[9] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].radius, '-', 0.1, 0);
+			[mlx->sdl->ui.curr_figure->index].max.x, '-', 0.1, 0);
 	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[10] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[10] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].angle, '+', 0.01, 0);
+			[mlx->sdl->ui.curr_figure->index].max.y, '+', 0.1, 0);
 	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[10] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[10] + HEIGHT / 3 + MEN_H + 16)
 		change_float_val(&mlx->scene->objects
-			[mlx->sdl->ui.curr_figure->index].angle, '-', 0.01, 0);
+			[mlx->sdl->ui.curr_figure->index].max.y, '-', 0.1, 0);
 	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[11] + HEIGHT / 3 +
 		MEN_H && y < mlx->sdl->ui.btn_pos_y[11] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].max.z, '+', 0.1, 0);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[11] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[11] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].max.z, '-', 0.1, 0);
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[12] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[12] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].color.x, '+', 1, 250);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[12] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[12] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].color.x, '-', 1, 250);
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[13] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[13] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].color.y, '+', 1, 250);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[13] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[13] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].color.y, '-', 1, 250);
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[14] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[14] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].color.z, '+', 1, 250);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[14] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[14] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].color.z, '-', 1, 250);
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[15] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[15] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].radius, '+', 0.2, 250);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[15] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[15] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].radius, '-', 0.2, 0);
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[16] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[16] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].angle, '+', 1, 250);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[16] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[16] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].angle, '-', 1, 0);
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[17] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[17] + HEIGHT / 3 + MEN_H + 16)
 	{
 		change_float_val(&mlx->scene->objects
 			[mlx->sdl->ui.curr_figure->index].rfl, '+', 0.05, 1);
@@ -127,8 +175,8 @@ void			handle_curr_obj4(t_main *mlx, int x, int y)
 		else
 			mlx->scene->objects[mlx->sdl->ui.curr_figure->index].matirial = 0;
 	}
-	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[11] + HEIGHT / 3 +
-		MEN_H && y < mlx->sdl->ui.btn_pos_y[11] + HEIGHT / 3 + MEN_H + 16)
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[17] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[17] + HEIGHT / 3 + MEN_H + 16)
 	{
 		change_float_val(&mlx->scene->objects
 			[mlx->sdl->ui.curr_figure->index].rfl, '-', 0.05, 1);
@@ -137,4 +185,12 @@ void			handle_curr_obj4(t_main *mlx, int x, int y)
 		else
 			mlx->scene->objects[mlx->sdl->ui.curr_figure->index].matirial = 0;
 	}
+	else if (x > 10 && x < 25 && y > mlx->sdl->ui.btn_pos_y[17] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[18] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].scale, '+', 0.05, 4);
+	else if (x > 31 && x < 46 && y > mlx->sdl->ui.btn_pos_y[17] + HEIGHT / 3 +
+		MEN_H && y < mlx->sdl->ui.btn_pos_y[18] + HEIGHT / 3 + MEN_H + 16)
+		change_float_val(&mlx->scene->objects
+			[mlx->sdl->ui.curr_figure->index].scale, '-', 0.05, 4);
 }
