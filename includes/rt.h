@@ -203,6 +203,7 @@ cl_float3		json_arr_to_color(char *str,
 					char *pattern, char *start, char *end);
 char			*json_get_object(char *str, char *pattern);
 t_texture		*get_texture(char *str, t_opencl *cl, cl_float3 color);
+void			color_manage(cl_float3 *color);
 
 /*
 ** ADD Figure

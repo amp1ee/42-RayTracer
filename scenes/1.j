@@ -1,5 +1,3 @@
-ergwer
-
 {
   "camera" : [
     {
@@ -34,8 +32,7 @@ ergwer
       "type" : "sphere",
       "origin" : [0, 2, 20],
       "radius" : 1,
-      "color" : [255, 255, 0],
-      "texture" : "chessboard"
+      "color" : [1000, 1000, 1000]
     },
     {
       "type" : "sphere",

@@ -35,6 +35,7 @@ cl_float3		json_arr_to_color(char *str,
 		i++;
 	}
 	color = (cl_float3){.x = arr[0], .y = arr[1], .z = arr[2]};
+	color_manage(&color);
 	ft_del_str(tab);
 	return (color);
 }
@@ -73,12 +74,14 @@ t_figure		*get_object(char *str)
 	object->p = json_arr_to_vector(str, "\"origin\"", NULL, NULL);
 	object->d = json_arr_to_vector(str, "\"direction\"", NULL, NULL);
 	object->radius = json_get_float(str, "\"radius\"");
+	(object->radius < 0) ? (object->radius = 0) : 0;
 	object->size = json_get_float(str, "\"size\"");
 	object->min = json_arr_to_vector(str, "\"min\"", NULL, NULL);
 	object->max = json_arr_to_vector(str, "\"max\"", NULL, NULL);
 	object->color = json_arr_to_color(str, "\"color\"", NULL, NULL);
 	object->cap = json_get_float(str, "\"cap\"");
 	object->angle = json_get_float(str, "\"angle\"");
+	(object->angle < 0) ? (object->angle = 0) : 0;
 	object->matirial = 0;
 	object->scale = 1;
 	object->rfl = json_get_float(str, "\"reflective\"");
