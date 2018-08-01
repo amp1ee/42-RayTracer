@@ -186,13 +186,41 @@ typedef struct	s_main
 	t_prev		prev;
 }				t_main;
 
+cl_int4			*get_texture_info(t_slist *lst);
+void			parse_camera(char **str, t_figure *camera);
+t_figure		*array_cast(t_slist *lst, t_scene *sc, int num, t_slist **text);
+t_slist			*parse_objects(char **str, char *type, t_opencl *cl);
+char			*ft_get_substr(const char *str, char *start, char *end);
+cl_float3		json_arr_to_vector(char *str,
+					char *pattern, char *start, char *end);
+float			json_get_float(char *str, char *pattern);
+char			*ft_fgets(char *file);
+char			*ft_brackets(char *str, int len);
+char			*json_get_array(char *str, char *pattern, char *stack, int top);
+t_figure		*get_object(char *str);
+t_figure		*get_light(char *str);
+cl_float3		json_arr_to_color(char *str,
+					char *pattern, char *start, char *end);
+char			*json_get_object(char *str, char *pattern);
+t_texture		*get_texture(char *str, t_opencl *cl, cl_float3 color);
+
 /*
 ** ADD Figure
 */
 
 t_figure		new_sphere(t_figure cam, float r);
-void			add_figure(t_main *mlx, t_figure **figures,
-					t_figure cam, int *o_num, char type);
+t_figure		new_cylinder(t_figure cam);
+t_figure		new_cone(t_figure cam);
+t_figure		new_plane(t_figure cam);
+t_figure		new_hyperboloid(t_figure cam);
+t_figure		new_twosheet_hyperboloid(t_figure cam);
+t_figure		new_paraboloid(t_figure cam);
+t_figure		new_ellipsoid(t_figure cam);
+t_figure		new_disk(t_figure cam);
+t_figure		new_cube(t_figure cam);
+void			add_figure(t_main *mlx,
+					t_figure **figures, t_figure cam, char type);
+
 cl_float3		rotate_ort(cl_float3 point, cl_float3 rot);
 int				figure_actions(t_main *mlx, int x, int y);
 
@@ -229,6 +257,12 @@ t_scene			*parse_json(char *file, t_opencl *cl);
 ** HANDLERS
 */
 
+void			init_sdl(t_sdl *sdl);
+void			mousemove_events(t_main *mlx);
+void			mousewheel_events(t_main *mlx, SDL_Event *event);
+void			mouse_events1(t_main *mlx);
+void			mouse_events2(t_main *mlx);
+void			key_events(t_main *mlx, SDL_Event *event);
 void			write_in_file(t_scene sc);
 int				key(int key_code, t_main *mlx);
 int				mouse(int key_code, int x, int y, t_main *mlx);

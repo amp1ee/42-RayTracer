@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = rt
+NAME = RT
 LIBFTA = libft/libft.a
 TFDA = libTFD/libtfd.a
 
@@ -39,6 +39,8 @@ SRC_DIR = ./src/
 OBJ_DIR = ./obj/
 
 SOURCES = main.c \
+			sub_main1.c \
+			sub_main2.c \
 			handlers1.c \
 			handlers2.c \
 			color_vector.c \
@@ -48,7 +50,14 @@ SOURCES = main.c \
 			opencl3.c \
 			opencl4.c \
 			add_figures.c \
+			add_figures1.c \
+			add_figures2.c \
 			json_parser.c \
+			json_parser1.c \
+			json_parser2.c \
+			json_parser3.c \
+			json_parser4.c \
+			json_parser5.c \
 			write_in_file.c \
 			user_interface.c \
 			init_interface.c \
