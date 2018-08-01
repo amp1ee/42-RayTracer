@@ -118,7 +118,6 @@ void				write_in_file(t_scene sc)
 	len += put_objects((str + len), sc);
 	len += put_light((str + len), sc);
 	len += sprintf(str + len, "\n}");
-	printf("%s\n", str);
 	tmp1 = ft_strjoin("./scenes/custom", ".j");
 	f = fopen(tmp1, "w");
 	free(tmp1);

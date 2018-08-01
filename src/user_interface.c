@@ -79,7 +79,7 @@ void			user_interface(t_sdl *sdl, t_scene *scene)
 
 void			set_curr_fig(t_figure **curr, t_figure *fig, int i)
 {
-	if (!fig || i < 0)
+	if (!fig || (i < 0 && i != -1))
 		exit_message("index error");
 	*curr = &fig[i];
 	(*curr)->index = i;
